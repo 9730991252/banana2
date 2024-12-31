@@ -1,0 +1,17 @@
+{% extends 'home/base.html' %}
+{% block head %}
+{% endblock head %}
+{% block content %}
+{% load office_tag %}
+{% include 'include/alert.html' %}
+<div>
+    welcome - {{e.name}}
+</div>
+{% include 'include/office/office_menu.html' %}
+
+{% user_pendding_all_amount e.shope_id %}
+
+
+
+
+{% endblock content %}

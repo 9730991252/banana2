@@ -1,0 +1,91 @@
+{% extends 'home/base.html' %}
+{% block head %}
+{% endblock head %}
+{% block content %}
+{% include 'include/alert.html' %}
+<div>
+    welcome - {{e.name}}
+</div>
+
+{% include 'include/office/office_menu.html' %}
+
+<style>
+    .main_box{
+        width: 90%;
+        border: 1px solid black;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        padding: 5px;
+        gap: 10px;
+        margin: 0 auto;
+        img{
+            width: 350px;
+        }
+    }
+</style>
+
+{% if s %}
+<div class="main_box">
+    <div><img src="{{s.image.url}}" alt=""></div>
+    <div>
+        <button type="submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#edit">
+            Edit Signature
+        </button>
+    </div>
+    <div class="modal fade" id="edit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Signature</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form method="POST" enctype="multipart/form-data">{% csrf_token %}
+              <div class="mb-3">
+                  <input type="file" class="form-control" value="{{s.image.url}}" name="image" placeholder="Image" required>
+                </div>
+                <button type="submit" name="edit_signature" class="btn btn-primary">Edit</button>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+{% else %}
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    Add Signature
+  </button>
+  
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Signature</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form method="POST" enctype="multipart/form-data">{% csrf_token %}
+            <div class="mb-3">
+                <input type="file" class="form-control" name="image" placeholder="Image" required>
+              </div>
+              <button type="submit" name="add_signature" class="btn btn-primary">Add</button>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+
+{% endblock content %}

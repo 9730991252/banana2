@@ -1,0 +1,199 @@
+103.150.136.82
+  
+
+103.150.136.82
+_______________________________________
+
+cd banana2
+git pull
+source venv/bin/activate
+python3 manage.py makemigrations
+python3 manage.py migrate
+systemctl daemon-reload
+systemctl restart banana2.com.gunicorn
+exit
+
+root
+cd banana2
+git pull
+systemctl daemon-reload
+systemctl restart banana2.com.gunicorn
+exit
+
+
+
+_______________________________________
+
+
+git clone https://github.com/9730991252/banana2.git
+
+_______________________________________
+********** Create Virtual env *****
+
+virtualenv venv
+
+********** Activate Virtual env ****
+
+source venv/bin/activate
+
+************************************
+
+pip install num2words
+
+***************************
+pip install pillow
+
+****************migrations******
+python3 manage.py makemigrations
+
+*********** migrate ********
+
+python3 manage.py migrate
+
+
+***** install django ******
+
+pip install django
+
+******** Install Gunicorn ******
+ 
+pip install gunicorn
+
+*********** Deactivate Virtualenv *****
+
+deactivate
+
+************ Create System Socket File for Gunicorn *******
+
+Example:- sudo nano /etc/systemd/system/crenta.in.gunicorn.socket
+
+cd  /etc/systemd/system/
+
+sudo nano banana2.com.gunicorn.socket
+
+
+
+[Unit]
+Description=banana2.com.gunicorn socket
+
+[Socket]
+ListenStream=/run/banana2.com.gunicorn.sock
+
+[Install]
+WantedBy=sockets.target
+
+
+************** Create System Service File for Gunicorn ******
+Syntax:- sudo nano /etc/systemd/system/your_domain.gunicorn.service
+Example:- sudo nano /etc/systemd/system/narayaniorder.com.gunicorn.service
+
+cd  /etc/systemd/system/
+
+sudo nano banana2.com.gunicorn.service
+
+
+[Unit]
+Description=banana2.com.gunicorn daemon
+Requires=banana2.com.gunicorn.socket
+After=network.target
+
+[Service]
+User=root
+Group=root
+WorkingDirectory=/root/banana2
+ExecStart=/root/banana2/venv/bin/gunicorn \
+          --access-logfile - \
+          --workers 3 \
+          --bind unix:/run/banana2.com.gunicorn.sock \
+          banana2.wsgi:application
+
+[Install]
+WantedBy=multi-user.target
+
+----------------------------------------------------------------
+sudo systemctl start banana2.com.gunicorn.socket
+
+sudo systemctl start banana2.com.gunicorn.service
+
+
+-----------------------------------------------------------------
+
+sudo systemctl enable banana2.com.gunicorn.socket
+
+sudo systemctl enable banana2.com.gunicorn.service
+
+
+-----------------------------------------------------------------------
+
+sudo systemctl status banana2.com.gunicorn.socket
+
+sudo systemctl status banana2.com.gunicorn.service
+
+-------------------------------------------
+
+sudo systemctl daemon-reload
+sudo systemctl restart banana2.com.gunicorn
+
+
+
+--------------------------------
+
+
+
+****************** Create Virtual Host File ******
+Syntax:- sudo nano /etc/nginx/sites-available/your_domain
+Example:- sudo nano /etc/nginx/sites-available/crenta.in
+
+
+cd /etc/nginx/sites-available
+
+sudo nano banana2.com
+
+
+
+server{
+    listen 80;
+    listen [::]:80;
+
+    server_name 103.150.136.82 banana.tejorder.com www.banana.tejorder.com;
+    client_max_body_size 500M;
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+
+    location / {
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_pass http://unix:/run/banana2.com.gunicorn.sock;
+    }    
+}
+
+-----------------------------------------------------
+
+
+########## Enable Virtual Host or Create Symbolic Link of Virtual Host File ########
+
+sudo ln -s /etc/nginx/sites-available/banana2.com /etc/nginx/sites-enabled/banana2.com
+
+
+%%%%%%%%%%%%%%%%%%%%% Check Configuration is Correct or Not %%%%%
+
+sudo nginx -t
+
+%%%%%%%%%%%% Restart Nginx %%%%%%%%%
+
+sudo service nginx restart
+
+
+********** restart ******
+
+sudo systemctl daemon-reload
+sudo systemctl restart banana2.com.gunicorn
+
+
+--------------------------------------- ssl ------------------
+
+sudo certbot --nginx
+
+sudo certbot --nginx -d janmanasnews.com -d www.janmanasnews.com

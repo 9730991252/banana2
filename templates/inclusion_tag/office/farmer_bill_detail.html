@@ -1,0 +1,77 @@
+<div class="flex" style="justify-content: center;">
+    <div>Total -</div>
+    <div>{{total}}</div>
+</div>
+<style>
+.pendding_bill_box{
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    text-align: center;
+    border-top: 1px solid black;
+    background-color: rgb(255, 225, 229);
+}
+.pendding_bill{
+    border-bottom: 1px solid black;
+    grid-column-start: 1;
+    grid-column-end: 3;
+    font-weight: 700;
+    color: red;
+}
+.div{
+    border: 1px solid rgba(146, 146, 146, 0.8);
+}
+a{
+    color: black;
+    text-decoration: none;
+}
+</style>
+
+<div class="pendding_bill_box">
+    <div class="pendding_bill">Pendding Bill</div>
+    <div class="div"><b>Bill</b></div>
+    <div class="div"><b>Amount</b></div>
+    {% for b in farmer_pendding_bill %}
+        <a href="/office/view_farmer_bill/{{b.id}}"><div class="div">{{b.bill_number}}</div></a>
+        <div class="div">{{b.pending_amount}}</div>
+    {% endfor %}
+    <div class="div" style="color: red;"><b>Total</b></div>
+    <div class="div" style="color: red;"><b>{{pending_amount_total}}</b></div>
+</div>
+
+<!--?-------------------------------------------------------------->
+
+<style>
+.completed_bill_box{
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    text-align: center;
+    border-top: 1px solid black;
+    background-color: rgb(225, 255, 231);
+}
+.completed_bill{
+    border-bottom: 1px solid black;
+    grid-column-start: 1;
+    grid-column-end: 3;
+    font-weight: 700;
+    color: rgb(0, 139, 12);
+}
+.div{
+    border: 1px solid rgba(146, 146, 146, 0.8);
+}
+a{
+    color: black;
+    text-decoration: none;
+}
+</style>
+
+<div class="completed_bill_box">
+    <div class="completed_bill">Completed Bill</div>
+    <div class="div"><b>Bill</b></div>
+    <div class="div"><b>Amount</b></div>
+    {% for b in farmer_completed_bill %}
+        <a href="/office/view_farmer_bill/{{b.id}}"><div class="div">{{b.bill_number}}</div></a>
+        <div class="div">{{b.amount}}</div>
+    {% endfor %}
+    <div class="div" style="color: green;"><b>Total</b></div>
+    <div class="div" style="color: green;"><b>{{completed_amount_total}}</b></div>
+</div>

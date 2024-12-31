@@ -1,0 +1,161 @@
+{% load office_tag %}
+
+<style>
+    .bill_box{
+        width: 100%;
+        border: 1px solid black;
+        padding: 10px;
+    }
+    .flex{
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+    .product_cost, .Wastage, .Stalk,.Transport, .Service{
+        background-color: rgb(136, 255, 255);
+        margin-top: 10px;
+        border-radius: 10px;
+        padding: 10px;
+        .mb-3{
+            border-radius: 5px;
+            border: 1px solid black;
+        }
+    }
+
+    .input-group-text{
+        border-right: 2px solid black;
+        background-color: rgb(255, 207, 162);
+        width: 200px;
+    }
+    .read_only_input{
+        background-color: rgb(255, 207, 162);
+        }
+</style>
+<div class="bill_box">
+    <div class="text-center"><h5><b>Company  Bill Details</b></h5></div>
+    <br>
+    <div class="flex">
+        <div style="width: 80%;"><input type="text" oninput="check_input(),check_company(company_name.value)" id="company_name" class="form-control" step="any" placeholder="Company Name"></div>
+        <div id="company_btn_box"><button onclick="save_company(company_name.value),check_input()" class="btn btn-primary">Add</button></div>
+    </div>
+    
+    <div id="company_ruselt"></div>
+    <form method="POST">
+    <input type="hidden" name="company_id" id="company_id">
+    <input type="hidden" name="farmer_bill_id" value="{{bill.id}}">
+    
+    <!--?------------------------------------------------------------------->
+    <div class="product_cost">
+        <div class="text-center"><b>Banana (Prod.Cost)</b></div>
+
+        <div class="input-group mb-3">
+            <span class="input-group-text">No of Box / Crates</span>
+            <input type="number" aria-label="First name" name="product_cost_box" value="{{bill.empty_box}}" class="form-control read_only_input" readonly>
+        </div>
+
+        <div class="input-group mb-3">
+            <span class="input-group-text">Net Weight</span>
+            <input type="number" name="product_cost_net_weight" id="product_cost_net_weight" value="{% product_cost_net_weight bill.weight bill.empty_box %}" aria-label="First name" class="form-control read_only_input" readonly>
+        </div>
+
+        <div class="input-group mb-3">
+            <span class="input-group-text">Rate</span>
+            <input type="number" aria-label="First name" class="form-control" step="any" name="product_cost_rate" id="product_cost_rate" oninput="check_input(),document.getElementById('product_cost_total_amount').value = (Number(product_cost_rate.value) * Number(product_cost_net_weight.value))" >
+        </div>
+        
+        <div class="input-group mb-3">
+            <span class="input-group-text">Total Amount</span>
+            <input type="number" aria-label="First name" name="product_cost_total_amount" id="product_cost_total_amount" style=font-weight:700; value="0" class="form-control read_only_input" readonly>
+        </div>
+    </div>
+    
+    <!--TODO------------------------------------------------------------------->
+    <div class="Wastage">
+        <div class="text-center"><b>C. Class (Wastage)</b></div>
+
+        <div class="input-group mb-3">
+            <span class="input-group-text">Net Weight</span>
+            <input type="number"  aria-label="First name" name="wastage_weight" value="{{bill.wasteage}}" class="form-control read_only_input" readonly>
+        </div>
+
+        <div class="input-group mb-3">
+            <span class="input-group-text">Rate</span>
+            <input type="number" aria-label="First name" class="form-control" step="any" name="wasteage_rate" id="wasteage_rate" oninput="check_input(),document.getElementById('wasteage_total_amount').value = (Number(wasteage_rate.value) * Number('{{bill.wasteage}}'))" >
+        </div>
+        
+        <div class="input-group mb-3">
+            <span class="input-group-text">Total Amount</span>
+            <input type="number" aria-label="First name" name="wasteage_total_amount" id="wasteage_total_amount" step="any" style=font-weight:700; value="0" class="form-control read_only_input" readonly>
+        </div>
+    </div>
+    <!--TODO------------------------------------------------------------------>
+    
+    <div class="Stalk">
+        <div class="text-center"><b>Stalk Weight 8%</b></div>
+
+        <div class="input-group mb-3" >
+            <span class="input-group-text">Net Weight</span>
+            <input type="number" value="{% stalk_net_weight bill.wasteage bill.weight bill.empty_box %}" aria-label="First name" name="stalk_net_weight" id="stalk_net_weight" class="form-control read_only_input" readonly>
+        </div>
+
+        <div class="input-group mb-3">
+            <span class="input-group-text">Rate</span>
+            <input type="number" aria-label="First name" class="form-control" step="any" name="stalk_rate" id="stalk_rate" oninput="check_input(),document.getElementById('stalk_total_amount').value = (Number(stalk_rate.value) * Number(stalk_net_weight.value))" >
+        </div>
+
+        <div class="input-group mb-3">
+            <span class="input-group-text">Total Amount</span>
+            <input type="number" aria-label="First name" name="stalk_total_amount" step="any" id="stalk_total_amount" style=font-weight:700; value="0" class="form-control read_only_input" readonly>
+        </div>
+    </div>
+<!--TODO----------------------------------------------------------------->
+<div class="Transport">
+    <div class="text-center"><b>Transport Cost</b></div>
+    
+    <div class="input-group mb-3">
+        <span class="input-group-text">No of Box / Crates</span>
+        <input type="number" aria-label="First name" value="{{bill.empty_box}}" name="transport_box" id="transport_box" class="form-control read_only_input" readonly>
+    </div>
+    
+    <div class="input-group mb-3">
+        <span class="input-group-text">Rate</span>
+        <input type="number" aria-label="First name" class="form-control" step="any" name="transport_rate" id="transport_rate" oninput="check_input(),document.getElementById('transport_total_amount').value = (Number(transport_rate.value) * Number(transport_box.value))" >
+    </div>
+    
+    <div class="input-group mb-3">
+        <span class="input-group-text">Total Amount</span>
+        <input type="number" aria-label="First name" name="transport_total_amount" id="transport_total_amount" style=font-weight:700; value="0" class="form-control read_only_input" readonly>
+    </div>
+</div>
+
+<!-- TODO------------------------------------------------------------------->
+<div class="Service">
+    <div class="text-center"><b>Service Charge</b></div>
+
+    <div class="input-group mb-3">
+        <span class="input-group-text">No of Box / Crates</span>
+        <input type="number" name="service_box" aria-label="First name" value="{{bill.empty_box}}" class="form-control read_only_input" readonly>
+    </div>
+
+    <div class="input-group mb-3">
+        <span class="input-group-text">Net Weight</span>
+        <input type="number" name="service_net_weight" id="service_net_weight" aria-label="First name" oninput="check_input()" class="form-control ">
+    </div>
+
+    <div class="input-group mb-3">
+        <span class="input-group-text">Rate</span>
+        <input type="number" aria-label="First name" class="form-control" step="any" name="service_rate" id="service_rate" oninput="check_input(),document.getElementById('service_total_amount').value = (Number('{{bill.empty_box}}') * Number(service_net_weight.value) * Number(service_rate.value)) " required>
+    </div>
+    
+    <div class="input-group mb-3">
+        <span class="input-group-text">Total Amount</span>
+        <input type="number" aria-label="First name" name="service_total_amount" id="service_total_amount" style=font-weight:700; value="0" class="form-control read_only_input" readonly>
+    </div>
+</div>
+<!--// ------------------------------------------------------------------->
+<br>
+<div class="text-enter">
+    <button type="submit" class="btn btn-danger" name="add_company_bill" id="add_company_bill" style="display: none;" >Complete Bill</button>
+</div>
+</form>
+</div>

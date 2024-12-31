@@ -1,0 +1,89 @@
+{% extends 'home/base.html' %}
+{% block head %}
+{% endblock head %}
+{% block content %}
+{% include 'include/alert.html' %}
+{% load office_tag %}
+<div>
+    welcome - {{e.name}}
+</div>
+
+{% include 'include/office/office_menu.html' %}
+
+
+<style>
+    .container{
+        display: grid;
+        grid-template-columns: repeat(auto-fit, 300px);
+        gap: 10px;
+        justify-content: start;
+    }
+    .bill_box{
+        border: 1px solid black;
+        border-radius: 10px;
+        text-align: center;
+        padding: 10px;
+    }
+    .flex{
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+</style>
+
+<style>
+    .total_box{
+        width: 350px;
+        display: grid;
+        margin: 0   auto;
+        padding: 5px;
+        grid-template-columns: repeat(2, 1fr);
+
+        div{
+            border:1px solid black;
+            text-align: center;
+        }
+        .total {
+
+            font-weight: 500;
+            grid-column-start:1 ;
+            grid-column-end:3 ;
+
+        }
+        .heading{
+            text-align: center;
+            font-weight: 500;
+            grid-column-start:1 ;
+            grid-column-end:3 ;
+
+        }
+    }
+</style>
+
+
+<br><br>
+
+<div class="container">
+    
+    {% for b in bill %}
+        <div class="bill_box">
+            <div class="flex">
+                <div>Bill Number - <b>{{b.company_bill_number}}</b></div>
+                <div>Farmer Bill Number - <b>{{b.farmer_bill.bill_number}}</b></div>
+            </div>
+            <div class="flex">
+                <div>To <b>{{b.company.name}}</b></div>
+            </div>
+            <div class="flex">
+                <div><b>Rs.{{b.total_amount}}</b></div>
+                <div>{{b.added_date}}</div>
+            </div>
+  
+            <a href="/office/view_company_bill/{{b.id}}" class="btn btn-success">View</a>
+            <a href="/office/edit_company_bill/{{b.id}}" class="btn btn-primary ms-3">Edit</a>
+        </div>
+    {% endfor %}
+
+</div>
+
+{% endblock content %}

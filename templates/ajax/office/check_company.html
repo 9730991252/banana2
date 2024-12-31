@@ -1,0 +1,25 @@
+<style>
+    .customer_filter{
+        width: 300px;
+        border-radius: 10px;
+        background-color: rgb(255, 239, 223);
+        margin: auto;
+        margin-top: 10px;
+        text-align: center;
+        padding: 10px;
+    }
+    .hedder{
+        display: flex;
+        justify-content: center;
+        justify-content: space-evenly;
+        font-weight: 600;
+    }
+</style>
+{% for c in c %}
+<div class="customer_filter">
+    <div class="hedder">
+    <div class="filter_name">{{c.name}}</div>
+</div>
+    <button onclick="select_company('{{c.name}}', '{{c.id}}'),check_input()" class="btn btn-danger btn-sm mt-2">select</button>
+</div>
+{% endfor %}

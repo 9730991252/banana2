@@ -1,0 +1,244 @@
+{% extends 'home/base.html' %}
+{% block head %}
+{% endblock head %}
+{% block content %}
+{% include 'include/alert.html' %}
+<div>
+    welcome - {{e.name}}
+</div>
+
+{% load static %}
+
+{% include 'include/office/office_menu.html' %}
+
+<style>
+    .farmer_detail{
+        width: 80%;
+        padding: 10px;
+        margin: 0 auto;
+    }
+    .flex{
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+    }
+    .farmer_name{
+        justify-content: space-between;
+        input{
+            width: 300px;
+        }
+    }
+    .containt_bill_box{
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        width: 80%;
+        padding: 10px;
+        margin: 0 auto;
+        .containt_box{            
+            display: grid;
+            grid-template-columns: 2fr 2fr;
+            gap: 10px;
+            background-color: rgb(189, 255, 255);
+            padding: 2px;
+            align-items: center;
+            border-radius: 5px;
+            padding-left: 10px;
+        }
+        input{
+            border: 1px solid black;
+            width: 100%;
+        }
+    }
+    .default_input{
+        pointer-events: none;
+        background-color: rgba(255, 255, 255, 0);
+    }
+</style>
+
+<div class="farmer_detail">
+    <form method="POST">    {% csrf_token %}
+        <div class="farmer_name flex">
+            <div><input width="100%" oninput="farmer_check()" id="farmer_name" value="{{farmer.name}}" name="name" type="text" class="form-control" placeholder="शेतकऱ्याचे नाव" required></div>
+            {% if selected_farmer_status != 0 %}<div><a href="/office/new_farmer_bill/" class="text-danger"><b>X</b></a></div>{% endif %}
+        </div>
+        <input oninput="farmer_check()" id="farmer_add" name="address" type="text" value="{{farmer.address}}" class="form-control mt-2" placeholder="पत्ता" required>
+        <div class="flex" style="justify-content: space-between;">
+            <div><input oninput="farmer_check(), check_number()" id="farmer_mobile" value="{{farmer.mobile}}" name="mobile" type="number" class="form-control mt-2" placeholder="मोबाइल नंबर " required></div>
+            {% if selected_farmer_status == 0 %}<div id="add_farmer_btn"><button type="submit" class="btn btn-primary mt-2" name="add_farmer">जतन करा</button></div>{% endif %}
+        </div>
+    </form>
+</div>
+<div id="farmer_result"></div>
+
+<form method="POST">
+    <input type="hidden" name="farmer_id" value="{{farmer.id}}">
+<div class="containt_bill_box">
+    <div class="containt_box">
+        <div><label for="vehicale_number">गाडी नं.</label></div>
+        <div><input type="text" name="vehicale_number" id="vehicale_number" class="form-control" required></div>
+    </div>
+    
+    <div class="containt_box">
+        <div><label for="weight">गाडीचे एकुण वजन</label></div>
+        <div><input type="number" id="total_vehicale_weight" name="total_vehicale_weight" oninput="check_zero('weight'),calculate_weight(),add_wasteage('empty_box_weight','wasteage','wasteage_weight'),add_wasteage('empty_box_weight','wasteage','wasteage_weight')"  class="form-control" required></div>
+    </div>
+
+    <div class="containt_box">
+        <div><label for="weight">रिकाम्या गाडीचे वजन</label></div>
+        <div><input type="number" id="vehicale_weight" name="empty_vehicale_weight" oninput="check_zero('weight'),calculate_weight('empty_box', 'empty_box_weight'),add_wasteage('empty_box_weight','wasteage','wasteage_weight'),add_wasteage('empty_box_weight','wasteage','wasteage_weight')"  class="form-control" required></div>
+    </div>
+
+    <div class="containt_box" style="font-weight: 700;">
+        <div><label for="weight">मालाचे वजन </label></div>
+        <div><input type="number" style="font-weight: 700;" name="weight" oninput="check_zero('weight'),add_empty_box('empty_box', 'empty_box_weight')" id="weight" class="default_input form-control" required></div>
+    </div>
+    
+    <div class="containt_box">
+        <div><label for="empty_box">बॉक्सचे वजन (वजा)</label></div>
+        <div><input type="number" name="empty_box" oninput="check_zero('empty_box'),add_empty_box('empty_box', 'empty_box_weight')" id="empty_box" class="form-control" required></div>
+    </div>
+    
+    <div class="containt_box">
+        <div><label for="weight">मालाचे निव्वळ वजन</label></div>
+        <div><input class=" form-control default_input" type="number" id="empty_box_weight" class=" form-control default_input " readonly></div>
+    </div>
+    
+    <div class="containt_box">
+        <div><label for="wasteage">वेस्टेज (अधिक)</label></div>
+        <div><input type="number" name="wasteage" oninput="check_zero('wasteage'),add_wasteage('empty_box_weight','wasteage','wasteage_weight')" id="wasteage" class="form-control" required></div>
+    </div>
+    
+    <div class="containt_box">
+        <div><label for="weight">मालाचे वजन </label></div>
+        <div><input type="number" id="wasteage_weight" class="form-control default_input" readonly></div>
+    </div>
+    
+    <div class="containt_box">
+        <div><label for="danda_weight">दांडयाचे वजन (अधिक)</label></div>
+        <div><input type="number" name="danda_weight" id="danda_weight" class="form-control default_input" readonly></div>
+    </div>
+    
+    <div class="containt_box" style="font-weight: 700;">
+        <div><label for="total_weight">एकुण मालाचे वजन </label></div>
+        <div><input type="number"  style="font-weight: 700;" name="total_weight" id="total_weight" class="form-control default_input" readonly></div>
+    </div>
+    
+    <div class="containt_box" style="font-weight: 700;">
+        <div><label for="prise">दर </label></div> 
+        <div><input type="number" style="font-weight: 700;" oninput="check_zero('prise'),calculate_prise()" name="prise" id="prise" class="form-control " step="any" required></div>
+    </div>
+    
+    <div class="containt_box">
+        <div><label for="amount" style="font-weight: 700;">मालाची एकुण रक्कम </label></div>
+        <div><input type="number" style="font-weight: 700;" name="amount" id="amount" class=" default_input form-control" readonly></div>
+    </div>
+    
+    <div class="containt_box">
+        <div><label for="labor">लेबर वजा </label></div>
+        <div><input type="number" name="labor" oninput="check_zero('labor'),calculate_labor_prise()" id="labor" class="form-control" required></div>
+    </div>
+    
+    <div class="containt_box" style="font-weight: 700;">
+        <div><label for="total_amount">एकुण देय रक्कम</label></div>
+        <div><input type="number" style="font-weight: 700;" name="total_amount" id="total_amount" value="0" class=" default_input form-control" readonly></div>
+    </div>
+    
+    {% if selected_farmer_status != 0 %}<button type="submit" class="btn btn-danger mt-2" name="complete_bill">Complete Bill</button>{% endif %}
+</div>
+</form>
+
+<script>
+    function calculate_weight(){
+        total_vehicale_weight = document.getElementById('total_vehicale_weight').value;
+        vehicale_weight = document.getElementById('vehicale_weight').value;
+        
+        if (Number(vehicale_weight) > Number(total_vehicale_weight)){
+            vehicale_weight = document.getElementById('vehicale_weight').value = 0;
+        }
+        if(Number(vehicale_weight) == 0){
+            weight = (total_vehicale_weight - vehicale_weight)
+            document.getElementById('weight').value = weight
+        }
+        else{
+            weight = (total_vehicale_weight - vehicale_weight)
+            document.getElementById('weight').value = weight
+
+        }
+    }
+    function check_zero(input_id){
+        input = document.getElementById(input_id).value
+        input = Number(input)
+        if(input < 0){
+            input = document.getElementById(input_id).value = 0
+        }
+        if(input > 0){
+        }
+    }
+    function add_empty_box(input_id, add_input_id){
+        from_input = document.getElementById('weight').value;
+        input = document.getElementById(input_id).value;
+        if (Number(from_input) < Number(input)){
+            input = document.getElementById(input_id).value = 0
+        }
+        if (Number(from_input) == 0){
+            a = from_input - input
+            document.getElementById(add_input_id).value = a
+        }
+        else{
+            a = from_input - input
+            document.getElementById(add_input_id).value = a
+        }
+    }
+    function add_wasteage(old_weight,wasteage_input,add_input){
+        from_input = document.getElementById(old_weight).value;
+        input = document.getElementById(wasteage_input).value;
+        a = Number(from_input) + Number(input)
+        document.getElementById(add_input).value = a
+        danda_weight = (a / 100) * 8
+        document.getElementById('danda_weight').value = danda_weight
+        
+        total_weight = a + danda_weight
+        document.getElementById('total_weight').value = total_weight
+    }
+    function calculate_labor_prise(){
+        labor = document.getElementById('labor').value;
+        a = document.getElementById('amount').value;
+
+        t = (a - labor)
+        document.getElementById('total_amount').value = t
+    }
+    function calculate_prise(){
+        total_weight = document.getElementById('total_weight').value;
+        prise = document.getElementById('prise').value;
+        amount = prise * Math.floor(total_weight)
+        document.getElementById('amount').value=amount
+        
+        labor_amount = total_weight * 0.4 
+        labor_amount = labor_amount.toFixed(0)
+        document.getElementById('labor').value = labor_amount
+
+        total_amount = amount - labor_amount
+        document.getElementById('total_amount').value = total_amount
+    }
+    
+    function farmer_check(){
+    name = document.getElementById('farmer_name').value;
+    address = document.getElementById('farmer_add').value;
+    mobile = document.getElementById('farmer_mobile').value;
+    $.ajax({
+        url: "{% url 'farmer_check' %}",
+        method: "GET",
+        data:{
+            name:name,
+                    address:address,
+                    mobile:mobile,
+                    shope_id:'{{e.shope.id}}'
+                },
+                    success: function(res){
+                        $("#farmer_result").html(res.t)
+                    }
+            })
+        }
+</script>
+{% endblock content %}
