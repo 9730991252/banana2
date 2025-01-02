@@ -4,6 +4,7 @@
 103.150.136.82
 _______________________________________
 
+root
 cd banana2
 git pull
 source venv/bin/activate
