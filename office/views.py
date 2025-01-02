@@ -98,10 +98,14 @@ def new_company_bill(request):
     else:
         return redirect('login')
     
+@csrf_exempt
 def view_company_bill(request, id):
     if request.session.has_key('office_mobile'):
         mobile = request.session['office_mobile']
         e = office_employee.objects.filter(mobile=mobile).first()
+        
+        total_pending_amount = 0
+        
         bill = Company_bill.objects.filter(id=id).first()
         empty_box_weight = (bill.weight - bill.empty_box)
         wasteage_weight = (empty_box_weight + bill.wasteage)
@@ -110,8 +114,63 @@ def view_company_bill(request, id):
         amount = math.ceil(bill.prise * math.floor(total_weight))
         p = ''
         total_amount_words = num2words(bill.total_amount)
-        
         signature = Signature.objects.filter(id=bill.office_employee.id).first()
+        total_credit = 0
+        total_pending_amount = bill.total_amount
+        
+        cash = Company_cash_transition.objects.filter(company_bill_id=bill.id)
+        for c in cash:
+            total_credit += c.amount
+            total_pending_amount -= c.amount
+            
+        p = Company_Phonepe_transition.objects.filter(company_bill_id=bill.id)
+        for p in p:
+            total_credit += p.amount
+            total_pending_amount -= p.amount
+            
+        b = Company_bank_transition.objects.filter(company_bill_id=bill.id)
+        for b in b:
+            total_credit += b.amount
+            total_pending_amount -= b.amount
+        
+        if 'save_cash_amount'in request.POST:
+            amount = request.POST.get('cash_amount')
+            Company_cash_transition(
+                shope_id=e.shope.id,
+                office_employee_id=e.id,
+                company_bill_id=bill.id,
+                amount=amount,
+            ).save()
+            return redirect(f'/office/view_company_bill/{bill.id}')
+        
+        if 'save_phonepe_amount'in request.POST:
+            mobile = request.POST.get('mobile')
+            amount = request.POST.get('amount')
+            Company_Phonepe_transition(
+                shope_id=e.shope.id,
+                office_employee_id=e.id,
+                company_bill_id=bill.id,
+                mobile=mobile,
+                amount=amount,
+            ).save()
+            return redirect(f'/office/view_company_bill/{bill.id}')        
+        
+        if 'save_bank_amount'in request.POST:
+            bank_number = request.POST.get('bank_number')
+            amount = request.POST.get('amount')
+            Company_bank_transition(
+                shope_id=e.shope.id,
+                office_employee_id=e.id,
+                company_bill_id=bill.id,
+                bank_number=bank_number,
+                amount=amount,
+            ).save()
+            return redirect(f'/office/view_company_bill/{bill.id}')
+        if bill.paid_status == 0:
+            if total_pending_amount == 0:
+                bill.paid_status = 1
+                bill.save()
+                return redirect(f'/office/view_company_bill/{bill.id}')
         context={
             'e':e,
             'bill':bill,
@@ -122,7 +181,11 @@ def view_company_bill(request, id):
             'amount':amount,
             'total_amount_words':total_amount_words,
             'signature':signature,
-            'logo':Logo.objects.filter(shope_id=e.shope.id).first()
+            'logo':Logo.objects.filter(shope_id=e.shope.id).first(),
+            'total_pending_amount':total_pending_amount,
+            'cash':cash,
+            'phonepe_transition':Company_Phonepe_transition.objects.filter(company_bill_id=bill.id),
+            'bank_transition':Company_bank_transition.objects.filter(company_bill_id=bill.id),
 
         }   
         return render(request, 'office/view_company_bill.html', context)
@@ -270,6 +333,7 @@ def farmer_bill(request):
         return render(request, 'office/farmer_bill.html', context)
     else:
         return redirect('login')
+    
 @csrf_exempt
 def view_farmer_bill(request, id):
     if request.session.has_key('office_mobile'):
@@ -362,8 +426,6 @@ def view_farmer_bill(request, id):
         return render(request, 'office/view_farmer_bill.html', context)
     else:
         return redirect('login')
-
-    
     
 def add_employee(request):
     if request.session.has_key('office_mobile'):

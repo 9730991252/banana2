@@ -129,9 +129,9 @@
     
     <div>
         
-
+<div class="container">
         <div class="text-center hide">
-            <button class="btn btn-primary" onclick="createPDF()">download pdf</button>
+            <button class="btn btn-warning" onclick="createPDF()">download pdf</button>
         </div>
 
 
@@ -151,17 +151,16 @@
             <div class="vehicale_number">गाडी नंबर  {{bill.vehicale_number}}</div>
         </div>
         <div class="flex p-2" style="font-size: 20px; line-height: 0px; justify-content: space-between;">
-            <div>शेतकऱ्याचे नाव  <b> {{bill.farmer.name}}</b></div>
-            <div><b>मोबा.नं. {{bill.farmer.mobile}}</b></div>
+            <div>कंपनी नाव &nbsp; <b> {{bill.company.name}}</b></div>
         </div>
-        <div>{{bill.farmer.address}}</div>
+        <div class="mb-3">{{bill.farmer.address}}</div>
         
         <div class="containt_box">
             
             <div class="div1 detail">तपशील</div>
             
-            <div class="div1">गाडीचे एकुण वजन</div>
-            <div class="div2">{{bill.total_vehicale_weight}}</div>
+            <div class="div1" id="total_vehicale_weight1">गाडीचे एकुण वजन</div>
+            <div class="div2" id="total_vehicale_weight2">{{bill.total_vehicale_weight}}</div>
             
             <div class="div1" id="empty_vehicale_weight1">रिकाम्या गाडीचे वजन</div>
             <div class="div2" id="empty_vehicale_weight2">{{bill.empty_vehicale_weight}}</div>
@@ -221,11 +220,77 @@
 
     
 
+    </div>
+    
+    <br>
+    
 </div>
 
-<br>
+<div class="container">
+<!------------------------------------ -------------------------------------------->
+<div id="pending_box" class="mb-3 mt-2 border p-3 text-center flex" style="width: 280px;gap: 20px;margin-left: 50px;" >
+    <label for="cash">बाकी </label>
+    <input type="text" {% if total_pending_amount != 0.0 %} style="width: 200px; text-align: center;font-weight: 700;color: white; background-color: red;" {% else %} style="text-align: center;font-weight: 700;color: rgb(0, 0, 0); background-color: rgb(81, 255, 0);"{% endif %} class="form-control" value="{{total_pending_amount | floatformat:2}}"  id="total_pending_amount" readonly>
+</div>
+
+<div class="mb-3 mt-2 border p-3 text-center" style="background-color: rgb(202, 255, 202);">
+    <form method="POST">
+        <div class="" style="display: flex;gap: 10px;">
+        <label for="cash">रोख</label>
+        <input  placeholder="रक्कम टाका" type="number" class="form-control" name="cash_amount"  id="cash_amount" oninput="check_cash_amount('{{total_pending_amount}}')">
+        <div id="cash_btn" style="display: none;"><button class="btn btn-success" name="save_cash_amount"><i class="fa-solid fa-check"></i></button></div>
+    </div>
+    </form>
+</div>
 
 
+<form method="POST">
+    <div class="mb-3 mt-2 border p-3 text-center" style="background-color: hsl(236, 100%, 80%);">
+        <div class="" style="display: flex;gap: 10px;">
+            <label for="cash">Phonepe</label>
+        </div>
+        <div class="" style="display: flex;gap: 10px;margin-top: 10px;">
+            <input type="number" name="mobile" placeholder="Phonepe Mobile" class="form-control" required>
+            <input placeholder="रक्कम टाका" style="width: 46%;" type="number" class="form-control" name="amount" id="phonepe_amount{{p.id}}" oninput="check_phonepe_amount('phonepe_amount{{p.id}}', 'phonepe_btn{{p.id}}', '{{total_pending_amount}}')">
+            <div id="phonepe_btn{{p.id}}" style="display: none;" ><button name="save_phonepe_amount" class="btn btn-success"><i class="fa-solid fa-check"></i></button></div>
+        </div>
+    </div>
+    </form>
+    
+    <form method="POST">
+    <div class="mb-3 mt-2 border p-3 text-center" style="background-color: hsl(32, 100%, 80%);">
+        <div class="" style="display: flex;gap: 10px;">
+            <label for="Bank">Bank</label>
+        </div>
+        <div class="" style="display: flex;gap: 10px;margin-top: 10px;">
+            <input type="number" name="bank_number" placeholder="Bank Number" class="form-control" required>
+            <input placeholder="रक्कम टाका" style="width: 46%;"  type="number" class="form-control" name="amount" id="bank_amount{{b.id}}" oninput="check_bank_amount('bank_amount{{b.id}}', 'bank_btn{{b.id}}', '{{total_pending_amount}}')">
+            <div id="bank_btn{{b.id}}" style="display: none;" ><button name="save_bank_amount" class="btn btn-success"><i class="fa-solid fa-check"></i></button></div>
+        </div>
+    </div>
+    </form>
+    
+    
+    <div class=" text-center p-3 border" id="transition_histry" style="display: grid;grid-template-columns: 2fr 1fr;">
+        {% for c in cash %}
+            <div>Cash - {{c.added_date}}</div>
+            <div><b>Rs.{{c.amount}}</b></div>
+        {% endfor %}
+        {% for p in phonepe_transition %}
+            <div>{{p.mobile}} - {{p.added_date}}</div>
+            <div><b>Rs.{{p.amount}}</b></div>
+        {% endfor %}
+        {% for b in bank_transition %}
+            <div>{{b.bank_number}} - {{b.added_date}}</div>
+            <div><b>Rs.{{b.amount}}</b></div>
+        {% endfor %}
+        <div style="background-color: rgb(194, 255, 255); border-radius: 5px;">Total</div>
+        <div style="background-color: rgb(0, 255, 255); border-radius: 5px;"><b>Rs.{{total_credit}}</b></div>
+    </div>
+    </div>
+    <br><br><br>
+
+</div>
 <script>
         function check_bank_amount(input_id, btn_id,pending_amount){
         input = document.getElementById(input_id).value
@@ -284,6 +349,11 @@ function check_cash_amount(pending_amount){
 /////////////////////////////////////////////////////////////////////
 
 function createPDF() {
+    total_vehicale_weight2 = document.getElementById('total_vehicale_weight2').innerText;
+    if(Number(total_vehicale_weight2) == 0){
+        document.getElementById('total_vehicale_weight1').style.display = 'none'
+        document.getElementById('total_vehicale_weight2').style.display = 'none'
+    }
     empty_vehicale_weight2 = document.getElementById('empty_vehicale_weight2').innerText;
     if(Number(empty_vehicale_weight2) == 0){
         document.getElementById('empty_vehicale_weight1').style.display = 'none'
@@ -338,6 +408,12 @@ document.getElementById('logo_img').style.display = 'unset'
 
     //////////////
     document.getElementById('logo_img').style.display = 'none'
+
+    total_vehicale_weight2 = document.getElementById('total_vehicale_weight2').innerText;
+    if(Number(total_vehicale_weight2) == 0){
+        document.getElementById('total_vehicale_weight1').style.display = 'unset'
+        document.getElementById('total_vehicale_weight2').style.display = 'unset'
+    }
 
     empty_vehicale_weight2 = document.getElementById('empty_vehicale_weight2').innerText;
     if(Number(empty_vehicale_weight2) == 0){

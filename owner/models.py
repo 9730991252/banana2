@@ -111,3 +111,29 @@ class Company_bill(models.Model):
     bill_number = models.IntegerField(null=True)
     added_date = models.DateTimeField(auto_now_add=True)
     
+    
+class Company_cash_transition(models.Model):
+    shope = models.ForeignKey(Shope,on_delete=models.PROTECT,null=True)
+    office_employee = models.ForeignKey(office_employee,on_delete=models.PROTECT,null=True)
+    company_bill = models.ForeignKey(Company_bill,on_delete=models.PROTECT,null=True)
+    amount = models.FloatField()
+    date = models.DateField(auto_now_add=True)
+    added_date = models.DateTimeField(auto_now_add=True)
+
+class Company_Phonepe_transition(models.Model):
+    shope = models.ForeignKey(Shope,on_delete=models.PROTECT,null=True)
+    office_employee = models.ForeignKey(office_employee,on_delete=models.PROTECT,null=True)
+    company_bill = models.ForeignKey(Company_bill,on_delete=models.PROTECT,null=True)
+    mobile = models.IntegerField(null=True)
+    amount = models.FloatField()
+    date = models.DateField(auto_now_add=True)
+    added_date = models.DateTimeField(auto_now_add=True)
+
+class Company_bank_transition(models.Model):
+    shope = models.ForeignKey(Shope,on_delete=models.PROTECT,null=True)
+    office_employee = models.ForeignKey(office_employee,on_delete=models.PROTECT,null=True)
+    company_bill = models.ForeignKey(Company_bill,on_delete=models.PROTECT,null=True)
+    bank_number = models.IntegerField(null=True)
+    amount = models.FloatField()
+    date = models.DateField(auto_now_add=True)
+    added_date = models.DateTimeField(auto_now_add=True)
