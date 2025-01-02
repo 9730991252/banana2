@@ -126,7 +126,7 @@
         }
     }
     </style>
-    
+    <div class="container">
     <div>
         
 
@@ -175,14 +175,17 @@
             <div class="div1" {% if bill.empty_box == 0 %}style="display: none;"{% endif %}>मोकळे बॉक्स वजा </div>
             <div class="div2" {% if bill.empty_box == 0 %}style="display: none;"{% endif %}>{{bill.empty_box}}</div>
             
-            <div class="div1" id="empty_box_weight1">मालाचे वजन </div>
-            <div class="div2" id="empty_box_weight2">{{empty_box_weight}}</div>
+            <div class="div1" {% if bill.leaf_weight == 0 %}style="display: none;"{% endif %}>पाल्याचे वजन (वजा)</div>
+            <div class="div2" {% if bill.leaf_weight == 0 %}style="display: none;"{% endif %}>{{bill.leaf_weight}}</div>
+            
+            <div class="div1" id="empty_box_weight1" {% if bill.leaf_weight == 0 and bill.empty_box == 0 %}style="display: none;"{% endif %}>मालाचे वजन </div>
+            <div class="div2" id="empty_box_weight2" {% if bill.leaf_weight == 0 and bill.empty_box == 0 %}style="display: none;"{% endif %}>{{empty_box_weight}}</div>
             
             <div class="div1" {% if bill.wasteage == 0 %}style="display: none;"{% endif %}>वेस्टेज </div>
             <div class="div2" {% if bill.wasteage == 0 %}style="display: none;"{% endif %}>{{bill.wasteage}}</div>
             
-            <div class="div1">मालाचे वजन </div>
-            <div class="div2">{{wasteage_weight}}</div>
+            <div class="div1" {% if bill.wasteage == 0 %}style="display: none;"{% endif %}>मालाचे वजन </div>
+            <div class="div2" {% if bill.wasteage == 0 %}style="display: none;"{% endif %}>{{wasteage_weight}}</div>
             
             <div class="div1">दांडा वजन </div>
             <div class="div2">{{danda_weight}}</div>
@@ -284,7 +287,7 @@
     <div style="background-color: rgb(194, 255, 255); border-radius: 5px;">Total</div>
     <div style="background-color: rgb(0, 255, 255); border-radius: 5px;"><b>Rs.{{total_credit}}</b></div>
 </div>
-
+</div>
 <br><br><br>
 <!------------------------------------- ------------------------------------------->
 

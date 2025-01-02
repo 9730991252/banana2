@@ -37,7 +37,7 @@
         text-transform: uppercase;
         z-index: 1;
         color: rgb(255, 0, 0);
-        font-size: 50px;
+        font-size: 30px;
         font-weight: 700;
 
     }
@@ -116,6 +116,15 @@
         padding: 5px;
 
     }
+    .logo_img{
+        background-color: aqua;
+        width: 100px;
+        height: 100px;
+        img{
+            width: 100%;
+            height: 100%;
+        }
+    }
     </style>
     
     <div>
@@ -130,7 +139,10 @@
         
         <div class="main_box" id="canvas">
 
-        <div class="shope_name">{{e.shope.shope_name}}</div>
+            <div class="" style="position: relative;" >
+                <div class="logo_img" id="logo_img" style="position: absolute;left: 0;top: 0; display: none;"><img src="{{logo.image.url}}" alt=""></div>
+                <div class="shope_name " >{{e.shope.shope_name}}</div>
+            </div>
         <div class="address"><p>{{e.shope.address}}</p></div>
         <div class="contact_details"><b>{{e.shope.contact_details}}</b></div>
         <div class="flex p-2 " style="justify-content: space-between;">
@@ -160,8 +172,8 @@
             <div class="div1" id="empty_box1">मोकळे बॉक्स वजा </div>
             <div class="div2" id="empty_box2">{{bill.empty_box}}</div>
             
-            <div class="div1">मालाचे वजन </div>
-            <div class="div2">{{empty_box_weight}}</div>
+            <div class="div1" id="empty_box_weight1">मालाचे वजन </div>
+            <div class="div2" id="empty_box_weight2">{{empty_box_weight}}</div>
             
             <div class="div1" id="wasteage1">वेस्टेज </div>
             <div class="div2" id="wasteage2">{{bill.wasteage}}</div>
@@ -281,6 +293,8 @@ function createPDF() {
     if(Number(empty_box2) == 0){
         document.getElementById('empty_box1').style.display = 'none'
         document.getElementById('empty_box2').style.display = 'none'
+        document.getElementById('empty_box_weight1').style.display = 'none'
+        document.getElementById('empty_box_weight2').style.display = 'none'
     }
     wasteage2 = document.getElementById('wasteage2').innerText;
     if(Number(wasteage2) == 0){
@@ -308,6 +322,8 @@ function createPDF() {
         document.getElementById('eater2').style.display = 'none'
     }
 
+document.getElementById('logo_img').style.display = 'unset'
+
     //////////////
 
     var pdf = document.getElementById("canvas");
@@ -321,6 +337,7 @@ function createPDF() {
     html2pdf().set(opt).from(pdf).save().then(pdfResult => {
 
     //////////////
+    document.getElementById('logo_img').style.display = 'none'
 
     empty_vehicale_weight2 = document.getElementById('empty_vehicale_weight2').innerText;
     if(Number(empty_vehicale_weight2) == 0){
@@ -331,6 +348,8 @@ function createPDF() {
     if(Number(empty_box2) == 0){
         document.getElementById('empty_box1').style.display = 'unset'
         document.getElementById('empty_box2').style.display = 'unset'
+        document.getElementById('empty_box_weight1').style.display = 'unset'
+        document.getElementById('empty_box_weight2').style.display = 'unset'
     }
     wasteage2 = document.getElementById('wasteage2').innerText;
     if(Number(wasteage2) == 0){

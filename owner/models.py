@@ -25,6 +25,7 @@ class Farmer_bill(models.Model):
     empty_vehicale_weight = models.IntegerField(null=True)
     weight = models.IntegerField()
     empty_box = models.IntegerField()
+    leaf_weight = models.IntegerField(default=0)
     wasteage = models.IntegerField()
     prise = models.FloatField()
     total_amount = models.FloatField()

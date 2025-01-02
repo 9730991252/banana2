@@ -122,6 +122,8 @@ def view_company_bill(request, id):
             'amount':amount,
             'total_amount_words':total_amount_words,
             'signature':signature,
+            'logo':Logo.objects.filter(shope_id=e.shope.id).first()
+
         }   
         return render(request, 'office/view_company_bill.html', context)
     
@@ -221,8 +223,9 @@ def new_farmer_bill(request):
             total_vehicale_weight = request.POST.get('total_vehicale_weight')
             empty_vehicale_weight = request.POST.get('empty_vehicale_weight')
             weight = request.POST.get('weight')
-            empty_box = request.POST.get('empty_box')
             wasteage = request.POST.get('wasteage')
+            leaf_weight = request.POST.get('leaf_weight')
+            empty_box = request.POST.get('empty_box')
             prise = request.POST.get('prise')
             labor_amount = request.POST.get('labor')
             total_amount = request.POST.get('total_amount')
@@ -241,7 +244,8 @@ def new_farmer_bill(request):
                 prise=prise,
                 total_amount= math.ceil(eval(total_amount)),
                 bill_number=bill_number,
-                labor_amount=labor_amount
+                labor_amount=labor_amount,
+                leaf_weight=leaf_weight,
             ).save()
             f = Farmer_bill.objects.filter(shope_id=shope_id).last()
             return redirect(f'/office/view_farmer_bill/{f.id}')
@@ -272,7 +276,7 @@ def view_farmer_bill(request, id):
         mobile = request.session['office_mobile']
         e = office_employee.objects.filter(mobile=mobile).first()
         bill = Farmer_bill.objects.filter(id=id).first()
-        empty_box_weight = (bill.weight - bill.empty_box)
+        empty_box_weight = (bill.weight - bill.empty_box - bill.leaf_weight)
         wasteage_weight = (empty_box_weight + bill.wasteage)
         danda_weight = (wasteage_weight / 100) * 8
         total_weight = (wasteage_weight + danda_weight)
