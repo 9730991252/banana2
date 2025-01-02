@@ -149,23 +149,23 @@
             
             <div class="div1 detail">तपशील</div>
             
-            <div class="div1">गाडीचे एकुण वजन</div>
-            <div class="div2">{{bill.total_vehicale_weight}}</div>
+            <div class="div1" {% if bill.total_vehicale_weight == 0 %}style="display: none;"{% endif %}>गाडीचे एकुण वजन</div>
+            <div class="div2" {% if bill.total_vehicale_weight == 0 %}style="display: none;"{% endif %}>{{bill.total_vehicale_weight}}</div>
             
-            <div class="div1">रिकाम्या गाडीचे वजन</div>
-            <div class="div2">{{bill.empty_vehicale_weight}}</div>
+            <div class="div1"  {% if bill.empty_vehicale_weight == 0 %}style="display: none;"{% endif %}>रिकाम्या गाडीचे वजन</div>
+            <div class="div2"  {% if bill.empty_vehicale_weight == 0 %}style="display: none;"{% endif %}>{{bill.empty_vehicale_weight}}</div>
             
-            <div class="div1">मालाचे वजन </div>
-            <div class="div2">{{bill.weight}}</div>
+            <div class="div1" {% if bill.weight == 0 %}style="display: none;"{% endif %}>मालाचे वजन </div>
+            <div class="div2" {% if bill.weight == 0 %}style="display: none;"{% endif %}>{{bill.weight}}</div>
             
-            <div class="div1">मोकळे बॉक्स वजा </div>
-            <div class="div2">{{bill.empty_box}}</div>
+            <div class="div1" {% if bill.empty_box == 0 %}style="display: none;"{% endif %}>मोकळे बॉक्स वजा </div>
+            <div class="div2" {% if bill.empty_box == 0 %}style="display: none;"{% endif %}>{{bill.empty_box}}</div>
             
-            <div class="div1">मालाचे वजन </div>
-            <div class="div2">{{empty_box_weight}}</div>
+            <div class="div1" id="empty_box_weight1">मालाचे वजन </div>
+            <div class="div2" id="empty_box_weight2">{{empty_box_weight}}</div>
             
-            <div class="div1">वेस्टेज </div>
-            <div class="div2">{{bill.wasteage}}</div>
+            <div class="div1" {% if bill.wasteage == 0 %}style="display: none;"{% endif %}>वेस्टेज </div>
+            <div class="div2" {% if bill.wasteage == 0 %}style="display: none;"{% endif %}>{{bill.wasteage}}</div>
             
             <div class="div1">मालाचे वजन </div>
             <div class="div2">{{wasteage_weight}}</div>
@@ -182,8 +182,8 @@
             <div class="div1">रक्कम </div>
             <div class="div2">{{amount}}</div>
             
-            <div class="div1">लेबर वजा </div>
-            <div style="font-weight: 700; color: red;"  class="div2">{{bill.labor_amount}}</div>
+            <div {% if bill.labor_amount == 0 %}style="display: none;"{% endif %} class="div1">लेबर वजा </div>
+            <div {% if bill.labor_amount == 0 %}style="display: none;"{% endif %} style="font-weight: 700; color: red;"  class="div2">{{bill.labor_amount}}</div>
             
             <div style="font-weight: 700;background-color: rgb(212, 249, 255);" class="div1 mb-3">एकुण रक्कम </div>
             <div style="font-weight: 700;background-color: rgb(212, 249, 255);" id="total_amount" class="div2 mb-3">{{bill.total_amount}}</div>
@@ -333,6 +333,7 @@ function check_cash_amount(pending_amount){
 /////////////////////////////////////////////////////////////////////
 
 function createPDF() {
+
     var pdf = document.getElementById("canvas");
     var opt = {
         margin: 0.5,

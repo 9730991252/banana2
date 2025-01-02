@@ -1,16 +1,3 @@
-{% extends 'home/base.html' %}
-{% block head %}
-{% endblock head %}
-{% block content %}
-{% include 'include/alert.html' %}
-<div>
-    welcome - {{e.name}}
-</div>
-
-{% load static %}
-
-{% include 'include/office/office_menu.html' %}
-
 <style>
     .farmer_detail{
         width: 80%;
@@ -39,7 +26,7 @@
             display: grid;
             grid-template-columns: 2fr 2fr;
             gap: 10px;
-            background-color: rgb(189, 255, 255);
+            background-color: rgb(255, 221, 189);
             padding: 2px;
             align-items: center;
             border-radius: 5px;
@@ -57,22 +44,16 @@
 </style>
 
 <div class="farmer_detail">
-    <form method="POST">    {% csrf_token %}
-        <div class="farmer_name flex">
-            <div><input width="100%" oninput="farmer_check()" id="farmer_name" value="{{farmer.name}}" name="name" type="text" class="form-control" placeholder="शेतकऱ्याचे नाव" required></div>
-            {% if selected_farmer_status != 0 %}<div><a href="/office/new_farmer_bill/" class="text-danger"><b>X</b></a></div>{% endif %}
-        </div>
-        <input oninput="farmer_check()" id="farmer_add" name="address" type="text" value="{{farmer.address}}" class="form-control mt-2" placeholder="पत्ता" required>
-        <div class="flex" style="justify-content: space-between;">
-            <div><input oninput="farmer_check(), check_number()" id="farmer_mobile" value="{{farmer.mobile}}" name="mobile" type="number" class="form-control mt-2" placeholder="मोबाइल नंबर " required></div>
-            {% if selected_farmer_status == 0 %}<div id="add_farmer_btn"><button type="submit" class="btn btn-primary mt-2" name="add_farmer">जतन करा</button></div>{% endif %}
-        </div>
-    </form>
+    <div class="farmer_name flex">
+        <div><input width="100%" oninput="farmer_check()" id="farmer_name" value="{{c.name}}" name="name" type="text" class="form-control" placeholder="शेतकऱ्याचे नाव" required></div>
+        <div><a href="/office/new_company_bill/" class="text-danger"><b>X</b></a></div>
+    </div>
+    <input oninput="farmer_check()" id="farmer_add" name="address" type="text" value="{{c.address}}" class="form-control mt-2" placeholder="पत्ता" required>
 </div>
 <div id="farmer_result"></div>
 
 <form method="POST">
-    <input type="hidden" name="farmer_id" value="{{farmer.id}}">
+    <input type="hidden" name="company_id" value="{{c.id}}">
 <div class="containt_bill_box">
     <div class="containt_box">
         <div><label for="vehicale_number">गाडी नं.</label></div>
@@ -81,17 +62,17 @@
     
     <div class="containt_box">
         <div><label for="weight">गाडीचे एकुण वजन</label></div>
-        <div><input type="number" value="0" id="total_vehicale_weight" name="total_vehicale_weight" oninput="check_zero('weight'),calculate_weight(),add_wasteage('empty_box_weight','wasteage','wasteage_weight'),add_wasteage('empty_box_weight','wasteage','wasteage_weight'),validity.valid||(value='')"  class="form-control" required></div>
+        <div><input type="number" id="total_vehicale_weight" name="total_vehicale_weight" oninput="check_zero('weight'),calculate_weight(),add_wasteage('empty_box_weight','wasteage','wasteage_weight'),add_wasteage('empty_box_weight','wasteage','wasteage_weight')"  class="form-control" required></div>
     </div>
 
     <div class="containt_box">
         <div><label for="weight">रिकाम्या गाडीचे वजन</label></div>
-        <div><input type="number" value="0" id="vehicale_weight" name="empty_vehicale_weight" oninput="check_zero('weight'),calculate_weight('empty_box', 'empty_box_weight'),add_wasteage('empty_box_weight','wasteage','wasteage_weight'),add_wasteage('empty_box_weight','wasteage','wasteage_weight'),validity.valid||(value='')"  class="form-control" required></div>
+        <div><input type="number" id="vehicale_weight" name="empty_vehicale_weight" oninput="check_zero('weight'),calculate_weight('empty_box', 'empty_box_weight'),add_wasteage('empty_box_weight','wasteage','wasteage_weight'),add_wasteage('empty_box_weight','wasteage','wasteage_weight')"  class="form-control" required></div>
     </div>
 
     <div class="containt_box" style="font-weight: 700;">
         <div><label for="weight">मालाचे वजन </label></div>
-        <div><input type="number" style="font-weight: 700;" name="weight" oninput="check_zero('weight'),add_empty_box('empty_box', 'empty_box_weight')" id="weight" class="form-control" required></div>
+        <div><input type="number" style="font-weight: 700;" name="weight" oninput="check_zero('weight'),add_empty_box('empty_box', 'empty_box_weight')" id="weight" class="default_input form-control" required></div>
     </div>
     
     <div class="containt_box">
@@ -139,7 +120,15 @@
         <div><input type="number" style="font-weight: 700;" name="amount" id="amount" class="default_input form-control" readonly></div>
     </div>
     
-
+    <div class="containt_box">
+        <div><label for="eater">सर्व्हिस चार्ज रक्कम</label></div>
+        <div><input type="number" name="service_charge" oninput="check_zero('service_charge'),calculate_service_charge_prise()" id="service_charge" class="form-control" required></div>
+    </div>
+    
+    <div class="containt_box">
+        <div><label for="eater">इतर</label></div>
+        <div><input type="number" name="eater" oninput="check_zero('eater'),calculate_eater_prise()" id="eater" class="form-control" required></div>
+    </div>
 
     <div class="containt_box">
         <div><label for="labor">लेबर वजा </label></div>
@@ -150,11 +139,10 @@
         <div><label for="total_amount">एकुण देय रक्कम</label></div>
         <div><input type="number" style="font-weight: 700;" name="total_amount" id="total_amount" value="0" class=" default_input form-control" readonly></div>
     </div>
-    
-    {% if selected_farmer_status != 0 %}<button type="submit" class="btn btn-danger mt-2" name="complete_bill">Complete Bill</button>{% endif %}
+    <button type="submit" class="btn btn-danger mt-2" name="complete_bill">Complete Bill</button>
 </div>
 </form>
-
+<br><br><br><br><br>
 <script>
     function calculate_weight(){
         total_vehicale_weight = document.getElementById('total_vehicale_weight').value;
@@ -226,12 +214,27 @@
         total_weight = a + danda_weight
         document.getElementById('total_weight').value = total_weight
     }
+
+
+    function calculate_service_charge_prise(){   
+        service_charge = document.getElementById('service_charge').value;
+        a = document.getElementById('amount').value;
+        t = (Number(a) + Number(service_charge) )
+        document.getElementById('total_amount').value = t
+    }
+    function calculate_eater_prise(){   
+        eater = document.getElementById('eater').value;
+        a = document.getElementById('amount').value;
+        t = ((Number(a) + Number(document.getElementById('service_charge').value)) - (Number(eater) + Number(document.getElementById('labor').value)) )
+        document.getElementById('total_amount').value = t
+    }
     function calculate_labor_prise(){
         labor = document.getElementById('labor').value;
         a = document.getElementById('amount').value;
 
         t = (a - labor)
         document.getElementById('total_amount').value = t
+        calculate_eater_prise()
     }
     function calculate_prise(){
         total_weight = document.getElementById('total_weight').value;
@@ -239,7 +242,7 @@
         amount = prise * Math.floor(total_weight)
         document.getElementById('amount').value=amount
         
-        labor_amount = total_weight * 0.4 
+        labor_amount = total_weight * 0.4
         labor_amount = labor_amount.toFixed(0)
         document.getElementById('labor').value = labor_amount
 
@@ -266,4 +269,3 @@
             })
         }
 </script>
-{% endblock content %}

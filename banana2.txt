@@ -65,11 +65,11 @@ deactivate
 
 ************ Create System Socket File for Gunicorn *******
 
-Example:- sudo nano /etc/systemd/system/crenta.in.gunicorn.socket
+Example:-  nano /etc/systemd/system/crenta.in.gunicorn.socket
 
 cd  /etc/systemd/system/
 
-sudo nano banana2.com.gunicorn.socket
+ nano banana2.com.gunicorn.socket
 
 
 
@@ -84,12 +84,12 @@ WantedBy=sockets.target
 
 
 ************** Create System Service File for Gunicorn ******
-Syntax:- sudo nano /etc/systemd/system/your_domain.gunicorn.service
-Example:- sudo nano /etc/systemd/system/narayaniorder.com.gunicorn.service
+Syntax:-  nano /etc/systemd/system/your_domain.gunicorn.service
+Example:-  nano /etc/systemd/system/narayaniorder.com.gunicorn.service
 
 cd  /etc/systemd/system/
 
-sudo nano banana2.com.gunicorn.service
+ nano banana2.com.gunicorn.service
 
 
 [Unit]
@@ -111,28 +111,28 @@ ExecStart=/root/banana2/venv/bin/gunicorn \
 WantedBy=multi-user.target
 
 ----------------------------------------------------------------
-sudo systemctl start banana2.com.gunicorn.socket
+ systemctl start banana2.com.gunicorn.socket
 
-sudo systemctl start banana2.com.gunicorn.service
+ systemctl start banana2.com.gunicorn.service
 
 
 -----------------------------------------------------------------
 
-sudo systemctl enable banana2.com.gunicorn.socket
+ systemctl enable banana2.com.gunicorn.socket
 
-sudo systemctl enable banana2.com.gunicorn.service
+ systemctl enable banana2.com.gunicorn.service
 
 
 -----------------------------------------------------------------------
 
-sudo systemctl status banana2.com.gunicorn.socket
+ systemctl status banana2.com.gunicorn.socket
 
-sudo systemctl status banana2.com.gunicorn.service
+ systemctl status banana2.com.gunicorn.service
 
 -------------------------------------------
 
-sudo systemctl daemon-reload
-sudo systemctl restart banana2.com.gunicorn
+ systemctl daemon-reload
+ systemctl restart banana2.com.gunicorn
 
 
 
@@ -141,13 +141,13 @@ sudo systemctl restart banana2.com.gunicorn
 
 
 ****************** Create Virtual Host File ******
-Syntax:- sudo nano /etc/nginx/sites-available/your_domain
-Example:- sudo nano /etc/nginx/sites-available/crenta.in
+Syntax:-  nano /etc/nginx/sites-available/your_domain
+Example:-  nano /etc/nginx/sites-available/crenta.in
 
 
 cd /etc/nginx/sites-available
 
-sudo nano banana2.com
+ nano banana2.com
 
 
 
@@ -174,26 +174,26 @@ server{
 
 ########## Enable Virtual Host or Create Symbolic Link of Virtual Host File ########
 
-sudo ln -s /etc/nginx/sites-available/banana2.com /etc/nginx/sites-enabled/banana2.com
+ ln -s /etc/nginx/sites-available/banana2.com /etc/nginx/sites-enabled/banana2.com
 
 
 %%%%%%%%%%%%%%%%%%%%% Check Configuration is Correct or Not %%%%%
 
-sudo nginx -t
+ nginx -t
 
 %%%%%%%%%%%% Restart Nginx %%%%%%%%%
 
-sudo service nginx restart
+ service nginx restart
 
 
 ********** restart ******
 
-sudo systemctl daemon-reload
-sudo systemctl restart banana2.com.gunicorn
+ systemctl daemon-reload
+ systemctl restart banana2.com.gunicorn
 
 
 --------------------------------------- ssl ------------------
 
-sudo certbot --nginx
+ certbot --nginx
 
-sudo certbot --nginx -d janmanasnews.com -d www.janmanasnews.com
+ certbot --nginx -d janmanasnews.com -d www.janmanasnews.com

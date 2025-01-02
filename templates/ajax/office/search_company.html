@@ -1,0 +1,9 @@
+<div class="company-cards">
+    {% for company in c %}
+    <div class="card" onclick="select_company('{{company.id}}')">
+        <h6>{{ company.name }}</h6>
+        <p>{{ company.address }}</p>
+    </div>
+
+    {% endfor %}
+</div>

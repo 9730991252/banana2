@@ -5,6 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 import math
 from num2words import num2words
 from django.db.models import Avg, Sum, Min, Max
+from django.contrib import messages 
 # Create your views here.
 def office_home(request):
     if request.session.has_key('office_mobile'):
@@ -20,84 +21,52 @@ def office_home(request):
     else:
         return redirect('login')
     
-def edit_company_bill(request, id):
-    if request.session.has_key('office_mobile'):
-        mobile = request.session['office_mobile']
-        e = office_employee.objects.filter(mobile=mobile).first()
-        bill = Company_bill.objects.filter(id=id).first()
-        if 'edit_company_bill'in request.POST:
-            company_id = request.POST.get('company_id')
-            product_cost_rate = request.POST.get('product_cost_rate')
-            product_cost_net_weight = request.POST.get('product_cost_net_weight')
-            product_cost_box = request.POST.get('product_cost_box')
-            service_rate = request.POST.get('service_rate')
-            service_net_weight = request.POST.get('service_net_weight')
-            transport_rate = request.POST.get('transport_rate')
-            transport_box = request.POST.get('transport_box')
-            stalk_rate = request.POST.get('stalk_rate')
-            stalk_net_weight = request.POST.get('stalk_net_weight')
-            wasteage_rate = request.POST.get('wasteage_rate')
-            wastage_weight = request.POST.get('wastage_weight')
-            service_total_amount = request.POST.get('service_total_amount')
-            wasteage_total_amount = request.POST.get('wasteage_total_amount')
-            product_cost_total_amount = request.POST.get('product_cost_total_amount')
-            stalk_total_amount = request.POST.get('stalk_total_amount')
-            transport_total_amount = request.POST.get('transport_total_amount')
-            
-            service_total_amount = math.floor(float(service_total_amount))
-            wasteage_total_amount = math.floor(float(wasteage_total_amount))
-            product_cost_total_amount = math.floor(float(product_cost_total_amount))
-            stalk_total_amount = math.floor(float(stalk_total_amount))
-            transport_total_amount = math.floor(float(transport_total_amount))
-            total_amount = (service_total_amount + wasteage_total_amount + product_cost_total_amount + stalk_total_amount + transport_total_amount)
-
-
-            Company_bill(
-            id = id,
-            shope_id = e.shope_id,
-            company_id = company_id,
-            farmer_bill_id = bill.farmer_bill_id, 
-            product_cost_rate = product_cost_rate,
-            product_cost_net_weight = product_cost_net_weight,
-            product_cost_box = product_cost_box,
-            service_rate = service_rate,
-            service_net_weight = service_net_weight,
-            transport_rate = transport_rate,
-            transport_box = transport_box,
-            stalk_rate = stalk_rate,
-            stalk_net_weight = stalk_net_weight,
-            wasteage_rate = wasteage_rate,
-            wastage_weight = wastage_weight,
-            service_total_amount = service_total_amount,
-            wasteage_total_amount = wasteage_total_amount,
-            product_cost_total_amount = product_cost_total_amount,
-            stalk_total_amount = stalk_total_amount,
-            transport_total_amount = transport_total_amount,
-            total_amount = total_amount,
-            company_bill_number=bill.company_bill_number,
-            added_date = bill.added_date
-            ).save()
-            return redirect(f'/office/view_company_bill/{id}')
-        context={
-            'e':e,
-            'bill':bill
-        }
-        return render(request, 'office/edit_company_bill.html', context)
-    else:
-        return redirect('login')
-    
 @csrf_exempt
-def company_bill(request):
+def new_company_bill(request):
     if request.session.has_key('office_mobile'):
         mobile = request.session['office_mobile']
         e = office_employee.objects.filter(mobile=mobile).first()
-
-
+        if 'complete_bill'in request.POST:
+            company_id = request.POST.get('company_id')
+            shope_id = e.shope.id
+            vehicale_number = request.POST.get('vehicale_number')
+            total_vehicale_weight = request.POST.get('total_vehicale_weight')
+            empty_vehicale_weight = request.POST.get('empty_vehicale_weight')
+            weight = request.POST.get('weight')
+            empty_box = request.POST.get('empty_box')
+            wasteage = request.POST.get('wasteage')
+            prise = request.POST.get('prise')
+            labor_amount = request.POST.get('labor')
+            service_charge = request.POST.get('service_charge')
+            eater = request.POST.get('eater')
+            total_amount = request.POST.get('total_amount')
+            bill_number = Company_bill.objects.filter(shope_id=shope_id).count()
+            bill_number += 1 
+            Company_bill(
+                total_vehicale_weight=total_vehicale_weight,
+                empty_vehicale_weight=empty_vehicale_weight,
+                company_id=company_id,
+                shope_id=shope_id,
+                office_employee_id=e.id,
+                vehicale_number=vehicale_number,
+                weight=weight,
+                empty_box=empty_box,
+                wasteage=wasteage,
+                prise=prise,
+                total_amount= math.ceil(eval(total_amount)),
+                bill_number=bill_number,
+                labor_amount=labor_amount,
+                service_charge=service_charge,
+                eater=eater
+            ).save()
+            f = Company_bill.objects.filter(shope_id=shope_id).last()
+            return redirect(f'/office/view_company_bill/{f.id}')
+            
         context={
             'e':e,
-            'bill':Company_bill.objects.filter(shope_id=e.shope.id).order_by('-id'),
+            'company':Company.objects.filter(shope_id=e.shope.id)
         }
-        return render(request, 'office/company_bill.html', context)
+        return render(request, 'office/new_company_bill.html', context)
     else:
         return redirect('login')
     
@@ -106,85 +75,87 @@ def view_company_bill(request, id):
         mobile = request.session['office_mobile']
         e = office_employee.objects.filter(mobile=mobile).first()
         bill = Company_bill.objects.filter(id=id).first()
+        empty_box_weight = (bill.weight - bill.empty_box)
+        wasteage_weight = (empty_box_weight + bill.wasteage)
+        danda_weight = (wasteage_weight / 100) * 8
+        total_weight = (wasteage_weight + danda_weight)
+        amount = math.ceil(bill.prise * math.floor(total_weight))
+        p = ''
         total_amount_words = num2words(bill.total_amount)
-
+        
+        signature = Signature.objects.filter(id=bill.office_employee.id).first()
         context={
             'e':e,
-            'bill':Company_bill.objects.filter(id=id).first(),
-            'signature':Signature.objects.filter(id=e.id).first(),
-            'total_amount_words':total_amount_words
-
-        }
+            'bill':bill,
+            'empty_box_weight':empty_box_weight,
+            'wasteage_weight':wasteage_weight,
+            'danda_weight':danda_weight,
+            'total_weight':total_weight,
+            'amount':amount,
+            'total_amount_words':total_amount_words,
+            'signature':signature,
+        }   
         return render(request, 'office/view_company_bill.html', context)
-    else:
-        return redirect('login')
     
-@csrf_exempt
-def new_company_bill(request):
+def company_bill(request):
     if request.session.has_key('office_mobile'):
         mobile = request.session['office_mobile']
         e = office_employee.objects.filter(mobile=mobile).first()
-        if 'add_company_bill'in request.POST:
-            shope_id = e.shope_id
-            company_id = request.POST.get('company_id')
-            farmer_bill_id = request.POST.get('farmer_bill_id')
-            product_cost_rate = request.POST.get('product_cost_rate')
-            product_cost_net_weight = request.POST.get('product_cost_net_weight')
-            product_cost_box = request.POST.get('product_cost_box')
-            service_rate = request.POST.get('service_rate')
-            service_net_weight = request.POST.get('service_net_weight')
-            transport_rate = request.POST.get('transport_rate')
-            transport_box = request.POST.get('transport_box')
-            stalk_rate = request.POST.get('stalk_rate')
-            stalk_net_weight = request.POST.get('stalk_net_weight')
-            wasteage_rate = request.POST.get('wasteage_rate')
-            wastage_weight = request.POST.get('wastage_weight')
-            service_total_amount = request.POST.get('service_total_amount')
-            wasteage_total_amount = request.POST.get('wasteage_total_amount')
-            product_cost_total_amount = request.POST.get('product_cost_total_amount')
-            stalk_total_amount = request.POST.get('stalk_total_amount')
-            transport_total_amount = request.POST.get('transport_total_amount')
-            
-            service_total_amount = math.floor(float(service_total_amount))
-            wasteage_total_amount = math.floor(float(wasteage_total_amount))
-            product_cost_total_amount = math.floor(float(product_cost_total_amount))
-            stalk_total_amount = math.floor(float(stalk_total_amount))
-            transport_total_amount = math.floor(float(transport_total_amount))
-            total_amount = (service_total_amount + wasteage_total_amount + product_cost_total_amount + stalk_total_amount + transport_total_amount)
-            company_bill_number = Company_bill.objects.filter(shope_id=shope_id).count()
-            company_bill_number += 1
-            if Company_bill.objects.filter(shope_id=shope_id,farmer_bill_id=farmer_bill_id).exists():
-                pass
-            else:
-                Company_bill(
-                    shope_id=shope_id,
-                    company_id=company_id,
-                    farmer_bill_id=farmer_bill_id,
-                    product_cost_rate=product_cost_rate,
-                    product_cost_net_weight=product_cost_net_weight,
-                    product_cost_box=product_cost_box,
-                    service_rate=service_rate,
-                    service_net_weight=service_net_weight,
-                    transport_rate=transport_rate,
-                    transport_box=transport_box,
-                    stalk_rate=stalk_rate,
-                    stalk_net_weight=stalk_net_weight,
-                    wasteage_rate=wasteage_rate,
-                    wastage_weight=wastage_weight,
-                    service_total_amount=service_total_amount,
-                    wasteage_total_amount=wasteage_total_amount,
-                    product_cost_total_amount=product_cost_total_amount,
-                    stalk_total_amount=stalk_total_amount,
-                    transport_total_amount=transport_total_amount,
-                    total_amount=total_amount,
-                    company_bill_number = company_bill_number
-                ).save()
-                company_bill = Company_bill.objects.filter(shope_id=shope_id, company_bill_number=company_bill_number).last()
-            return redirect(f'/office/view_company_bill/{company_bill.id}')
         context={
             'e':e,
+            'bill':Company_bill.objects.filter(shope_id=e.shope.id).order_by('-id'),
         }
-        return render(request, 'office/new_company_bill.html', context)
+        return render(request, 'office/company_bill.html', context)
+    else:
+        return redirect('login')
+    
+def company(request):
+    if request.session.has_key('office_mobile'):
+        mobile = request.session['office_mobile']
+        e = office_employee.objects.filter(mobile=mobile).first()
+        if 'Add_company'in request.POST:
+            name = request.POST.get('name').upper()
+            address = request.POST.get('address')
+            if Company.objects.filter(shope_id=e.shope.id,name=name).exists():
+                messages.warning(request, 'Company already exists')
+            else:
+                Company(
+                    shope_id=e.shope.id,
+                    name=name,
+                    address=address,
+                ).save()
+            return redirect('/office/company/')
+        if 'Edit_company'in request.POST:
+            id = request.POST.get('id')
+            name = request.POST.get('name').upper()
+            address = request.POST.get('address')
+            if Company.objects.filter(shope_id=e.shope.id,name=name).exclude(id=id).exists():
+                messages.warning(request, "Company already exists")
+            else:
+                Company(
+                    id=id,
+                    shope_id=e.shope.id,
+                    name=name,
+                    address=address,
+                ).save()
+                return redirect('/office/company/')
+        if 'active'in request.POST:
+            id = request.POST.get('id')
+            c = Company.objects.filter(id=id).first()
+            c.status = 0
+            c.save()
+            return redirect('/office/company/')
+        if 'deactive'in request.POST:
+            id = request.POST.get('id')
+            c = Company.objects.filter(id=id).first()
+            c.status = 1
+            c.save()
+            return redirect('/office/company/')
+        context={
+            'e':e,
+            'company':Company.objects.filter(shope_id=e.shope.id)           
+        }
+        return render(request, 'office/company.html', context)
     else:
         return redirect('login')
     

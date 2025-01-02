@@ -2,149 +2,101 @@
 {% block head %}
 {% endblock head %}
 {% block content %}
+{% load office_tag %}
 {% include 'include/alert.html' %}
 <div>
     welcome - {{e.name}}
 </div>
-
 {% include 'include/office/office_menu.html' %}
-<br>
 
 
 
-<div class="container">
-    <input type="text" class="form-control" placeholder="Search Farmer Bill" id="search_words" oninput="Search_farmer_bill(search_words.value)">
+<div id="company_result">
+<div class="company-cards">
+    {% for company in company %}
+    <div class="card" onclick="select_company('{{company.id}}')">
+        <h6>{{ company.name }}</h6>
+        <p>{{ company.address }}</p>
+    </div>
 
-    <br>
-
-    <div id="bill_ruselt"></div>
-    <br>
-    <div id="bill_box"></div>
-
+    {% endfor %}
 </div>
-<br><br><br><br><br>
+</div>
+
+<style>
+    .company-cards {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: center;
+    }
+    .card {
+        text-align: center;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 16px;
+        width: 300px;
+        box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1);
+    }
+    .card h2 {
+        margin-top: 0;
+    }
+</style>
+
+<!-- ?--------------------------------------------------------------------- -->
+<footer>
+    <div class="footer-content">
+        <input type="text" class="form-control" id="words" oninput="search_company(words.value)" placeholder="कंपनी शोधा">
+    </div>
+</footer>
+<style>
+    footer {
+        background-color: lemonchiffon;
+        padding: 5px;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        box-shadow: 0 -2px 10px #2e2e2e1a;
+    }
+    .footer-content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        input{
+            width: 80%;
+        }
+    }
+</style>
+<!-- ?--------------------------------------------------------------------- -->
+
+
+
 <script>
-    function check_input(){
-        company_id = document.getElementById('company_id').value;
-
-        product_cost_rate = document.getElementById('product_cost_rate').value;
-        if(Number(product_cost_rate) > 0){}
-        if(Number(product_cost_rate) < 0){
-            product_cost_rate = document.getElementById('product_cost_rate').value = 0 ;
-        }
-        service_rate = document.getElementById('service_rate').value;
-        if(Number(service_rate) > 0){}
-        if(Number(service_rate) < 0){
-            service_rate = document.getElementById('service_rate').value = 0 ;
-        }
-        transport_rate = document.getElementById('transport_rate').value;
-        if(Number(transport_rate) > 0){}
-        if(Number(transport_rate) < 0){
-            transport_rate = document.getElementById('transport_rate').value = 0 ;
-        }
-        stalk_rate = document.getElementById('stalk_rate').value;
-        if(Number(stalk_rate) > 0){}
-        if(Number(stalk_rate) < 0){
-            stalk_rate = document.getElementById('stalk_rate').value = 0 ;
-        }
-        wasteage_rate = document.getElementById('wasteage_rate').value;
-        if(Number(wasteage_rate) > 0){}
-        if(Number(wasteage_rate) < 0){
-            wasteage_rate = document.getElementById('wasteage_rate').value = 0 ;
-        }
-        service_net_weight = document.getElementById('service_net_weight').value;
-        if(Number(service_net_weight) > 0){}
-        if(Number(service_net_weight) < 0){
-            service_net_weight = document.getElementById('service_net_weight').value = 0 ;
-        }
+    function search_company(input){
+        $.ajax({
+            url: "{% url 'search_company' %}",
+            method: "GET",
+            data:{
+                words:input,
+                shope_id:'{{e.id}}',
+                },
+            success: function(res){
+                $("#company_result").html(res.t)
+            }
+        })
+    }
+    function select_company(id) {
+        $.ajax({
+            url: "{% url 'select_company' %}",
+            method: "GET",
+            data:{
+                id:id,
+                },
+            success: function(res){
+                $("#company_result").html(res.t)
+            }
+        })
         
-    if (product_cost_rate != '' && company_id != '' && service_rate != '' && transport_rate != '' && stalk_rate != '' && wasteage_rate != '' && service_net_weight != ''){
-        document.getElementById('add_company_bill').style.display = 'unset'
-    }
-}
-
-    function select_company(c_name,c_id){
-        document.getElementById('company_btn_box').innerHTML=`<button onclick="close_company()" class="btn btn-transperent text-danger"><b>X</b></button>`
-        document.getElementById('company_name').value = c_name;
-        document.getElementById('company_id').value = c_id;
-        document.getElementById('company_ruselt').innerHTML = ''
-    }
-    function check_company(name){
-        $.ajax({
-        url: "{% url 'check_company' %}",
-        method: "GET",
-        data:{
-                    name:name,
-                    shope_id:'{{e.shope.id}}'
-                },
-                    success: function(res){
-                        document.getElementById('company_ruselt').innerHTML = ''
-                        document.getElementById('company_ruselt').innerHTML = res.t
-                    }
-                })
-            }
-    function Search_farmer_bill(search_words){
-        $.ajax({
-        url: "{% url 'search_farmer_bill' %}",
-        method: "GET",
-        data:{
-                    words:search_words,
-                    shope_id:'{{e.shope.id}}'
-                },
-                    success: function(res){
-                        document.getElementById('bill_ruselt').innerHTML = ''
-                        document.getElementById('bill_ruselt').innerHTML = res.t
-                    }
-                })
-            }
-            function select_bill(bill_id){
-                $.ajax({
-                    url: "{% url 'select_bill' %}",
-                    method: "GET",
-                    data:{
-                        bill_id:bill_id,
-                        shope_id:'{{e.shope.id}}'
-                    },
-                    success: function(res){
-                        document.getElementById('bill_ruselt').innerHTML = ''
-                        document.getElementById('bill_box').innerHTML = ''
-                        document.getElementById('bill_box').innerHTML = res.t
-
-                    }
-                })
-                
-            }
-            function save_company(name){
-                $.ajax({
-                    url: "{% url 'save_company' %}",
-                    method: "GET",
-                    data:{
-                        name:name,
-                        shope_id:'{{e.shope.id}}'
-                    },
-                    success: function(res){
-                        document.getElementById('company_btn_box').innerHTML=`<button onclick="close_company()" class="btn btn-transperent text-danger"><b>X</b></button>`
-                        document.getElementById('company_name').value = name;
-                        document.getElementById('company_id').value = res.id;
-                        document.getElementById('company_ruselt').innerHTML = ''
-
-                    }
-                })
     }
 </script>
 {% endblock content %}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

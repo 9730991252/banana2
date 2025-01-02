@@ -11,36 +11,16 @@ def farmer_check(request):
         address = request.GET['address']
         mobile = request.GET['mobile']
         shope_id = request.GET['shope_id']
-        if 2 < len(name) :
+        if 1 < len(name) :
             c = Farmer.objects.filter(Q(name__icontains=name),shope_id=shope_id)
-        if 2 < len(address) :
+        if 1 < len(address) :
             c = Farmer.objects.filter(Q(address__icontains=address),shope_id=shope_id)
-        if 2 < len(mobile) :
+        if 1 < len(mobile) :
             c = Farmer.objects.filter(Q(mobile__icontains=mobile),shope_id=shope_id)
         context={
             'c':c[0:3]
         }
         t = render_to_string('ajax/office/farmer_check.html', context)
-    return JsonResponse({'t': t})
-
-def search_farmer_bill(request):
-    if request.method == 'GET':
-        f = ''
-        words = request.GET['words']
-        shope_id = request.GET['shope_id']
-        id = []
-        if words:
-            f = Farmer_bill.objects.filter( Q(bill_number__icontains=words), shope_id=shope_id)
-            for f in f:
-                if Company_bill.objects.filter(farmer_bill_id=f.id):
-                    pass
-                else:
-                    id.append(f.id)
-            f = Farmer_bill.objects.filter(id__in=id)
-        context={
-            'f':f[0:3]
-        }
-        t = render_to_string('ajax/office/search_farmer_bill.html', context)
     return JsonResponse({'t': t})
 
 def select_bill(request):
@@ -89,3 +69,28 @@ def check_company(request):
         }
         t = render_to_string('ajax/office/check_company.html', context)
     return JsonResponse({'t': t,'status':status})
+
+def select_company(request):
+    if request.method == 'GET':
+        c = ''
+        c_id = request.GET['id']
+        c = Company.objects.filter(id=c_id).first()
+        context={
+            'c':c
+        }
+        t = render_to_string('ajax/office/select_company.html', context)
+    return JsonResponse({'t': t})
+
+def search_company(request):
+    if request.method == 'GET':
+        c = ''
+        words = request.GET['words']
+        shope_id = request.GET['shope_id']
+        if words:
+            print('words:',words)
+            c = Company.objects.filter( Q(name__icontains=words), shope_id=shope_id)
+        context={
+            'c':c[0:3]
+        }
+        t = render_to_string('ajax/office/search_company.html', context)
+    return JsonResponse({'t': t})
