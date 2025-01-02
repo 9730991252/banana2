@@ -1,0 +1,46 @@
+{% extends 'home/base.html' %}
+{% block head %}
+{% endblock head %}
+{% block content %}
+{% load office_tag %}
+{% include 'include/alert.html' %}
+<div>
+    welcome - {{e.name}}
+</div>
+{% include 'include/office/office_menu.html' %}
+
+
+<div class="text-center">
+    <h5><b>{{company.name}}</b></h5>
+    <p>{{company.address}}</p>
+</div>
+
+<style>
+    .company_bill_box{
+        padding: 1px;
+        background-color: black;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-gap: 1px;
+        div{
+            background-color: white;
+            text-align: center;
+            &:hover{
+                box-shadow: 0px 0px 5px 0px black;
+                z-index: 1;
+            }
+        }
+    }
+</style>
+
+<div class="container">
+<div class="company_bill_box">
+    <div></div>
+    <div></div>
+    {% for b in bill %}
+        <div><b>{{b.bill_number}}</b></div>
+        <div {% if b.paid_status == 0 %} style="color: red;"{% else %} style="color: green;"{% endif %} ><b>{{b.total_amount}}</b></div>
+    {% endfor %}
+</div>
+</div>
+{% endblock content %}

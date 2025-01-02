@@ -5,12 +5,14 @@
         width: 350px;
         display: grid;
         margin: 0   auto;
-        padding: 5px;
+        padding: 1px;
+        gap: 1px;
         grid-template-columns: repeat(2, 1fr);
+        background-color: black;
 
         div{
-            border:1px solid black;
             text-align: center;
+            background-color: white;
         }
         .total {
 
@@ -40,7 +42,7 @@
     </script>
         {% for u in all_users %}
             <div>{{u.name}}</div>
-            <div style="border-left: none;color: red;font-weight: 700;">{% user_pending_bill_amount u.id as user_pending_bill_amount %}{{user_pending_bill_amount}}</div>
+            <div style="color: red;font-weight: 700;">{% user_pending_bill_amount u.id as user_pending_bill_amount %}{{user_pending_bill_amount}}</div>
             <script>
                 total_amount += Number('{{user_pending_bill_amount}}')
             </script>

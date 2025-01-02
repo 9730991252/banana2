@@ -1,47 +1,58 @@
 {% load office_tag %}
 
 <style>
-    .total_box{
+    .company_total_box{
         width: 350px;
-        display: grid;
         margin: 0   auto;
-        padding: 5px;
-        grid-template-columns: repeat(2, 1fr);
+        padding: 1px;
+        background-color: black;
         div{
-            border:1px solid black;
+            background-color: white;
             text-align: center;
         }
-        .total {
+        .company_total {
 
             font-weight: 500;
-            grid-column-start:1 ;
-            grid-column-end:3 ;
 
         }
-        .heading{
+        .company_heading{
             text-align: center;
             font-weight: 500;
-            grid-column-start:1 ;
-            grid-column-end:3 ;
+            margin-bottom: 1px;
 
+
+        }
+        a{
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            text-decoration: none;
+            color: black;
+            gap: 1px;
+            transition: 0.5s;
+            div{
+                margin-bottom: 1px;
+            }
+            &:hover{
+                box-shadow: 0px 0px 10px 0px black;
+            }
         }
     }
 </style>
-<div class="total_box">
-    <div class="heading"><b>कंपनी येणे बाकी</b></div>
+<div class="company_total_box">
+    <div class="company_heading"><b>कंपनी येणे बाकी</b></div>
     <script>
         var total_amount = 0
     </script>
         {% for c in company %}
-        <a href="/office/company_bill_detail/{{c.id}}">
+        <a href="/office/company_bill_details/{{c.id}}">
             <div>{{c.name}}</div>
-            <div style="border-left: none;color: rgb(5, 145, 0);font-weight: 700;">{% company_pendding_bill_amount c.id as company_pendding_bill_amount %}{{company_pendding_bill_amount}}</div>
+            <div style="color: rgb(5, 145, 0);font-weight: 700;">{% company_pendding_bill_amount c.id as company_pendding_bill_amount %}{{company_pendding_bill_amount}}</div>
             <script>
                 total_amount += Number('{{company_pendding_bill_amount}}')
             </script>
         </a>
         {% endfor %}
-        <div class="total">एकूण <strong id="company_total_amount" class="ms-2 text-success"> {{total}}</strong> </div>
+        <div class="company_total">एकूण <strong id="company_total_amount" class="ms-2 text-success"> {{total}}</strong> </div>
         <script>
             document.getElementById('company_total_amount').innerText = total_amount
             var total_amount = 0
