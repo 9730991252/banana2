@@ -27,14 +27,14 @@ a{
 </style>
 
 <div class="pendding_bill_box">
-    <div class="pendding_bill">Pendding Bill</div>
-    <div class="div"><b>Bill</b></div>
-    <div class="div"><b>Amount</b></div>
+    <div class="pendding_bill">शेतकरी देणे बाकी बिल</div>
+    <div class="div"><b>बिल</b></div>
+    <div class="div"><b>रक्कम</b></div>
     {% for b in farmer_pendding_bill %}
         <a href="/office/view_farmer_bill/{{b.id}}"><div class="div">{{b.bill_number}}</div></a>
         <div class="div">{{b.pending_amount}}</div>
     {% endfor %}
-    <div class="div" style="color: red;"><b>Total</b></div>
+    <div class="div" style="color: red;"><b>एकूण</b></div>
     <div class="div" style="color: red;"><b>{{pending_amount_total}}</b></div>
 </div>
 
@@ -65,13 +65,13 @@ a{
 </style>
 
 <div class="completed_bill_box">
-    <div class="completed_bill">Completed Bill</div>
-    <div class="div"><b>Bill</b></div>
-    <div class="div"><b>Amount</b></div>
+    <div class="completed_bill">शेतकरी बिल पूर्ण झाले</div>
+    <div class="div"><b>बिल</b></div>
+    <div class="div"><b>रक्कम</b></div>
     {% for b in farmer_completed_bill %}
         <a href="/office/view_farmer_bill/{{b.id}}"><div class="div">{{b.bill_number}}</div></a>
         <div class="div">{{b.amount}}</div>
     {% endfor %}
-    <div class="div" style="color: green;"><b>Total</b></div>
+    <div class="div" style="color: green;"><b>एकूण</b></div>
     <div class="div" style="color: green;"><b>{{completed_amount_total}}</b></div>
 </div>

@@ -45,6 +45,17 @@ class Signature(models.Model):
         image.thumbnail(output_size)
         image.save(self.image.path)
         
+class Logo(models.Model):
+    shope = models.ForeignKey(Shope,on_delete=models.PROTECT,null=True)
+    image = models.ImageField(upload_to="logo_images",default="",null=True, blank=True) 
+    def save(self, *args,**kwargs):
+        super().save(*args,**kwargs)
+        image = Image.open(self.image.path)
+        print('image...',image)
+        output_size = (300,300)
+        image.thumbnail(output_size)
+        image.save(self.image.path)
+        
 class Farmer_cash_transition(models.Model):
     shope = models.ForeignKey(Shope,on_delete=models.PROTECT,null=True)
     office_employee = models.ForeignKey(office_employee,on_delete=models.PROTECT,null=True)
@@ -98,3 +109,4 @@ class Company_bill(models.Model):
     date = models.DateField(auto_now_add=True)
     bill_number = models.IntegerField(null=True)
     added_date = models.DateTimeField(auto_now_add=True)
+    

@@ -37,7 +37,7 @@
         text-transform: uppercase;
         z-index: 1;
         color: rgb(255, 0, 0);
-        font-size: 50px;
+        font-size: 30px;
         font-weight: 700;
 
     }
@@ -116,6 +116,15 @@
         padding: 5px;
 
     }
+    .logo_img{
+        background-color: aqua;
+        width: 100px;
+        height: 100px;
+        img{
+            width: 100%;
+            height: 100%;
+        }
+    }
     </style>
     
     <div>
@@ -131,7 +140,12 @@
         <div class="main_box" id="canvas">
 
         <div class="text-center"><h5>शेतकरी खरेदी पावती</h5></div>
-        <div class="shope_name">{{e.shope.shope_name}}</div>
+
+        <div class="" style="position: relative;" >
+            <div class="logo_img" id="logo_img" style="position: absolute;left: 0;top: 0; display: none;"><img src="{{logo.image.url}}" alt=""></div>
+            <div class="shope_name " >{{e.shope.shope_name}}</div>
+        </div>
+
         <div class="address"><p>{{e.shope.address}}</p></div>
         <div class="contact_details"><b>{{e.shope.contact_details}}</b></div>
         <div class="flex p-2 " style="justify-content: space-between;">
@@ -333,6 +347,7 @@ function check_cash_amount(pending_amount){
 /////////////////////////////////////////////////////////////////////
 
 function createPDF() {
+document.getElementById('logo_img').style.display = 'unset'
 
     var pdf = document.getElementById("canvas");
     var opt = {
@@ -342,7 +357,9 @@ function createPDF() {
         html2canvas: { scale: 2 },
         jsPDF: { unit: 'in', format: 'a4', orientaion: 'portrait' }
     };
-    html2pdf().set(opt).from(pdf).save();
+    html2pdf().set(opt).from(pdf).save().then(function(){
+        document.getElementById('logo_img').style.display = 'none'
+    });
 }
 
 </script>

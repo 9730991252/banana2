@@ -21,6 +21,34 @@ def office_home(request):
     else:
         return redirect('login')
     
+def logo(request):
+    if request.session.has_key('office_mobile'):
+        mobile = request.session['office_mobile']
+        e = office_employee.objects.filter(mobile=mobile).first()
+        if 'logo'in request.POST:
+            image = request.FILES.get('image')
+            Logo(
+                shope_id=e.shope.id,
+                image=image
+            ).save()
+            return redirect('logo')
+        if 'edit_logo'in request.POST:
+            image = request.FILES.get('image')
+            if image:
+                Logo(
+                    id=Logo.objects.filter(shope_id=e.shope.id).first().id,
+                    shope_id=e.shope.id,
+                    image=image
+                ).save()
+                return redirect('logo')
+        context={
+            'e':e,
+            'l':Logo.objects.filter(shope_id=e.shope.id).first()
+        }
+        return render(request, 'office/logo.html', context)
+    else:
+        return redirect('login')
+    
 @csrf_exempt
 def new_company_bill(request):
     if request.session.has_key('office_mobile'):
@@ -325,6 +353,7 @@ def view_farmer_bill(request, id):
             'bank_transition':Farmer_bank_transition.objects.filter(farmer_bill_id=bill.id),
             'total_credit':total_credit,
             'total_pending_amount':total_pending_amount,
+            'logo':Logo.objects.filter(shope_id=e.shope.id).first()
         }
         return render(request, 'office/view_farmer_bill.html', context)
     else:

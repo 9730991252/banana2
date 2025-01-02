@@ -13,4 +13,5 @@ urlpatterns = [
     path('new_company_bill/', views.new_company_bill, name='new_company_bill'),
     path('view_company_bill/<int:id>', views.view_company_bill, name='view_company_bill'),
     path('company_bill/', views.company_bill, name='company_bill'),
+    path('logo/', views.logo, name='logo'),
 ]
