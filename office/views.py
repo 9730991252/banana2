@@ -21,6 +21,20 @@ def office_home(request):
     else:
         return redirect('login')
     
+def company_bill_details(request, id):
+    if request.session.has_key('office_mobile'):
+        mobile = request.session['office_mobile']
+        e = office_employee.objects.filter(mobile=mobile).first()
+        company = Company.objects.filter(id=id).first()
+        context={
+            'e':e,
+            'company':company,
+            'bill':Company_bill.objects.filter(company_id=id).order_by('-id')
+        }
+        return render(request, 'office/company_details.html', context)
+    else:
+        return redirect('login')
+    
 def logo(request):
     if request.session.has_key('office_mobile'):
         mobile = request.session['office_mobile']
@@ -195,6 +209,7 @@ def view_company_bill(request, id):
             'cash_amount':cash_amount,
             'phonepe_amount':phonepe_amount,
             'bank_amount':bank_amount,
+            'total_credit':total_credit
 
         }   
         return render(request, 'office/view_company_bill.html', context)

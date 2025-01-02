@@ -228,17 +228,16 @@
 
 <div class="container">
 <!------------------------------------ -------------------------------------------->
-<div id="pending_box" class="mb-3 mt-2 border p-3 text-center flex" style="width: 280px;gap: 20px;margin-left: 50px;" >
+<div id="pending_box" class="mt-2 mb-2  p-3 text-center flex" style="width: 280px;gap: 20px;margin-left: 50px;" >
     <label for="cash">बाकी </label>
     <input type="text" {% if total_pending_amount != 0.0 %} style="width: 200px; text-align: center;font-weight: 700;color: white; background-color: red;" {% else %} style="text-align: center;font-weight: 700;color: rgb(0, 0, 0); background-color: rgb(81, 255, 0);"{% endif %} class="form-control" value="{{total_pending_amount | floatformat:2}}"  id="total_pending_amount" readonly>
 </div>
 
-<div class="mb-3 mt-2 border p-3 text-center" style="background-color: rgb(192, 250, 192);">
+<div class=" p-3 text-center" style="background-color: rgb(250, 236, 192);">
     <form method="POST">
         <div class="" style="display: flex;gap: 10px;">
-        <label for="cash">रोख</label>
-        <input type="text" class="form-control" style="background-color: rgb(182, 255, 182);" value="मिळालेली रक्कम - {{cash_amount}}" disabled >
-        <input  placeholder="रक्कम टाका" type="number" class="form-control" name="cash_amount"  id="cash_amount" oninput="check_cash_amount('{{total_pending_amount}}')">
+        <label for="cash">रोख मिळालेली रक्कम </label>
+        <input  placeholder="रक्कम " type="number" class="form-control" style="width: 75%;" name="cash_amount"  id="cash_amount" oninput="check_cash_amount('{{total_pending_amount}}')">
         <div id="cash_btn" style="display: none;"><button class="btn btn-success" name="save_cash_amount"><i class="fa-solid fa-check"></i></button></div>
     </div>
     </form>
@@ -246,28 +245,26 @@
 
 
 <form method="POST">
-    <div class="mb-3 mt-2 border p-3 text-center" style="background-color: hsl(236, 100%, 80%);">
+    <div class=" p-3 text-center" style="background-color: hsl(180, 100%, 80%);">
         <div class="" style="display: flex;gap: 10px;">
-            <label for="cash">Phonepe</label>
-            <input type="text" class="form-control" style="background-color: rgb(182, 255, 182);" value="मिळालेली रक्कम - {{phonepe_amount}}" disabled >
+            <label for="cash">फोनपे मिळालेली रक्कम</label>
         </div>
         <div class="" style="display: flex;gap: 10px;margin-top: 10px;">
             <input type="number" name="mobile" placeholder="Phonepe Mobile" class="form-control" required>
-            <input placeholder="रक्कम टाका" style="width: 46%;" type="number" class="form-control" name="amount" id="phonepe_amount{{p.id}}" oninput="check_phonepe_amount('phonepe_amount{{p.id}}', 'phonepe_btn{{p.id}}', '{{total_pending_amount}}')">
+            <input placeholder="रक्कम " style="width: 46%;" type="number" class="form-control" name="amount" id="phonepe_amount{{p.id}}" oninput="check_phonepe_amount('phonepe_amount{{p.id}}', 'phonepe_btn{{p.id}}', '{{total_pending_amount}}')">
             <div id="phonepe_btn{{p.id}}" style="display: none;" ><button name="save_phonepe_amount" class="btn btn-success"><i class="fa-solid fa-check"></i></button></div>
         </div>
     </div>
     </form>
     
     <form method="POST">
-    <div class="mb-3 mt-2 border p-3 text-center" style="background-color: hsl(32, 100%, 80%);">
+    <div class=" p-3 text-center" style="background-color: hsl(244, 100%, 80%);">
         <div class="" style="display: flex;gap: 10px;">
-            <label for="Bank">Bank</label>
-            <input type="text" class="form-control" style="background-color: rgb(182, 255, 182);" value="मिळालेली रक्कम - {{bank_amount}}" disabled >
+            <label for="Bank">बँक मिळालेली रक्कम</label>
         </div>
         <div class="" style="display: flex;gap: 10px;margin-top: 10px;">
             <input type="number" name="bank_number" placeholder="Bank Number" class="form-control" required>
-            <input placeholder="रक्कम टाका" style="width: 46%;"  type="number" class="form-control" name="amount" id="bank_amount{{b.id}}" oninput="check_bank_amount('bank_amount{{b.id}}', 'bank_btn{{b.id}}', '{{total_pending_amount}}')">
+            <input placeholder="रक्कम" style="width: 46%;"  type="number" class="form-control" name="amount" id="bank_amount{{b.id}}" oninput="check_bank_amount('bank_amount{{b.id}}', 'bank_btn{{b.id}}', '{{total_pending_amount}}')">
             <div id="bank_btn{{b.id}}" style="display: none;" ><button name="save_bank_amount" class="btn btn-success"><i class="fa-solid fa-check"></i></button></div>
         </div>
     </div>
@@ -287,8 +284,8 @@
             <div>{{b.bank_number}} - {{b.added_date}}</div>
             <div><b>Rs.{{b.amount}}</b></div>
         {% endfor %}
-        <div style="background-color: rgb(194, 255, 255); border-radius: 5px;">Total</div>
-        <div style="background-color: rgb(0, 255, 255); border-radius: 5px;"><b>Rs.{{total_credit}}</b></div>
+        <div style="background-color: rgb(194, 255, 199); border-radius: 5px;">एकूण मिळालेली रक्कम</div>
+        <div style="background-color: rgb(0, 255, 0); border-radius: 5px;"><b>Rs.{{total_credit}}</b></div>
     </div>
     </div>
     <br><br><br>
