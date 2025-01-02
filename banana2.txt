@@ -8,6 +8,7 @@ root
 cd banana2
 git pull
 source venv/bin/activate
+python manage.py makemigrations --merge
 python3 manage.py makemigrations
 python3 manage.py migrate
 systemctl daemon-reload

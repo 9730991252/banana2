@@ -29,20 +29,20 @@
     }
 </style>
 <div class="total_box">
-    <div class="heading"><b>शेतकरी देणे बाकी</b></div>
+    <div class="heading"><b>कंपनी येणे बाकी</b></div>
     <script>
         var total_amount = 0
     </script>
-        {% for u in all_users %}
-            <div>{{u.name}}</div>
-            <div style="border-left: none;color: red;font-weight: 700;">{% user_pending_bill_amount u.id as user_pending_bill_amount %}{{user_pending_bill_amount}}</div>
+        {% for c in company %}
+            <div>{{c.name}}</div>
+            <div style="border-left: none;color: rgb(5, 145, 0);font-weight: 700;">{% company_pendding_bill_amount c.id as company_pendding_bill_amount %}{{company_pendding_bill_amount}}</div>
             <script>
-                total_amount += Number('{{user_pending_bill_amount}}')
+                total_amount += Number('{{company_pendding_bill_amount}}')
             </script>
         {% endfor %}
-        <div class="total">एकूण <strong id="user_total_amount" class="ms-2 text-danger"></strong> </div>
+        <div class="total">एकूण <strong id="company_total_amount" class="ms-2 text-success"> {{total}}</strong> </div>
         <script>
-            document.getElementById('user_total_amount').innerText = total_amount
+            document.getElementById('company_total_amount').innerText = total_amount
             var total_amount = 0
         </script>
     </div>

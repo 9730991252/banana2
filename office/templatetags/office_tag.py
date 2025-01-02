@@ -34,6 +34,34 @@ def user_pending_bill_amount(user_id):
             return total_pending_amount
         
 @register.simple_tag()
+def company_pendding_bill_amount(company_id):
+    if company_id:
+        total_pending_amount = ''
+        
+        bill = Company_bill.objects.filter(company_id=company_id).aggregate(Sum('total_amount'))
+        total_pending_amount = bill['total_amount__sum']
+        
+        c = Company_cash_transition.objects.filter(company_bill__company_id=company_id).aggregate(Sum('amount'))
+        cash = c['amount__sum']
+        if cash:
+            total_pending_amount -= cash
+        
+        p = Company_Phonepe_transition.objects.filter(company_bill__company_id=company_id).aggregate(Sum('amount'))
+        phonepe = p['amount__sum']
+        if phonepe:
+            total_pending_amount -= phonepe
+        
+        b = Company_bank_transition.objects.filter(company_bill__company_id=company_id).aggregate(Sum('amount'))
+        bank = b['amount__sum']
+        if bank:
+            total_pending_amount -= bank
+        
+        if total_pending_amount == None:
+            return 0
+        else:
+            return total_pending_amount
+        
+@register.simple_tag()
 def product_cost_net_weight(weight, empty_box):
     a = (weight - empty_box)
     return a
@@ -57,6 +85,12 @@ def pendding_completed_farmer_bill(farmer_id):
 def user_pendding_all_amount(shope_id):
     return{
         'all_users':office_employee.objects.filter(shope_id=shope_id)
+    }
+    
+@register.inclusion_tag('inclusion_tag/office/company_pendding_all_amount.html')
+def company_pendding_all_amount(shope_id):
+    return{
+        'company':Company.objects.filter(shope_id=shope_id)
     }
 
 @register.inclusion_tag('inclusion_tag/office/farmer_bill_detail.html')

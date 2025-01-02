@@ -119,18 +119,24 @@ def view_company_bill(request, id):
         total_pending_amount = bill.total_amount
         
         cash = Company_cash_transition.objects.filter(company_bill_id=bill.id)
+        cash_amount = 0
         for c in cash:
             total_credit += c.amount
+            cash_amount += c.amount
             total_pending_amount -= c.amount
             
         p = Company_Phonepe_transition.objects.filter(company_bill_id=bill.id)
+        phonepe_amount = 0
         for p in p:
             total_credit += p.amount
+            phonepe_amount += p.amount
             total_pending_amount -= p.amount
             
         b = Company_bank_transition.objects.filter(company_bill_id=bill.id)
+        bank_amount = 0
         for b in b:
             total_credit += b.amount
+            bank_amount += b.amount
             total_pending_amount -= b.amount
         
         if 'save_cash_amount'in request.POST:
@@ -186,6 +192,9 @@ def view_company_bill(request, id):
             'cash':cash,
             'phonepe_transition':Company_Phonepe_transition.objects.filter(company_bill_id=bill.id),
             'bank_transition':Company_bank_transition.objects.filter(company_bill_id=bill.id),
+            'cash_amount':cash_amount,
+            'phonepe_amount':phonepe_amount,
+            'bank_amount':bank_amount,
 
         }   
         return render(request, 'office/view_company_bill.html', context)

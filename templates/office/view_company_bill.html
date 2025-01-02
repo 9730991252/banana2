@@ -233,10 +233,11 @@
     <input type="text" {% if total_pending_amount != 0.0 %} style="width: 200px; text-align: center;font-weight: 700;color: white; background-color: red;" {% else %} style="text-align: center;font-weight: 700;color: rgb(0, 0, 0); background-color: rgb(81, 255, 0);"{% endif %} class="form-control" value="{{total_pending_amount | floatformat:2}}"  id="total_pending_amount" readonly>
 </div>
 
-<div class="mb-3 mt-2 border p-3 text-center" style="background-color: rgb(202, 255, 202);">
+<div class="mb-3 mt-2 border p-3 text-center" style="background-color: rgb(192, 250, 192);">
     <form method="POST">
         <div class="" style="display: flex;gap: 10px;">
         <label for="cash">रोख</label>
+        <input type="text" class="form-control" style="background-color: rgb(182, 255, 182);" value="मिळालेली रक्कम - {{cash_amount}}" disabled >
         <input  placeholder="रक्कम टाका" type="number" class="form-control" name="cash_amount"  id="cash_amount" oninput="check_cash_amount('{{total_pending_amount}}')">
         <div id="cash_btn" style="display: none;"><button class="btn btn-success" name="save_cash_amount"><i class="fa-solid fa-check"></i></button></div>
     </div>
@@ -248,6 +249,7 @@
     <div class="mb-3 mt-2 border p-3 text-center" style="background-color: hsl(236, 100%, 80%);">
         <div class="" style="display: flex;gap: 10px;">
             <label for="cash">Phonepe</label>
+            <input type="text" class="form-control" style="background-color: rgb(182, 255, 182);" value="मिळालेली रक्कम - {{phonepe_amount}}" disabled >
         </div>
         <div class="" style="display: flex;gap: 10px;margin-top: 10px;">
             <input type="number" name="mobile" placeholder="Phonepe Mobile" class="form-control" required>
@@ -261,6 +263,7 @@
     <div class="mb-3 mt-2 border p-3 text-center" style="background-color: hsl(32, 100%, 80%);">
         <div class="" style="display: flex;gap: 10px;">
             <label for="Bank">Bank</label>
+            <input type="text" class="form-control" style="background-color: rgb(182, 255, 182);" value="मिळालेली रक्कम - {{bank_amount}}" disabled >
         </div>
         <div class="" style="display: flex;gap: 10px;margin-top: 10px;">
             <input type="number" name="bank_number" placeholder="Bank Number" class="form-control" required>
