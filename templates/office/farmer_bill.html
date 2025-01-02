@@ -16,7 +16,8 @@
         display: grid;
         grid-template-columns: repeat(auto-fit, 300px);
         gap: 10px;
-        justify-content: start;
+        justify-content: center;
+
     }
     .bill_box{
         border: 1px solid black;
@@ -65,7 +66,7 @@
         <div>{{u.name}}</div>
         <div style="border-left: none;">{% user_pending_bill_amount u.id %}</div>
     {% endfor %}
-    <div class="total">Total {{total}} </div>
+    <div class="total">एकून {{total}} </div>
 </div>
 
 <br><br>
@@ -74,7 +75,7 @@
     
     {% for b in bill %}
         <div class="bill_box" {% if b.paid_status == 0 %} style="border-color: red;"{% else %} style="border-color: rgb(0, 255, 34);"{% endif %}>
-            <div class="flex">Bill Number - <b>{{b.bill_number}}</b></div>
+            <div class="flex">बिल नंबर  - <b>{{b.bill_number}}</b></div>
             <div class="flex">
                 <div>{{b.farmer.name}}</div>
             </div>

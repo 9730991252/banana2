@@ -62,12 +62,12 @@
     
     <div class="containt_box">
         <div><label for="weight">गाडीचे एकुण वजन</label></div>
-        <div><input type="number" value="0" id="total_vehicale_weight" name="total_vehicale_weight" oninput="check_zero('weight'),calculate_weight(),add_wasteage('empty_box_weight','wasteage','wasteage_weight'),add_wasteage('empty_box_weight','wasteage','wasteage_weight')"  class="form-control" required></div>
+        <div><input type="number" value="0" id="total_vehicale_weight" name="total_vehicale_weight" oninput="check_zero('weight'),calculate_weight(),add_wasteage('empty_box_weight','wasteage','wasteage_weight')"  class="form-control" required></div>
     </div>
 
     <div class="containt_box">
         <div><label for="weight">रिकाम्या गाडीचे वजन</label></div>
-        <div><input type="number" value="0" id="vehicale_weight" name="empty_vehicale_weight" oninput="check_zero('weight'),calculate_weight('empty_box', 'empty_box_weight'),add_wasteage('empty_box_weight','wasteage','wasteage_weight'),add_wasteage('empty_box_weight','wasteage','wasteage_weight')"  class="form-control" required></div>
+        <div><input type="number" value="0" id="vehicale_weight" name="empty_vehicale_weight" oninput="check_zero('weight'),calculate_weight('empty_box', 'empty_box_weight'),add_wasteage('empty_box_weight','wasteage','wasteage_weight')"  class="form-control" required></div>
     </div>
 
     <div class="containt_box" style="font-weight: 700;">
@@ -208,7 +208,10 @@
         input = document.getElementById(wasteage_input).value;
         a = Number(from_input) + Number(input)
         document.getElementById(add_input).value = a
-        total_weight = a 
+        danda_weight = (a / 100) * 8
+        document.getElementById('danda_weight').value = danda_weight
+        
+        total_weight = a + danda_weight
         document.getElementById('total_weight').value = total_weight
     }
 
