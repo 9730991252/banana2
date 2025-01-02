@@ -70,7 +70,7 @@
     </form>
 </div>
 <div id="farmer_result"></div>
-
+{% if selected_farmer_status != 0 %}
 <form method="POST">
     <input type="hidden" name="farmer_id" value="{{farmer.id}}">
 <div class="containt_bill_box">
@@ -154,6 +154,7 @@
     {% if selected_farmer_status != 0 %}<button type="submit" class="btn btn-danger mt-2" name="complete_bill">Complete Bill</button>{% endif %}
 </div>
 </form>
+{% endif %}
 
 <script>
     function calculate_weight(){
