@@ -15,12 +15,6 @@ systemctl daemon-reload
 systemctl restart banana2.com.gunicorn
 exit
 
-root
-cd banana2
-git pull
-systemctl daemon-reload
-systemctl restart banana2.com.gunicorn
-exit
 
 
 
