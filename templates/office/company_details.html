@@ -16,12 +16,32 @@
 </div>
 
 <style>
+    a{
+        text-decoration: none;
+        color: black;
+    }
     .company_bill_box{
         padding: 1px;
         background-color: black;
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr 1fr 1fr;
         grid-gap: 1px;
+        div{
+            background-color: white;
+            text-align: center;
+            &:hover{
+                box-shadow: 0px 0px 5px 0px black;
+                z-index: 1;
+            }
+        }
+    }
+    .compleated_company_bill_box{
+        padding: 1px;
+        background-color: black;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-gap: 1px;
+        height: fit-content;
         div{
             background-color: white;
             text-align: center;
@@ -41,22 +61,40 @@
 
 <div class="container">
 <div class="company_bill_box">
-    <div style="grid-column-start: 1;grid-column-end: 3;">बाकी रक्कम असलेली बिले</div>
-    <div>बिल  नंबर</div>
+    <script>var total_amount = 0
+     </script>
+    <div style="grid-column-start: 1;grid-column-end: 4;">बाकी रक्कम असलेली बिले</div>
+    <div>बिल नंबर</div>
+    <div>तारीख</div>
     <div>रक्कम</div>
     {% for b in bill %}
-    <div {% if b.paid_status == 0 %} style="display: none;"{% endif %}><b>{{b.bill_number}}</b></div>
-    <div {% if b.paid_status == 0 %} style="display: none;"{% endif %}><b>{{b.total_amount}}</b></div>
-    {% endfor %}
-</div>
-<div class="company_bill_box">
-    <div style="grid-column-start: 1;grid-column-end: 3;">पूर्ण रक्कम मिळालेली बिले</div>
+        <a href="/office/view_company_bill/{{b.id}}" {% if b.paid_status == 1 %} style="display: none;"{% endif %}><div ><b>{{b.bill_number}}</b></div></a>
+        <a href="/office/view_company_bill/{{b.id}}" {% if b.paid_status == 1 %} style="display: none;"{% endif %}><div ><b>{{b.date}}</b></div></a>
+        <a href="/office/view_company_bill/{{b.id}}" {% if b.paid_status == 1 %} style="display: none;"{% endif %}><div class="text-danger" ><b>{{b.total_amount}}</b></div></a>
+        {% if b.paid_status == 0 %}<script>total_amount = total_amount + Number('{{b.total_amount}}')</script>{% endif %}
+        {% endfor %}
+        <div style="grid-column-start: 1;grid-column-end: 3;"><b>एकूण रक्कम</b></div>
+        
+        <div><b class="text-danger" id="total_amount">0</b></div>
+        <script>document.getElementById('total_amount').innerHTML = total_amount</script>
+    </div>
+    
+    <div class="compleated_company_bill_box">
+        <div style="grid-column-start: 1;grid-column-end: 4;">पूर्ण रक्कम मिळालेली बिले</div>
+        <script>var total_amount = 0
+     </script>
     <div>बिल  नंबर</div>
+    <div>तारीख</div>
     <div>रक्कम</div>
     {% for b in bill %}
-        <div {% if b.paid_status == 1 %} style="display: none;"{% endif %}><b>{{b.bill_number}}</b></div>
-        <div {% if b.paid_status == 1 %} style="display: none;"{% endif %}><b>{{b.total_amount}}</b></div>
+    <a href="/office/view_company_bill/{{b.id}}" {% if b.paid_status == 0 %} style="display: none;"{% endif %}><div ><b>{{b.bill_number}}</b></div></a>
+    <a href="/office/view_company_bill/{{b.id}}" {% if b.paid_status == 0 %} style="display: none;"{% endif %}><div ><b>{{b.date}}</b></div></a>
+    <a href="/office/view_company_bill/{{b.id}}" {% if b.paid_status == 0 %} style="display: none;"{% endif %}><div class="text-success" ><b>{{b.total_amount}}</b></div></a>
+    {% if b.paid_status == 1 %}<script>total_amount = total_amount + Number('{{b.total_amount}}')</script>{% endif %}
     {% endfor %}
+    <div style="grid-column-start: 1;grid-column-end: 3;"><b>एकूण रक्कम</b></div>
+    <div><b class="text-success" id="total_amount1">0</b></div>
+    <script>document.getElementById('total_amount1').innerHTML = total_amount</script>
     
 </div>
 </div>
