@@ -31,16 +31,33 @@
             }
         }
     }
+    .container{
+        display: grid;
+        grid-template-columns: repeat(auto-fit, 380px);
+        grid-gap: 10px;
+        justify-content: space-between;
+    }
 </style>
 
 <div class="container">
 <div class="company_bill_box">
-    <div></div>
-    <div></div>
+    <div style="grid-column-start: 1;grid-column-end: 3;">बाकी रक्कम असलेली बिले</div>
+    <div>बिल  नंबर</div>
+    <div>रक्कम</div>
     {% for b in bill %}
-        <div><b>{{b.bill_number}}</b></div>
-        <div {% if b.paid_status == 0 %} style="color: red;"{% else %} style="color: green;"{% endif %} ><b>{{b.total_amount}}</b></div>
+    <div {% if b.paid_status == 0 %} style="display: none;"{% endif %}><b>{{b.bill_number}}</b></div>
+    <div {% if b.paid_status == 0 %} style="display: none;"{% endif %}><b>{{b.total_amount}}</b></div>
     {% endfor %}
+</div>
+<div class="company_bill_box">
+    <div style="grid-column-start: 1;grid-column-end: 3;">पूर्ण रक्कम मिळालेली बिले</div>
+    <div>बिल  नंबर</div>
+    <div>रक्कम</div>
+    {% for b in bill %}
+        <div {% if b.paid_status == 1 %} style="display: none;"{% endif %}><b>{{b.bill_number}}</b></div>
+        <div {% if b.paid_status == 1 %} style="display: none;"{% endif %}><b>{{b.total_amount}}</b></div>
+    {% endfor %}
+    
 </div>
 </div>
 {% endblock content %}

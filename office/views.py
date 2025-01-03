@@ -81,6 +81,7 @@ def new_company_bill(request):
             labor_amount = request.POST.get('labor')
             service_charge = request.POST.get('service_charge')
             eater = request.POST.get('eater')
+            date = request.POST.get('date')
             total_amount = request.POST.get('total_amount')
             bill_number = Company_bill.objects.filter(shope_id=shope_id).count()
             bill_number += 1 
@@ -99,7 +100,8 @@ def new_company_bill(request):
                 bill_number=bill_number,
                 labor_amount=labor_amount,
                 service_charge=service_charge,
-                eater=eater
+                eater=eater,
+                date=date
             ).save()
             f = Company_bill.objects.filter(shope_id=shope_id).last()
             return redirect(f'/office/view_company_bill/{f.id}')

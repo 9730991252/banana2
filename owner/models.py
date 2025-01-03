@@ -107,7 +107,7 @@ class Company_bill(models.Model):
     labor_amount = models.FloatField(null=True)
     service_charge = models.FloatField(null=True)
     eater = models.FloatField(null=True)
-    date = models.DateField(auto_now_add=True)
+    date = models.DateField(null=True)
     bill_number = models.IntegerField(null=True)
     added_date = models.DateTimeField(auto_now_add=True)
     

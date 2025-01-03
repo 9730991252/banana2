@@ -3,6 +3,8 @@ from django.shortcuts import render
 from django.template.loader import *
 from owner.models import *
 from django.db.models import Q
+from datetime import date
+import datetime
 # Create your views here.
 def farmer_check(request):
     if request.method == 'GET':
@@ -76,7 +78,8 @@ def select_company(request):
         c_id = request.GET['id']
         c = Company.objects.filter(id=c_id).first()
         context={
-            'c':c
+            'c':c,
+            'today_date':date.today()
         }
         t = render_to_string('ajax/office/select_company.html', context)
     return JsonResponse({'t': t})
@@ -94,3 +97,11 @@ def search_company(request):
         }
         t = render_to_string('ajax/office/search_company.html', context)
     return JsonResponse({'t': t})
+
+
+def save_date_company_bill(request):
+    if request.method == 'GET':
+        bill_id = request.GET['bill_id']
+        date = request.GET['date']
+        Company_bill.objects.filter(id=bill_id).update(id=bill_id,date=date)
+    return JsonResponse({'status': 1})
