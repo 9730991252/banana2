@@ -146,7 +146,9 @@
         <div class="contact_details"><b>{{e.shope.contact_details}}</b></div>
         <div class="flex p-2 " style="justify-content: space-between;">
             <div>बिल नं. <b>{{bill.bill_number}}</b></div>
-            <div><input onchange="save_date_company_bill()" style="background-color: white; border: none;" type="date" value="{{bill.date |date:'Y-m-d' }}" name="date" id="date"></div>
+
+            <div id="date_box1"><input onchange="save_date_company_bill(),location.reload()" style="border: none;" type="date" value="{{bill.date |date:'Y-m-d' }}" name="date" id="date"></div>
+            <div id="date_box2" style="display: none;">दिनांक &nbsp; {{bill.date | date:'d-m-y'}}</div>
             <div class="vehicale_number">गाडी नंबर  {{bill.vehicale_number}}</div>
         </div>
         <div class="flex p-2" style="font-size: 20px; line-height: 0px; justify-content: space-between;">
@@ -406,6 +408,8 @@ function createPDF() {
     }
 
 document.getElementById('logo_img').style.display = 'unset'
+document.getElementById('date_box1').style.display = 'none'
+document.getElementById('date_box2').style.display = 'unset'
 
     //////////////
 
@@ -421,7 +425,8 @@ document.getElementById('logo_img').style.display = 'unset'
 
     //////////////
     document.getElementById('logo_img').style.display = 'none'
-
+    document.getElementById('date_box2').style.display = 'none'
+    document.getElementById('date_box1').style.display = 'unset'
     total_vehicale_weight2 = document.getElementById('total_vehicale_weight2').innerText;
     if(Number(total_vehicale_weight2) == 0){
         document.getElementById('total_vehicale_weight1').style.display = 'unset'
