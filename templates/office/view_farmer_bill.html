@@ -148,8 +148,10 @@
         <div class="address"><p>{{e.shope.address}}</p></div>
         <div class="contact_details"><b>{{e.shope.contact_details}}</b></div>
         <div class="flex p-2 " style="justify-content: space-between;">
-            <div>बिल नं. <b>{{bill.bill_number}}</b></div>
-            <div>{{bill.added_date}}</div>
+            <div>बिल नं. &nbsp;<b>{{bill.bill_number}}</b></div>
+
+            <div id="date_box1"><input onchange="save_date_farmer_bill(),location.reload()" style="border: none;" type="date" value="{{bill.date |date:'Y-m-d' }}" name="date" id="date"></div>
+            <div id="date_box2" style="display: none;">दिनांक &nbsp; {{bill.date | date:'d-m-y'}}</div>
             <div class="vehicale_number">गाडी नंबर  {{bill.vehicale_number}}</div>
         </div>
         <div class="flex p-2" style="font-size: 20px; flex-wrap: wrap; justify-content: space-between; ">
@@ -292,6 +294,22 @@
 
 
 <script>
+    function save_date_farmer_bill(){
+        date = document.getElementById('date').value;
+        $.ajax({
+            type: 'GET',
+            url: '{% url "save_date_farmer_bill" %}',
+            data: {
+                'date': date,
+                'bill_id': '{{bill.id}}'
+            },
+            success: function(response){
+                console.log(response)
+            }
+        })
+    }
+
+
         function check_bank_amount(input_id, btn_id,pending_amount){
         input = document.getElementById(input_id).value
         if(Number(input) > 0){
@@ -350,18 +368,22 @@ function check_cash_amount(pending_amount){
 
 function createPDF() {
 document.getElementById('logo_img').style.display = 'unset'
+document.getElementById('date_box1').style.display = 'none'
+document.getElementById('date_box2').style.display = 'unset'
 
-    var pdf = document.getElementById("canvas");
-    var opt = {
-        margin: 0.5,
-        filename: '{{bill.farmer.name}} '+ new Date().toLocaleString() +' .pdf',
-        image: { type: 'jpeg', quality: 50 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: 'in', format: 'a4', orientaion: 'portrait' }
-    };
-    html2pdf().set(opt).from(pdf).save().then(function(){
-        document.getElementById('logo_img').style.display = 'none'
-    });
+var pdf = document.getElementById("canvas");
+var opt = {
+    margin: 0.5,
+    filename: '{{bill.farmer.name}} '+ new Date().toLocaleString() +' .pdf',
+    image: { type: 'jpeg', quality: 50 },
+    html2canvas: { scale: 2 },
+    jsPDF: { unit: 'in', format: 'a4', orientaion: 'portrait' }
+};
+html2pdf().set(opt).from(pdf).save().then(function(){
+    document.getElementById('logo_img').style.display = 'none'
+    document.getElementById('date_box2').style.display = 'none'
+    document.getElementById('date_box1').style.display = 'unset'
+});
 }
 
 </script>

@@ -105,3 +105,10 @@ def save_date_company_bill(request):
         date = request.GET['date']
         Company_bill.objects.filter(id=bill_id).update(id=bill_id,date=date)
     return JsonResponse({'status': 1})
+
+def save_date_farmer_bill(request):
+    if request.method == 'GET':
+        bill_id = request.GET['bill_id']
+        date = request.GET['date']
+        Farmer_bill.objects.filter(id=bill_id).update(id=bill_id,date=date)
+    return JsonResponse({'status': 1})

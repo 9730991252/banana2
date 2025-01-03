@@ -170,14 +170,14 @@
             <div class="div1" id="empty_box1">मोकळे बॉक्स वजा </div>
             <div class="div2" id="empty_box2">{{bill.empty_box}}</div>
             
-            <div class="div1" id="empty_box_weight1">मालाचे वजन </div>
-            <div class="div2" id="empty_box_weight2">{{empty_box_weight}}</div>
+            <div class="div1" id="empty_box_weight1" {% if bill.empty_box == 0 and bill.empty_box == 0 %}style="display: none;"{% endif %}>मालाचे वजन </div>
+            <div class="div2" id="empty_box_weight2" {% if bill.empty_box == 0 and bill.empty_box == 0 %}style="display: none;"{% endif %}>{{empty_box_weight}}</div>
             
             <div class="div1" id="wasteage1">वेस्टेज </div>
             <div class="div2" id="wasteage2">{{bill.wasteage}}</div>
             
-            <div class="div1">मालाचे वजन </div>
-            <div class="div2">{{wasteage_weight}}</div>
+            <div class="div1"  {% if bill.wasteage == 0 and bill.wasteage == 0 %}style="display: none;"{% endif %}>मालाचे वजन </div>
+            <div class="div2"  {% if bill.wasteage == 0 and bill.wasteage == 0 %}style="display: none;"{% endif %}>{{wasteage_weight}}</div>
             
             <div class="div1" id="danda_weight1">दांडा वजन </div>
             <div class="div2" id="danda_weight2">{{danda_weight}}</div>
