@@ -171,6 +171,9 @@
             
             <div class="div1" id="empty_box1">मोकळे बॉक्स वजा </div>
             <div class="div2" id="empty_box2">{{bill.empty_box}}</div>
+
+            <div class="div1" id="leaf_weight1">पाल्याचे वजन (वजा)</div>
+            <div class="div2" id="leaf_weight2">{{bill.leaf_weight}}</div>
             
             <div class="div1" id="empty_box_weight1" {% if bill.empty_box == 0 and bill.empty_box == 0 %}style="display: none;"{% endif %}>मालाचे वजन </div>
             <div class="div2" id="empty_box_weight2" {% if bill.empty_box == 0 and bill.empty_box == 0 %}style="display: none;"{% endif %}>{{empty_box_weight}}</div>
@@ -374,6 +377,11 @@ function createPDF() {
         document.getElementById('empty_vehicale_weight1').style.display = 'none'
         document.getElementById('empty_vehicale_weight2').style.display = 'none'
     }
+    leaf_weight2 = document.getElementById('leaf_weight2').innerText;
+    if(Number(leaf_weight2) == 0){
+        document.getElementById('leaf_weight1').style.display = 'none'
+        document.getElementById('leaf_weight2').style.display = 'none'
+    }
     empty_box2 = document.getElementById('empty_box2').innerText;
     if(Number(empty_box2) == 0){
         document.getElementById('empty_box1').style.display = 'none'
@@ -395,6 +403,11 @@ function createPDF() {
     if(Number(service_charge2) == 0){
         document.getElementById('service_charge1').style.display = 'none'
         document.getElementById('service_charge2').style.display = 'none'
+    }
+    leaf_weight2 = document.getElementById('leaf_weight').innerText;
+    if(Number(leaf_weight2) == 0){
+        document.getElementById('leaf_weight1').style.display = 'none'
+        document.getElementById('leaf_weight2').style.display = 'none'
     }
     labor_amount2 = document.getElementById('labor_amount2').innerText;
     if(Number(labor_amount2) == 0){

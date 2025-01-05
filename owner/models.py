@@ -110,6 +110,7 @@ class Company_bill(models.Model):
     date = models.DateField(null=True)
     bill_number = models.IntegerField(null=True)
     added_date = models.DateTimeField(auto_now_add=True)
+    leaf_weight=models.IntegerField(default=0)
     
     
 class Company_cash_transition(models.Model):

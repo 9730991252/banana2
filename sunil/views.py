@@ -21,6 +21,7 @@ def sunil_home(request):
             owner_name = request.POST.get('owner_name')
             mobile = request.POST.get('mobile')
             pin = request.POST.get('pin')
+            edit_pin = request.POST.get('edit_pin')
             if Shope.objects.filter(mobile=mobile).exists():
                 pass
             else:
@@ -29,6 +30,7 @@ def sunil_home(request):
                     owner_name=owner_name,
                     mobile=mobile,
                     pin=pin,
+                    edit_pin=edit_pin,
                 ).save()    
             return redirect('sunil_home')
         if 'Edit_shope'in request.POST:
@@ -37,12 +39,14 @@ def sunil_home(request):
             owner_name = request.POST.get('owner_name')
             mobile = request.POST.get('mobile')
             pin = request.POST.get('pin')
+            edit_pin = request.POST.get('edit_pin')
             Shope(
                 id=id,
                 shope_name=shope_name,
                 owner_name=owner_name,
                 mobile=mobile,
                 pin=pin,
+               edit_pin=edit_pin,
             ).save()
             return redirect('sunil_home')
         if 'active'in request.POST:

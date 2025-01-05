@@ -78,10 +78,37 @@
             <div class="flex">
                 <div>By - {{b.office_employee.name}}</div>
             </div>
-            <a href="/office/view_company_bill/{{b.id}}" class="btn btn-success">View</a>
+            <div class="flex">
+                <a href="/office/view_company_bill/{{b.id}}" class="btn btn-success">View</a>
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">Edit</button>
+            </div>
         </div>
+  
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Configration</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="location.reload()" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="id" value="{{b.id}}">
+                <div class="mb-3">
+                    <input type="password" class="form-control mb-2" name="pin" placeholder="Enter Edit Pin">
+                    <button class="btn btn-danger" type="submit" name="check_pin">Submit</button>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" onclick="location.reload()" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
     {% endfor %}
 
 </div>
-
 {% endblock content %}

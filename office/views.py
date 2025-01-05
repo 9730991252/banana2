@@ -82,10 +82,12 @@ def new_company_bill(request):
             service_charge = request.POST.get('service_charge')
             eater = request.POST.get('eater')
             date = request.POST.get('date')
+            leaf_weight = request.POST.get('leaf_weight') 
             total_amount = request.POST.get('total_amount')
             bill_number = Company_bill.objects.filter(shope_id=shope_id).count()
             bill_number += 1 
             Company_bill(
+                leaf_weight=leaf_weight,
                 total_vehicale_weight=total_vehicale_weight,
                 empty_vehicale_weight=empty_vehicale_weight,
                 company_id=company_id,
@@ -123,7 +125,7 @@ def view_company_bill(request, id):
         total_pending_amount = 0
         
         bill = Company_bill.objects.filter(id=id).first()
-        empty_box_weight = (bill.weight - bill.empty_box)
+        empty_box_weight = (bill.weight - bill.empty_box - bill.leaf_weight)
         wasteage_weight = (empty_box_weight + bill.wasteage)
         danda_weight = (wasteage_weight / 100) * 8
         total_weight = (wasteage_weight + danda_weight)
@@ -215,11 +217,81 @@ def view_company_bill(request, id):
 
         }   
         return render(request, 'office/view_company_bill.html', context)
+
+@csrf_exempt
+def edit_company_bill(request, id):
+    if request.session.has_key('office_mobile'):
+        mobile = request.session['office_mobile']
+        e = office_employee.objects.filter(mobile=mobile).first()
+        if e:
+            edit_pin = '1'
+            if request.session.has_key('edit_pin'):
+                edit_pin = request.session['edit_pin']
+            if int(edit_pin) == int(e.shope.edit_pin):
+                del request.session['edit_pin']
+                bill = Company_bill.objects.filter(id=id).first()
+                empty_box_weight = (bill.weight - bill.empty_box - bill.leaf_weight)
+                if 'edit_bill'in request.POST:
+                    company_id = request.POST.get('company_id')
+                    vehicale_number = request.POST.get('vehicale_number')
+                    total_vehicale_weight = request.POST.get('total_vehicale_weight')
+                    empty_vehicale_weight = request.POST.get('empty_vehicale_weight')
+                    weight = request.POST.get('weight')
+                    empty_box = request.POST.get('empty_box')
+                    wasteage = request.POST.get('wasteage')
+                    prise = request.POST.get('prise')
+                    labor_amount = request.POST.get('labor')
+                    service_charge = request.POST.get('service_charge')
+                    eater = request.POST.get('eater')
+                    date = request.POST.get('date')
+                    leaf_weight = request.POST.get('leaf_weight') 
+                    total_amount = request.POST.get('total_amount')
+                    
+                    bill.leaf_weight=leaf_weight
+                    bill.total_vehicale_weight=total_vehicale_weight
+                    bill.empty_vehicale_weight=empty_vehicale_weight
+                    bill.company.id=company_id
+                    bill.vehicale_number=vehicale_number
+                    bill.weight=weight
+                    bill.empty_box=empty_box
+                    bill.wasteage=wasteage
+                    bill.prise=prise
+                    bill.total_amount= math.ceil(eval(total_amount))
+                    bill.labor_amount=labor_amount
+                    bill.service_charge=service_charge
+                    bill.eater=eater
+                    bill.date=date
+                    bill.save()
+                    return redirect(f'/office/view_company_bill/{id}')
+            else:
+                del request.session['office_mobile']
+                return redirect('company_bill')
+        else:
+            return redirect('company_bill')
+        context={
+            'e':e,
+            'bill':Company_bill.objects.filter(id=id).first(),
+            'empty_box_weight':empty_box_weight,
+
+        }
+        return render(request, 'office/edit_company_bill.html', context)
+    else:
+        return redirect('login')
     
 def company_bill(request):
     if request.session.has_key('office_mobile'):
         mobile = request.session['office_mobile']
         e = office_employee.objects.filter(mobile=mobile).first()
+        if 'check_pin'in request.POST: 
+            id = request.POST.get('id')
+            pin = request.POST.get('pin')
+            print(e.shope.edit_pin)
+            if int(e.shope.edit_pin) == int(pin):
+                request.session['edit_pin'] = request.POST["pin"]
+                return redirect(f'/office/edit_company_bill/{id}')
+            else:
+                return redirect('company_bill')
+
         context={
             'e':e,
             'bill':Company_bill.objects.filter(shope_id=e.shope.id).order_by('-id'),

@@ -36,6 +36,10 @@
                 <label for="pin">Pin</label>
                 <input type="text" id="pin" name="pin" placeholder="Pin" class="form-control"  required>
             </div>
+            <div class="mb-3">
+                <label for="pin">Edit Pin</label>
+                <input type="text" id="edit_pin" name="edit_pin" placeholder="Edit Pin" class="form-control"  required>
+            </div>
             <div class="mb-2 mt-1">
                 <button type="submit" name="Add_shope" class="btn btn-primary">Add</button>
             </div>
@@ -58,6 +62,7 @@
         <th scope="col">Owner Name</th>
         <th scope="col">Mobile</th>
         <th scope="col">Pin</th>
+        <th scope="col">Edit Pin</th>
         <th scope="col">Status</th>
         <th scope="col">Edit</th>
       </tr>
@@ -70,6 +75,7 @@
         <td>{{s.owner_name}}</td>
         <td>{{s.mobile}}</td>
         <td>{{s.pin}}</td>
+        <td>{{s.edit_pin}}</td>
         <td><form class="" method="POST">{% csrf_token %}{% if s.status == 1 %}<button class="btn btn-success" type="submit" name="active">Active<input type="hidden" name="id" value="{{s.id}}"></button>{% else %}<button class="btn btn-danger" type="submit" name="deactive">Deactive<input type="hidden" name="id" value="{{s.id}}"></button>{% endif %}</form></td>
         <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#Add_shope{{s.id}}">Edit</button></td>
       </tr>
@@ -99,6 +105,10 @@
                     <label for="pin">Pin</label>
                     <input type="text" id="pin" name="pin" placeholder="Pin" value="{{s.pin}}" class="form-control"  required>
                 </div>
+                <div class="mb-3">
+                  <label for="pin">Edit Pin</label>
+                  <input type="text" id="edit_pin" name="edit_pin" placeholder="Edit Pin" class="form-control"  required>
+              </div>
                 <div class="mb-2 mt-1">
                     <button type="submit" name="Edit_shope" class="btn btn-primary">Add</button>
                 </div>
