@@ -6,6 +6,7 @@ import math
 from num2words import num2words
 from django.db.models import Avg, Sum, Min, Max
 from django.contrib import messages 
+import time
 # Create your views here.
 def office_home(request):
     if request.session.has_key('office_mobile'):
@@ -228,7 +229,6 @@ def edit_company_bill(request, id):
             if request.session.has_key('edit_pin'):
                 edit_pin = request.session['edit_pin']
             if int(edit_pin) == int(e.shope.edit_pin):
-                del request.session['edit_pin']
                 bill = Company_bill.objects.filter(id=id).first()
                 empty_box_weight = (bill.weight - bill.empty_box - bill.leaf_weight)
                 if 'edit_bill'in request.POST:
@@ -263,6 +263,7 @@ def edit_company_bill(request, id):
                     bill.date=date
                     bill.save()
                     return redirect(f'/office/view_company_bill/{id}')
+                del request.session['edit_pin']
             else:
                 del request.session['office_mobile']
                 return redirect('company_bill')
