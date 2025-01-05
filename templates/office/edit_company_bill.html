@@ -157,7 +157,9 @@
         <div><label for="total_amount">एकुण देय रक्कम</label></div>
         <div><input type="number" style="font-weight: 700;" name="total_amount" id="total_amount" value="0" class=" default_input form-control" readonly></div>
     </div>
-    <button type="submit" class="btn btn-danger mt-2" name="edit_bill">Edit Bill</button>
+    {% if edit_status == 1 %}
+        <button type="submit" class="btn btn-danger mt-2" name="edit_bill">Edit Bill</button>
+    {% endif %}
 </div>
 </form>
 <br><br><br><br><br>

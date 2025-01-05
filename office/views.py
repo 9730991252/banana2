@@ -226,8 +226,10 @@ def edit_company_bill(request, id):
         e = office_employee.objects.filter(mobile=mobile).first()
         if e:
             edit_pin = '1'
+            edit_status = 0
             if request.session.has_key('edit_pin'):
                 edit_pin = request.session['edit_pin']
+                edit_status = 1
             if int(edit_pin) == int(e.shope.edit_pin):
                 bill = Company_bill.objects.filter(id=id).first()
                 empty_box_weight = (bill.weight - bill.empty_box - bill.leaf_weight)
@@ -262,8 +264,8 @@ def edit_company_bill(request, id):
                     bill.eater=eater
                     bill.date=date
                     bill.save()
+                    del request.session['edit_pin']
                     return redirect(f'/office/view_company_bill/{id}')
-                del request.session['edit_pin']
             else:
                 del request.session['office_mobile']
                 return redirect('company_bill')
@@ -273,6 +275,7 @@ def edit_company_bill(request, id):
             'e':e,
             'bill':Company_bill.objects.filter(id=id).first(),
             'empty_box_weight':empty_box_weight,
+            'edit_status':edit_status
 
         }
         return render(request, 'office/edit_company_bill.html', context)
