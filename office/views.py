@@ -286,11 +286,12 @@ def company_bill(request):
         if 'check_pin'in request.POST: 
             id = request.POST.get('id')
             pin = request.POST.get('pin')
-            print(e.shope.edit_pin)
-            if int(e.shope.edit_pin) == int(pin):
+            if str(e.shope.edit_pin) == str(pin):
                 request.session['edit_pin'] = request.POST["pin"]
                 return redirect(f'/office/edit_company_bill/{id}')
             else:
+                del request.session['office_mobile']
+                messages.warning(request, "चुकीचा ' एडिट पीन  '")
                 return redirect('company_bill')
 
         context={
