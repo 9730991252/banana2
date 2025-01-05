@@ -21,6 +21,64 @@ def office_home(request):
         return render(request, 'office/office_home.html', context)
     else:
         return redirect('login')
+
+@csrf_exempt
+def edit_farmer_bill(request, id):
+    if request.session.has_key('office_mobile'):
+        mobile = request.session['office_mobile']
+        e = office_employee.objects.filter(mobile=mobile).first()
+        if e:
+            edit_pin = '1'
+            edit_status = 0
+            bill = Farmer_bill.objects.filter(id=id).first()
+            if request.session.has_key('edit_pin'):
+                edit_pin = request.session['edit_pin']
+                edit_status = 1
+            if int(edit_pin) == int(e.shope.edit_pin):
+                empty_box_weight = (bill.weight - bill.empty_box - bill.leaf_weight)
+                if 'chang_farmer'in request.POST:
+                    farmer_id = request.POST.get('farmer_id')
+                    bill.farmer_id=farmer_id
+                    bill.save()
+                if 'edit_bill' in request.POST:
+                    vehicale_number = request.POST.get('vehicale_number')
+                    total_vehicale_weight = request.POST.get('total_vehicale_weight')
+                    empty_vehicale_weight = request.POST.get('empty_vehicale_weight')
+                    weight = request.POST.get('weight')
+                    wasteage = request.POST.get('wasteage')
+                    leaf_weight = request.POST.get('leaf_weight')
+                    empty_box = request.POST.get('empty_box')
+                    prise = request.POST.get('prise')
+                    labor_amount = request.POST.get('labor')
+                    total_amount = request.POST.get('total_amount')
+                    bill.vehicale_number = vehicale_number
+                    bill.total_vehicale_weight = total_vehicale_weight
+                    bill.empty_vehicale_weight = empty_vehicale_weight
+                    bill.weight = weight
+                    bill.wasteage = wasteage
+                    bill.leaf_weight = leaf_weight
+                    bill.empty_box = empty_box
+                    bill.prise = prise
+                    bill.labor_amount = labor_amount
+                    bill.total_amount = total_amount
+                    bill.save()
+                    del request.session['edit_pin']
+                    return redirect(f'/office/view_farmer_bill/{id}')
+            else:
+                del request.session['office_mobile']
+                return redirect('farmer_bill')
+        else:
+            return redirect('farmer_bill')
+        context = {
+            'e': e,
+            'bill': Farmer_bill.objects.filter(id=id).first(),
+            'empty_box_weight': empty_box_weight,
+            'edit_status': edit_status,
+            'farmer': Farmer.objects.filter(shope_id=e.shope.id)
+        }
+        return render(request, 'office/edit_farmer_bill.html', context)
+    else:
+        return redirect('login')
     
 def company_bill_details(request, id):
     if request.session.has_key('office_mobile'):
@@ -233,8 +291,13 @@ def edit_company_bill(request, id):
             if int(edit_pin) == int(e.shope.edit_pin):
                 bill = Company_bill.objects.filter(id=id).first()
                 empty_box_weight = (bill.weight - bill.empty_box - bill.leaf_weight)
-                if 'edit_bill'in request.POST:
+                if 'chang_company'in request.POST:
                     company_id = request.POST.get('company_id')
+                    bill.company_id=company_id
+                    bill.save()
+                    
+                if 'edit_bill'in request.POST:
+                    
                     vehicale_number = request.POST.get('vehicale_number')
                     total_vehicale_weight = request.POST.get('total_vehicale_weight')
                     empty_vehicale_weight = request.POST.get('empty_vehicale_weight')
@@ -252,7 +315,6 @@ def edit_company_bill(request, id):
                     bill.leaf_weight=leaf_weight
                     bill.total_vehicale_weight=total_vehicale_weight
                     bill.empty_vehicale_weight=empty_vehicale_weight
-                    bill.company.id=company_id
                     bill.vehicale_number=vehicale_number
                     bill.weight=weight
                     bill.empty_box=empty_box
@@ -275,7 +337,8 @@ def edit_company_bill(request, id):
             'e':e,
             'bill':Company_bill.objects.filter(id=id).first(),
             'empty_box_weight':empty_box_weight,
-            'edit_status':edit_status
+            'edit_status':edit_status,
+            'company':Company.objects.filter(shope_id=e.shope_id, status=1)
 
         }
         return render(request, 'office/edit_company_bill.html', context)
@@ -428,6 +491,16 @@ def farmer_bill(request):
     if request.session.has_key('office_mobile'):
         mobile = request.session['office_mobile']
         e = office_employee.objects.filter(mobile=mobile).first()
+        if 'check_pin'in request.POST: 
+            id = request.POST.get('id')
+            pin = request.POST.get('pin')
+            if str(e.shope.edit_pin) == str(pin):
+                request.session['edit_pin'] = request.POST["pin"]
+                return redirect(f'/office/edit_farmer_bill/{id}')
+            else:
+                del request.session['office_mobile']
+                messages.warning(request, "चुकीचा ' एडिट पीन  '")
+                return redirect('company_bill')
         context={
             'e':e,
             'bill':Farmer_bill.objects.filter(shope_id=e.shope.id).order_by('-id'),

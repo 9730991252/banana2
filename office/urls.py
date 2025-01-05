@@ -16,4 +16,5 @@ urlpatterns = [
     path('logo/', views.logo, name='logo'),
     path('company_bill_details/<int:id>', views.company_bill_details, name='company_bill_details'),
     path('edit_company_bill/<int:id>', views.edit_company_bill, name='edit_company_bill'),
+    path('edit_farmer_bill/<int:id>', views.edit_farmer_bill, name='edit_farmer_bill'),
 ]
