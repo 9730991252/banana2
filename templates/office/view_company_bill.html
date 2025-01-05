@@ -377,11 +377,6 @@ function createPDF() {
         document.getElementById('empty_vehicale_weight1').style.display = 'none'
         document.getElementById('empty_vehicale_weight2').style.display = 'none'
     }
-    leaf_weight2 = document.getElementById('leaf_weight2').innerText;
-    if(Number(leaf_weight2) == 0){
-        document.getElementById('leaf_weight1').style.display = 'none'
-        document.getElementById('leaf_weight2').style.display = 'none'
-    }
     empty_box2 = document.getElementById('empty_box2').innerText;
     if(Number(empty_box2) == 0){
         document.getElementById('empty_box1').style.display = 'none'
@@ -404,7 +399,7 @@ function createPDF() {
         document.getElementById('service_charge1').style.display = 'none'
         document.getElementById('service_charge2').style.display = 'none'
     }
-    leaf_weight2 = document.getElementById('leaf_weight').innerText;
+    leaf_weight2 = document.getElementById('leaf_weight2').innerText;
     if(Number(leaf_weight2) == 0){
         document.getElementById('leaf_weight1').style.display = 'none'
         document.getElementById('leaf_weight2').style.display = 'none'
