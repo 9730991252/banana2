@@ -131,6 +131,7 @@
 
         <div class="text-center hide">
             <button class="btn btn-success" onclick="createPDF()">download pdf</button>
+            <button class="btn btn-primary" onclick="createimage()">download Image</button>
         </div>
 
 
@@ -292,6 +293,8 @@
 <br><br><br>
 <!------------------------------------- ------------------------------------------->
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js" integrity="sha512-01CJ9/g7e8cUmY0DFTMcUw/ikS799FHiOA0eyHsUWfOetgbx/t6oV4otQ5zXKQyIrQGTHSmRVPIgrgLcZi/WMA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>    
+
 
 <script>
     function save_date_farmer_bill(){
@@ -384,6 +387,24 @@ html2pdf().set(opt).from(pdf).save().then(function(){
     document.getElementById('date_box2').style.display = 'none'
     document.getElementById('date_box1').style.display = 'unset'
 });
+}
+////////////////////////
+function createimage() {
+document.getElementById('logo_img').style.display = 'unset'
+document.getElementById('date_box1').style.display = 'none'
+document.getElementById('date_box2').style.display = 'unset'
+
+var canvas = document.getElementById("canvas");
+
+domtoimage.toJpeg(canvas).then((data)=>{
+            var link =  document.createElement("a");
+            link.download = '{{bill.farmer.name}} '+ new Date().toLocaleString() +' .jpeg';
+            link.href = data;
+            link.click();
+            document.getElementById('logo_img').style.display = 'none'
+    document.getElementById('date_box2').style.display = 'none'
+    document.getElementById('date_box1').style.display = 'unset'
+        });
 }
 
 </script>
