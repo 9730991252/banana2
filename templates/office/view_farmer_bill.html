@@ -125,6 +125,7 @@
         }
     }
     </style>
+
     <div class="container">
     <div>
         
@@ -389,12 +390,21 @@ html2pdf().set(opt).from(pdf).save().then(function(){
 });
 }
 ////////////////////////
+
+
 function createimage() {
 document.getElementById('logo_img').style.display = 'unset'
 document.getElementById('date_box1').style.display = 'none'
 document.getElementById('date_box2').style.display = 'unset'
 
 var canvas = document.getElementById("canvas");
+
+var imageWidth = 800;  // You can customize this value
+var imageHeight = 600; // You can customize this value
+
+  // Set the canvas size to the desired image size
+  canvas.width = imageWidth;
+  canvas.height = imageHeight;
 
 domtoimage.toJpeg(canvas).then((data)=>{
             var link =  document.createElement("a");
