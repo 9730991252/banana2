@@ -176,7 +176,39 @@ def new_company_bill(request):
         return redirect('login')
     
 @csrf_exempt
-def view_company_bill(request, id):
+def generate_farmer_bill_image(request, id):
+    if request.session.has_key('office_mobile'):
+        mobile = request.session['office_mobile']
+        e = office_employee.objects.filter(mobile=mobile).first()
+        bill = Farmer_bill.objects.filter(id=id).first()
+        empty_box_weight = (bill.weight - bill.empty_box - bill.leaf_weight)
+        wasteage_weight = (empty_box_weight + bill.wasteage)
+        danda_weight = (wasteage_weight / 100) * 8
+        total_weight = (wasteage_weight + danda_weight)
+        amount = math.ceil(bill.prise * math.floor(total_weight))
+        total_amount_words = num2words(bill.total_amount)
+        signature = Signature.objects.filter(id=bill.office_employee.id).first()
+        logo = Logo.objects.filter(shope_id=e.shope.id).first()
+
+        context = {
+            'e': e,
+            'bill': bill,
+            'empty_box_weight': empty_box_weight,
+            'wasteage_weight': wasteage_weight,
+            'danda_weight': danda_weight,
+            'total_weight': total_weight,
+            'amount': amount,
+            'total_amount_words': total_amount_words,
+            'signature': signature,
+            'logo': logo,
+        }
+
+        return render(request, 'office/generate_farmer_bill_image.html', context)
+    else:
+        return redirect('login')
+
+@csrf_exempt
+def view_company_bill(request, generate):
     if request.session.has_key('office_mobile'):
         mobile = request.session['office_mobile']
         e = office_employee.objects.filter(mobile=mobile).first()
