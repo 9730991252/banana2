@@ -208,7 +208,7 @@ def generate_farmer_bill_image(request, id):
         return redirect('login')
 
 @csrf_exempt
-def view_company_bill(request, generate):
+def view_company_bill(request, id):
     if request.session.has_key('office_mobile'):
         mobile = request.session['office_mobile']
         e = office_employee.objects.filter(mobile=mobile).first()

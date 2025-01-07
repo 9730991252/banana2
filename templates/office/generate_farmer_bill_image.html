@@ -12,10 +12,11 @@
     }
     .main_box{
         width: 8in;
-        margin:  0 auto;
         text-align: center;
         color: black;
         background-color: white;
+        margin: 10px;
+        padding: 40px;
         div{
             z-index: 1321231;
         }
@@ -114,7 +115,7 @@
     </style>
 
     <div class="container">
-    <div>
+    <div style="background-color: white;padding: 100px;">
         <div class="main_box" id="canvas">
 
         <div class="text-center"><h5>शेतकरी खरेदी पावती</h5></div>
@@ -214,6 +215,7 @@ domtoimage.toJpeg(canvas).then((data)=>{
             link.download = '{{bill.farmer.name}} '+ new Date().toLocaleString() +' .jpeg';
             link.href = data;
             link.click();
+            window.location.href = "{% url 'view_farmer_bill' bill.id %}";
         });
 
 

@@ -24,6 +24,7 @@ def login(request):
                 return redirect('office_home')
             else:
                 return redirect('/login/')
+            
     return render(request, 'home/login.html')
 
 def owner_logout(request):
