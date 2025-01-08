@@ -130,8 +130,7 @@
         <div class="flex p-2 " style="justify-content: space-between;">
             <div>बिल नं. &nbsp;<b>{{bill.bill_number}}</b></div>
 
-            <div id="date_box1"><input onchange="save_date_farmer_bill(),location.reload()" style="border: none;" type="date" value="{{bill.date |date:'Y-m-d' }}" name="date" id="date"></div>
-            <div id="date_box2" style="display: none;">दिनांक &nbsp; {{bill.date | date:'d-m-y'}}</div>
+            <div id="date_box2">दिनांक &nbsp; {{bill.date | date:'d-m-y'}}</div>
             <div class="vehicale_number">गाडी नंबर  {{bill.vehicale_number}}</div>
         </div>
         <div class="flex p-2" style="font-size: 20px; flex-wrap: wrap; justify-content: space-between; ">

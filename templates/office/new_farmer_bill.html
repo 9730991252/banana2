@@ -151,7 +151,7 @@
         <div><input type="number" style="font-weight: 700;" name="total_amount" id="total_amount" value="0" class=" default_input form-control" readonly></div>
     </div>
     
-    {% if selected_farmer_status != 0 %}<button type="submit" class="btn btn-danger mt-2" name="complete_bill">Complete Bill</button>{% endif %}
+    {% if selected_farmer_status != 0 %}<button style="display: none;" type="submit" class="btn btn-danger mt-2" name="complete_bill" id="complete_bill_btn">Complete Bill</button>{% endif %}
 </div>
 </form>
 {% endif %}
@@ -237,15 +237,26 @@
     function calculate_prise(){
         total_weight = document.getElementById('total_weight').value;
         prise = document.getElementById('prise').value;
+
+
         amount = prise * Math.floor(total_weight)
         document.getElementById('amount').value=amount
         
         labor_amount = total_weight * 0.4 
         labor_amount = labor_amount.toFixed(0)
         document.getElementById('labor').value = labor_amount
-
+        
         total_amount = amount - labor_amount
         document.getElementById('total_amount').value = total_amount
+        if (Number(total_amount) < 0){
+            total_amount = document.getElementById('total_amount').value = 0
+        }
+        if (Number(total_amount) > 0){
+            document.getElementById('complete_bill_btn').style.display = 'unset'
+        }
+        if (Number(total_amount) == 0){
+            document.getElementById('complete_bill_btn').style.display = 'none'
+        }
     }
     
     function farmer_check(){
