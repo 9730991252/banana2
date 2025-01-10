@@ -7,4 +7,5 @@ urlpatterns = [
     path('ajax/', include('ajax.urls')),
     path('office/', include('office.urls')),
     path('owner/', include('owner.urls')),
+    path('report/', include('report.urls')),
 ]+ static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

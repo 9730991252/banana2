@@ -5,6 +5,78 @@ from math import *
 import math
 from datetime import date
 register = template.Library()
+
+@register.simple_tag()
+def bill_company_paid_amount_bank(bill_id):
+    if bill_id:
+        b = Company_bank_transition.objects.filter(company_bill_id=bill_id).aggregate(Sum('amount'))
+        bank = b['amount__sum']
+        return bank if bank else 0
+
+@register.simple_tag()
+def bill_company_paid_amount_phonepe(bill_id):
+    if bill_id:
+        p = Company_Phonepe_transition.objects.filter(company_bill_id=bill_id).aggregate(Sum('amount'))
+        phonepe = p['amount__sum']
+        return phonepe if phonepe else 0
+
+@register.simple_tag()
+def bill_company_paid_amount_cash(bill_id):
+    if bill_id:
+        c = Company_cash_transition.objects.filter(company_bill_id=bill_id).aggregate(Sum('amount'))
+        cash = c['amount__sum']
+        return cash if cash else 0
+
+@register.simple_tag()
+def bill_company_paid_amount(bill_id):
+    if bill_id:
+        total_paid_amount = 0
+        
+        c = Company_cash_transition.objects.filter(company_bill_id=bill_id).aggregate(Sum('amount'))
+        cash = c['amount__sum']
+        if cash:
+            total_paid_amount += cash
+        
+        p = Company_Phonepe_transition.objects.filter(company_bill_id=bill_id).aggregate(Sum('amount'))
+        phonepe = p['amount__sum']
+        if phonepe:
+            total_paid_amount += phonepe
+        
+        b = Company_bank_transition.objects.filter(company_bill_id=bill_id).aggregate(Sum('amount'))
+        bank = b['amount__sum']
+        if bank:
+            total_paid_amount += bank
+        
+        return total_paid_amount
+
+@register.simple_tag()
+def bill_company_pending_amount(bill_id):
+    if bill_id:
+        total_pending_amount = ''
+        
+        bill = Company_bill.objects.filter(id=bill_id).aggregate(Sum('total_amount'))
+        total_pending_amount = bill['total_amount__sum']
+        
+        c = Company_cash_transition.objects.filter(company_bill_id=bill_id).aggregate(Sum('amount'))
+        cash = c['amount__sum']
+        if cash:
+            total_pending_amount -= cash
+        
+        p = Company_Phonepe_transition.objects.filter(company_bill_id=bill_id).aggregate(Sum('amount'))
+        phonepe = p['amount__sum']
+        if phonepe:
+            total_pending_amount -= phonepe
+        
+        b = Company_bank_transition.objects.filter(company_bill_id=bill_id).aggregate(Sum('amount'))
+        bank = b['amount__sum']
+        if bank:
+            total_pending_amount -= bank
+        
+        if total_pending_amount is None:
+            return 0
+        else:
+            return total_pending_amount
+
 @register.simple_tag()
 def user_pending_bill_amount(user_id):
     if user_id:

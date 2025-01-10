@@ -21,6 +21,17 @@ def office_home(request):
         return render(request, 'office/office_home.html', context)
     else:
         return redirect('login')
+    
+def report(request):
+    if request.session.has_key('office_mobile'):
+        mobile = request.session['office_mobile']
+        e = office_employee.objects.filter(mobile=mobile).first()
+        context={
+            'e':e,
+        }
+        return render(request, 'office/report.html', context)
+    else:
+        return redirect('login')
 
 @csrf_exempt
 def edit_farmer_bill(request, id):

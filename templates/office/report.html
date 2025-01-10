@@ -1,0 +1,21 @@
+{% extends 'home/base.html' %}
+{% block head %}
+{% endblock head %}
+{% block content %}
+{% load office_tag %}
+{% include 'include/alert.html' %}
+<div>
+    welcome - {{e.name}}
+</div>
+{% include 'include/office/office_menu.html' %}
+<div class="container row text-center">
+    <div class="col-6 text-center">
+        <a href="/report/download_all_company_report/" class="btn btn-success">Company <i class="fa fa-download" aria-hidden="true"></i></a>
+    </div>
+    <div class="col-6 text-center">
+        <a href="/office/download_all_company_report/" class="btn btn-info">Farmer <i class="fa fa-download" aria-hidden="true"></i></a>
+    </div>
+
+</div>
+
+{% endblock content %}
