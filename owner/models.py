@@ -31,7 +31,7 @@ class Farmer_bill(models.Model):
     total_amount = models.FloatField()
     paid_status = models.IntegerField(default=0)
     labor_amount = models.FloatField(null=True)
-    date = models.DateField(auto_now_add=True)
+    date = models.DateField()
     bill_number = models.IntegerField(null=True)
     added_date = models.DateTimeField(auto_now_add=True)
     

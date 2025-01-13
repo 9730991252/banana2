@@ -521,6 +521,7 @@ def new_farmer_bill(request):
         if 'complete_bill'in request.POST:
             farmer_id = request.POST.get('farmer_id')
             shope_id = e.shope.id
+            date = request.POST.get('date')
             vehicale_number = request.POST.get('vehicale_number')
             total_vehicale_weight = request.POST.get('total_vehicale_weight')
             empty_vehicale_weight = request.POST.get('empty_vehicale_weight')
@@ -548,6 +549,7 @@ def new_farmer_bill(request):
                 bill_number=bill_number,
                 labor_amount=labor_amount,
                 leaf_weight=leaf_weight,
+                date=date
             ).save()
             f = Farmer_bill.objects.filter(shope_id=shope_id).last()
             return redirect(f'/office/view_farmer_bill/{f.id}')

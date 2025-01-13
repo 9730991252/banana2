@@ -14,7 +14,7 @@ def download_all_company_report(request):
         e = office_employee.objects.filter(mobile=mobile).first()
         context={
             'e':e,
-            'bill':Company_bill.objects.filter(shope_id=e.shope_id),
+            'company':Company.objects.filter(shope_id=e.shope_id),
 
         }
         return render(request, 'report/download_all_company_report.html', context)

@@ -4,7 +4,53 @@ from django.db.models import Avg, Sum, Min, Max
 from math import *
 import math
 from datetime import date
+from django.utils.safestring import mark_safe
 register = template.Library()
+
+@register.filter(is_safe=True)
+@register.simple_tag()
+def bill_amount_detail(bill_id):
+    if bill_id:
+        bank = bill_company_paid_amount_bank(bill_id)
+        phonepe = bill_company_paid_amount_phonepe(bill_id)
+        cash = bill_company_paid_amount_cash(bill_id)
+        
+        if bank != 0 and phonepe != 0 and cash != 0:
+            details = f"Bank { bank }, Phonepe {phonepe}, Cash {cash}"
+        
+        elif bank != 0 and phonepe != 0:
+            details = f"Bank { bank }, Phonepe {phonepe}"
+            
+        elif bank != 0 :
+            details = f"Bank { bank }"
+            
+            
+        elif phonepe != 0 and cash != 0:
+            details = f"Phonepe {phonepe}, Cash {cash}"
+            
+        elif bank != 0 and cash != 0:
+            details = f"Bank { bank }, Cash {cash}"
+            
+        elif phonepe != 0:
+            details = f"Phonepe {phonepe}"
+        elif cash != 0:
+            details = f"Cash {cash}"
+        else:
+            details = " 0  "
+
+        return mark_safe(details)
+    return ""
+
+@register.inclusion_tag('inclusion_tag/office/company_details.html')
+def company_details(company_id):
+    if company_id:
+        company = Company.objects.get(id=company_id)
+        bills = Company_bill.objects.filter(company_id=company_id)
+        return {
+            'company': company,
+            'bill':bills
+        }
+    return {}
 
 @register.simple_tag()
 def bill_company_paid_amount_bank(bill_id):
