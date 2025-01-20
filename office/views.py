@@ -22,6 +22,91 @@ def office_home(request):
     else:
         return redirect('login')
     
+def money(request):
+    if request.session.has_key('office_mobile'):
+        mobile = request.session['office_mobile']
+        e = office_employee.objects.filter(mobile=mobile).first()
+        context={
+            'e':e,
+            'bill':Farmer_bill.objects.filter(id=31).first(),
+            'all_users':office_employee.objects.filter(shope_id=e.shope.id),
+            'company':Company.objects.filter(shope_id=e.shope_id)
+        }
+        return render(request, 'office/money.html', context)
+    else:
+        return redirect('login')
+    
+
+@csrf_exempt
+def money_company_details(request,id):
+    if request.session.has_key('office_mobile'):
+        mobile = request.session['office_mobile']
+        e = office_employee.objects.filter(mobile=mobile).first()
+        
+        bill_amount = Company_bill.objects.filter(company_id=id).aggregate(Sum('total_amount'))['total_amount__sum']
+        if bill_amount == None:
+            bill_amount = 0
+        
+        recived_amount = company_recived_payment_transaction.objects.filter(shope_id=e.shope_id, company_id=id).aggregate(Sum('amount'))['amount__sum']
+        if recived_amount == None:
+            recived_amount = 0
+            
+        final_amount = int(bill_amount) - int(recived_amount)
+        
+        if 'cash'in request.POST:
+            amount = request.POST.get('cash_amount')
+            date = request.POST.get('date')
+            company_recived_payment_transaction(
+                shope_id=e.shope.id,
+                office_employee_id=e.id,
+                company_id=id,
+                amount=amount,
+                payment_type='Cash',
+                date=date
+            ).save()
+            return redirect('money_company_details', id=id)
+        
+        if 'phone_pe'in request.POST:
+            amount = request.POST.get('phone_pe_amount')
+            phonepe_number = request.POST.get('phonepe_number')
+            date=request.POST.get('date')
+            company_recived_payment_transaction(
+                shope_id=e.shope.id,
+                office_employee_id=e.id,
+                company_id=id,
+                amount=amount,
+                phonepe_number=phonepe_number,
+                payment_type='PhonePe',
+                date=date
+            ).save()
+            return redirect('money_company_details', id=id)
+        if 'bank'in request.POST:
+            amount = request.POST.get('bank_amount')
+            bank_number = request.POST.get('bank_number')
+            date = request.POST.get('date')
+            company_recived_payment_transaction(
+                shope_id=e.shope.id,
+                office_employee_id=e.id,
+                company_id=id,
+                amount=amount,
+                bank_number=bank_number,
+                payment_type='Bank',
+                date=date
+            ).save()
+            return redirect('money_company_details', id=id)
+        context={ 
+            'e':e,
+            'company':Company.objects.filter(id=id).first(),
+            'final_amount':final_amount,
+            'recived_amount':recived_amount,
+            'bill_amount':bill_amount,
+            'transaction':company_recived_payment_transaction.objects.filter(company_id=id).order_by('payment_type','date'),
+            'bill':Company_bill.objects.filter(company_id=id).order_by('-id')
+        }
+        return render(request, 'office/money_company_details.html', context)
+    else:
+        return redirect('login')
+    
 def report(request):
     if request.session.has_key('office_mobile'):
         mobile = request.session['office_mobile']
@@ -267,61 +352,7 @@ def view_company_bill(request, id):
         signature = Signature.objects.filter(id=bill.office_employee.id).first()
         total_credit = 0
         total_pending_amount = bill.total_amount
-        
-        cash = Company_cash_transition.objects.filter(company_bill_id=bill.id)
-        cash_amount = 0
-        for c in cash:
-            total_credit += c.amount
-            cash_amount += c.amount
-            total_pending_amount -= c.amount
-            
-        p = Company_Phonepe_transition.objects.filter(company_bill_id=bill.id)
-        phonepe_amount = 0
-        for p in p:
-            total_credit += p.amount
-            phonepe_amount += p.amount
-            total_pending_amount -= p.amount
-            
-        b = Company_bank_transition.objects.filter(company_bill_id=bill.id)
-        bank_amount = 0
-        for b in b:
-            total_credit += b.amount
-            bank_amount += b.amount
-            total_pending_amount -= b.amount
-        
-        if 'save_cash_amount'in request.POST:
-            amount = request.POST.get('cash_amount')
-            Company_cash_transition(
-                shope_id=e.shope.id,
-                office_employee_id=e.id,
-                company_bill_id=bill.id,
-                amount=amount,
-            ).save()
-            return redirect(f'/office/view_company_bill/{bill.id}')
-        
-        if 'save_phonepe_amount'in request.POST:
-            mobile = request.POST.get('mobile')
-            amount = request.POST.get('amount')
-            Company_Phonepe_transition(
-                shope_id=e.shope.id,
-                office_employee_id=e.id,
-                company_bill_id=bill.id,
-                mobile=mobile,
-                amount=amount,
-            ).save()
-            return redirect(f'/office/view_company_bill/{bill.id}')        
-        
-        if 'save_bank_amount'in request.POST:
-            bank_number = request.POST.get('bank_number')
-            amount = request.POST.get('amount')
-            Company_bank_transition(
-                shope_id=e.shope.id,
-                office_employee_id=e.id,
-                company_bill_id=bill.id,
-                bank_number=bank_number,
-                amount=amount,
-            ).save()
-            return redirect(f'/office/view_company_bill/{bill.id}')
+    
         if bill.paid_status == 0:
             if total_pending_amount == 0:
                 bill.paid_status = 1
@@ -339,12 +370,6 @@ def view_company_bill(request, id):
             'signature':signature,
             'logo':Logo.objects.filter(shope_id=e.shope.id).first(),
             'total_pending_amount':total_pending_amount,
-            'cash':cash,
-            'phonepe_transition':Company_Phonepe_transition.objects.filter(company_bill_id=bill.id),
-            'bank_transition':Company_bank_transition.objects.filter(company_bill_id=bill.id),
-            'cash_amount':cash_amount,
-            'phonepe_amount':phonepe_amount,
-            'bank_amount':bank_amount,
             'total_credit':total_credit
 
         }   

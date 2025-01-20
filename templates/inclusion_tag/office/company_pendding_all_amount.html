@@ -44,7 +44,7 @@
         var total_amount = 0
     </script>
         {% for c in company %}
-        <a href="/office/company_bill_details/{{c.id}}">
+        <a href="{% url 'money_company_details' c.id %}">
             <div>{{c.name}}</div>
             <div style="color: rgb(5, 145, 0);font-weight: 700;">{% company_pendding_bill_amount c.id as company_pendding_bill_amount %}{{company_pendding_bill_amount}}</div>
             <script>

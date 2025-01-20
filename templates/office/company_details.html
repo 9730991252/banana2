@@ -72,7 +72,7 @@
         <a href="/office/view_company_bill/{{b.id}}" {% if b.paid_status == 1 %} style="display: none;"{% endif %}><div ><b>{{b.date}}</b></div></a>
         <a href="/office/view_company_bill/{{b.id}}" {% if b.paid_status == 1 %} style="display: none;"{% endif %}><div class="text-danger" ><b>{{b.total_amount}}</b></div></a>
         {% if b.paid_status == 0 %}<script>total_amount = total_amount + Number('{{b.total_amount}}')</script>{% endif %}
-        {% endfor %}
+    {% endfor %}
         <div style="grid-column-start: 1;grid-column-end: 3;"><b>एकूण रक्कम</b></div>
         
         <div><b class="text-danger" id="total_amount">0</b></div>

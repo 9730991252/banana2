@@ -1,0 +1,93 @@
+{% extends 'home/base.html' %}
+{% block head %}
+{% endblock head %}
+{% block content %}
+{% load office_tag %}
+{% include 'include/alert.html' %}
+<div>
+    welcome - {{e.name}}
+</div>
+{% include 'include/office/office_menu.html' %}
+
+
+<br>
+<div id="company_result">
+<div class="company-cards">
+    {% for company in company %}
+    <div class="card" onclick="select_company('{{company.id}}')">
+        <h6>{{ company.name }}</h6>
+        <p>{{ company.address }}</p>
+    </div>
+
+    {% endfor %}
+</div>
+</div>
+
+<style>
+    .company-cards {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: center;
+    }
+    .card {
+        text-align: center;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 16px;
+        width: 300px;
+        box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1);
+    }
+    .card h2 {
+        margin-top: 0;
+    }
+</style>
+
+<!-- ?--------------------------------------------------------------------- -->
+<footer>
+    <div class="footer-content">
+        <input type="text" class="form-control" id="words" oninput="search_company(words.value)" placeholder="कंपनी शोधा">
+    </div>
+</footer>
+<style>
+    footer {
+        background-color: lemonchiffon;
+        padding: 5px;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        box-shadow: 0 -2px 10px #2e2e2e1a;
+    }
+    .footer-content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        input{
+            width: 80%;
+        }
+    }
+</style>
+<!-- ?--------------------------------------------------------------------- -->
+
+
+
+<script>
+    function search_company(input){
+        $.ajax({
+            url: "{% url 'search_company' %}",
+            method: "GET",
+            data:{
+                words:input,
+                shope_id:'{{e.id}}',
+                },
+            success: function(res){
+                $("#company_result").html(res.t)
+            }
+        })
+    }
+    function select_company(id) {
+        window.location.href = "/office/money_company_details/" + id;
+    }
+
+</script>
+{% endblock content %}

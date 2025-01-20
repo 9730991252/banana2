@@ -66,7 +66,7 @@
 <div class="container">
     
     {% for b in bill %}
-        <div class="bill_box" {% if b.paid_status == 0 %} style="border-color: red;"{% else %} style="border-color: rgb(0, 255, 34);"{% endif %}>
+        <div class="bill_box" >
             <div class="flex">बिल नंबर - <b>{{b.bill_number}}</b></div>
             <div class="flex">
                 <div><b>{{b.company.name}}</b></div>
