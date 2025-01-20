@@ -64,10 +64,10 @@
     <div popover class="my_popover" id="my-popover-cash">
         <form method="POST">
             <label class="mb-2">रोख मिळालेली रक्कम </label>
-            <input type="date" name="date" class="form-control" required>
+            <input type="date" name="date" class="form-control" >
             <br>
-            <input type="number" name="cash_amount" class="form-control" placeholder="रोख रक्कम" required>
-            <button name="cash"  class="btn btn-danger mt-3" >submit</button>
+            <input type="number" name="cash_amount" class="form-control" placeholder="रोख रक्कम">
+            <button name="cash" onclick="document.getElementById('text_btn').style.display = 'none';"  id="text_btn"  class="btn btn-danger mt-3" >submit</button>
         </form>
     </div>
 

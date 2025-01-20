@@ -7,6 +7,7 @@ from num2words import num2words
 from django.db.models import Avg, Sum, Min, Max
 from django.contrib import messages 
 import time
+import datetime
 # Create your views here.
 def office_home(request):
     if request.session.has_key('office_mobile'):
@@ -54,45 +55,27 @@ def money_company_details(request,id):
         final_amount = int(bill_amount) - int(recived_amount)
         
         if 'cash'in request.POST:
+            time.sleep(1)
             amount = request.POST.get('cash_amount')
-            date = request.POST.get('date')
-            company_recived_payment_transaction(
-                shope_id=e.shope.id,
-                office_employee_id=e.id,
-                company_id=id,
-                amount=amount,
-                payment_type='Cash',
-                date=date
-            ).save()
+            da = request.POST.get('date')
+            if da and amount :
+                save_cash_company_amount(da, amount, e.shope_id, e.id,id)
+            else:
+                messages.warning(request,"please insert correct information")
+            
             return redirect('money_company_details', id=id)
         
         if 'phone_pe'in request.POST:
             amount = request.POST.get('phone_pe_amount')
             phonepe_number = request.POST.get('phonepe_number')
             date=request.POST.get('date')
-            company_recived_payment_transaction(
-                shope_id=e.shope.id,
-                office_employee_id=e.id,
-                company_id=id,
-                amount=amount,
-                phonepe_number=phonepe_number,
-                payment_type='PhonePe',
-                date=date
-            ).save()
-            return redirect('money_company_details', id=id)
+            save_phonepe_company_amount(date, amount, e.shope_id, e.id,id, phonepe_number)
+
         if 'bank'in request.POST:
             amount = request.POST.get('bank_amount')
             bank_number = request.POST.get('bank_number')
             date = request.POST.get('date')
-            company_recived_payment_transaction(
-                shope_id=e.shope.id,
-                office_employee_id=e.id,
-                company_id=id,
-                amount=amount,
-                bank_number=bank_number,
-                payment_type='Bank',
-                date=date
-            ).save()
+            save_bank_company_amount(date, amount, e.shope_id, e.id,id, bank_number)
             return redirect('money_company_details', id=id)
         context={ 
             'e':e,
@@ -106,6 +89,38 @@ def money_company_details(request,id):
         return render(request, 'office/money_company_details.html', context)
     else:
         return redirect('login')
+    
+def save_bank_company_amount(date, amount, shope_id, e_id,c_id, bank_number):
+        company_recived_payment_transaction(
+            shope_id=shope_id,
+            office_employee_id=e_id,
+            company_id=c_id,
+            amount=amount,
+            bank_number=bank_number,
+            payment_type='Bank',
+            date=date
+        ).save()
+    
+def save_phonepe_company_amount(date, amount, shope_id, e_id,c_id, phonepe_number):
+    company_recived_payment_transaction(
+        shope_id=shope_id,
+        office_employee_id=e_id,
+        company_id=c_id,
+        amount=amount,
+        phonepe_number=phonepe_number,
+        payment_type='PhonePe',
+        date=date
+    ).save()
+    
+def save_cash_company_amount(date, amount, shope_id, e_id,c_id) :
+    company_recived_payment_transaction(
+        shope_id=shope_id,
+        office_employee_id=e_id,
+        company_id=c_id,
+        amount=amount,
+        payment_type='Cash',
+        date=date
+    ).save()
     
 def report(request):
     if request.session.has_key('office_mobile'):
