@@ -597,7 +597,7 @@ def new_farmer_bill(request):
             'e':e,
             'selected_farmer_status':selected_farmer_status,
             'farmer':farmer,
-            # 'leaf_weight':Farmer_services.objects.filter(shope_id=e.shope.id,name='Leaf Weight').first()
+            'leaf_weight':Farmer_services.objects.filter(shope_id=e.shope.id,name='Leaf Weight').first()
         }
         return render(request, 'office/new_farmer_bill.html', context)
     else:
