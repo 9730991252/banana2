@@ -210,9 +210,11 @@
 
     function add_leaf_weight(input_id, add_input_id){
         from_input = document.getElementById('weight').value;
+
         input = document.getElementById(input_id).value;
         box = Number( document.getElementById('empty_box').value)
-        if (Number(from_input) < Number(input)){
+
+        if (Number((from_input - box)) < Number(input)){
             input = document.getElementById(input_id).value = 0
         }
         if (Number(from_input) == 0){

@@ -21,7 +21,7 @@ systemctl restart banana2.com.gunicorn
 exit
 
 
-
+                                                                                                                                                           
 _______________________________________
 
 
@@ -195,5 +195,5 @@ server{
 --------------------------------------- ssl ------------------
 
  certbot --nginx
-
- certbot --nginx -d janmanasnews.com -d www.janmanasnews.com
+                                                                                                                    
+ certbot --nginx -d janmanasnews.com -d www.janmanasnews.com                                                                                                                                          
