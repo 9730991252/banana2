@@ -2,6 +2,10 @@ from django.db import models
 from sunil.models import *
 from PIL import Image
 # Create your models here.
+# class Farmer_services(models.Model):
+    # shope = models.ForeignKey(Shope,on_delete=models.PROTECT,null=True)
+    # name = models.CharField(max_length=100)
+    # status = models.IntegerField(default=1)    
 class office_employee(models.Model):
     shope = models.ForeignKey(Shope,on_delete=models.PROTECT,null=True)
     name = models.CharField(max_length=100)
@@ -124,7 +128,3 @@ class company_recived_payment_transaction(models.Model):
     date = models.DateField()
     added_date = models.DateTimeField(auto_now_add=True)
     
-class Farmer_services(models.Model):
-    shope = models.ForeignKey(Shope,on_delete=models.PROTECT,null=True)
-    name = models.CharField(max_length=100)
-    status = models.IntegerField(default=1)    

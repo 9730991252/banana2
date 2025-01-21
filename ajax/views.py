@@ -40,7 +40,7 @@ def save_company(request):
     if request.method == 'GET':
         name = request.GET['name'].upper()
         shope_id = request.GET['shope_id']
-        
+
         c_id = ''
         if name:
             if Company.objects.filter(name = name, shope_id=shope_id).exists():
@@ -116,22 +116,22 @@ def save_date_farmer_bill(request):
 def add_leaf_weight_farmer_services(request):
     if request.method == 'GET':
         shope_id = request.GET['shope_id']
-        f = Farmer_services.objects.filter(shope_id=shope_id, name='Leaf Weight').first()
-        status = 1
-        if f:
-            if f.status == 1:
-                f.status = 0
-                f.save()
-                status = 0
-            else:
-                f.status = 1
-                f.save()
-        else:
-            Farmer_services(
-                shope_id=shope_id,
-                name = 'Leaf Weight'
-            ).save()
-    return JsonResponse({'status': status})
+        # f = Farmer_services.objects.filter(shope_id=shope_id, name='Leaf Weight').first()
+        # status = 1
+        # if f:
+        #     if f.status == 1:
+        #         f.status = 0
+        #         f.save()
+        #         status = 0
+        #     else:
+        #         f.status = 1
+        #         f.save()
+        # else:
+            # Farmer_services(
+            #     shope_id=shope_id,
+            #     name = 'Leaf Weight'
+            # ).save()
+    # return JsonResponse({'status': status})
 
 def pay_bill(request):
     if request.method == 'GET':

@@ -33,7 +33,7 @@ def farmer_services(request):
         shope = Shope.objects.filter(mobile=mobile).first()
         context={
             'shope':shope,
-            'leaf_weight':Farmer_services.objects.filter(shope_id=shope.id,name='Leaf Weight').first(),
+            # 'leaf_weight':Farmer_services.objects.filter(shope_id=shope.id,name='Leaf Weight').first(),
         }
         return render(request, 'owner/farmer_services.html', context)
     else:
