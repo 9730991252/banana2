@@ -178,6 +178,8 @@
             document.getElementById('weight').value = weight
 
         }
+        
+        calculate_prise()
     }
     function check_zero(input_id){
         input = document.getElementById(input_id).value
@@ -187,6 +189,7 @@
         }
         if(input > 0){
         }
+        
     }
     function add_empty_box(input_id, add_input_id){
         from_input = document.getElementById('weight').value;
@@ -202,6 +205,7 @@
             a = from_input - input
             document.getElementById(add_input_id).value = a
         }
+        add_leaf_weight(input_id, add_input_id)
     }
 
     function add_leaf_weight(input_id, add_input_id){
@@ -219,6 +223,8 @@
             a = Number(from_input - input - box)
             document.getElementById(add_input_id).value = a
         }
+        add_wasteage('empty_box_weight','wasteage','wasteage_weight')
+        calculate_prise()
     }
     
     function add_wasteage(old_weight,wasteage_input,add_input){
@@ -231,6 +237,7 @@
         
         total_weight = a + danda_weight
         document.getElementById('total_weight').value = total_weight
+        calculate_prise()
     }
     function calculate_labor_prise(){
         labor = document.getElementById('labor').value;
@@ -238,6 +245,7 @@
 
         t = (a - labor)
         document.getElementById('total_amount').value = t
+        
     }
     function calculate_prise(){
         total_weight = document.getElementById('total_weight').value;
