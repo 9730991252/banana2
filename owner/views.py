@@ -14,6 +14,41 @@ def owner_home(request):
         return render(request, 'owner/owner_home.html', context)
     else:
         return redirect('login')
+    
+def services(request):
+    if request.session.has_key('owner_mobile'):
+        mobile = request.session['owner_mobile']
+        shope = Shope.objects.filter(mobile=mobile).first()
+        context={
+            'shope':shope
+        }
+        return render(request, 'owner/services.html', context)
+    else:
+        return redirect('login')
+    
+@csrf_exempt
+def farmer_services(request):
+    if request.session.has_key('owner_mobile'):
+        mobile = request.session['owner_mobile']
+        shope = Shope.objects.filter(mobile=mobile).first()
+        context={
+            'shope':shope,
+            'leaf_weight':Farmer_services.objects.filter(shope_id=shope.id,name='Leaf Weight').first(),
+        }
+        return render(request, 'owner/farmer_services.html', context)
+    else:
+        return redirect('login')
+    
+def company_services(request):
+    if request.session.has_key('owner_mobile'):
+        mobile = request.session['owner_mobile']
+        shope = Shope.objects.filter(mobile=mobile).first()
+        context={
+            'shope':shope
+        }
+        return render(request, 'owner/company_services.html', context)
+    else:
+        return redirect('login')
      
 def add_employee(request):
     if request.session.has_key('owner_mobile'):

@@ -123,3 +123,8 @@ class company_recived_payment_transaction(models.Model):
     payment_type = models.CharField(max_length=100)
     date = models.DateField()
     added_date = models.DateTimeField(auto_now_add=True)
+    
+class Farmer_services(models.Model):
+    shope = models.ForeignKey(Shope,on_delete=models.PROTECT,null=True)
+    name = models.CharField(max_length=100)
+    status = models.IntegerField(default=1)    

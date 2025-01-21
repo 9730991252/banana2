@@ -9,4 +9,6 @@ urlpatterns = [
     path('search_company/', views.search_company, name='search_company'),
     path('save_date_company_bill/', views.save_date_company_bill, name='save_date_company_bill'),
     path('save_date_farmer_bill/', views.save_date_farmer_bill, name='save_date_farmer_bill'),
+    path('add_leaf_weight_farmer_services/', views.add_leaf_weight_farmer_services, name='add_leaf_weight_farmer_services'),
+    path('pay_bill/', views.pay_bill, name='pay_bill'),
 ]

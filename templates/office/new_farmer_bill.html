@@ -96,7 +96,7 @@
 
     <div class="containt_box" style="font-weight: 700;">
         <div><label for="weight">मालाचे वजन </label></div>
-        <div><input type="number" style="font-weight: 700;" name="weight" oninput="check_zero('weight'),add_empty_box('empty_box', 'empty_box_weight')" id="weight" class="form-control" required></div>
+        <div><input type="number" style="font-weight: 700;" name="weight" oninput="calculate_leaf_weight(),check_zero('weight'),add_empty_box('empty_box', 'empty_box_weight'),add_leaf_weight('leaf_weight', 'empty_box_weight')" id="weight" class="form-control" required></div>
     </div>
     
     <div class="containt_box">
@@ -105,7 +105,7 @@
     </div>
 
     <div class="containt_box">
-        <div><label for="leaf_weight">पाल्याचे वजन (वजा)</label></div>
+        <div><label for="leaf_weight">पाल्याचे वजन (वजा) 5 %</label></div>
         <div><input type="number" name="leaf_weight" oninput="check_zero('leaf_weight'),add_leaf_weight('leaf_weight', 'empty_box_weight')" id="leaf_weight" class="form-control" required></div>
     </div>
     
@@ -161,6 +161,7 @@
 </form>
 {% endif %}
 
+
 <script>
     function calculate_weight(){
         total_vehicale_weight = document.getElementById('total_vehicale_weight').value;
@@ -178,8 +179,22 @@
             document.getElementById('weight').value = weight
 
         }
+        if(Number('{{leaf_weight.status}}') == 1){
+            l = (weight / 100) * 5
+            document.getElementById('leaf_weight').value = l
+        }
+
         add_leaf_weight('leaf_weight', 'empty_box_weight')
         calculate_prise()
+    }
+    function calculate_leaf_weight(){
+        weight = document.getElementById('weight').value
+        if(Number('{{leaf_weight.status}}') == 1){
+            l = (weight / 100) * 5
+            document.getElementById('leaf_weight').value = l
+
+
+        }
     }
     function check_zero(input_id){
         input = document.getElementById(input_id).value
@@ -197,15 +212,11 @@
         if (Number(from_input) < Number(input)){
             input = document.getElementById(input_id).value = 0
         }
-        if (Number(from_input) == 0){
-            a = from_input - input
-            document.getElementById(add_input_id).value = a
-        }
         else{
             a = from_input - input
             document.getElementById(add_input_id).value = a
         }
-        add_leaf_weight(input_id, add_input_id)
+        add_leaf_weight('leaf_weight', 'empty_box_weight')
     }
 
     function add_leaf_weight(input_id, add_input_id){

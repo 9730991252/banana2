@@ -112,3 +112,38 @@ def save_date_farmer_bill(request):
         date = request.GET['date']
         Farmer_bill.objects.filter(id=bill_id).update(id=bill_id,date=date)
     return JsonResponse({'status': 1})
+
+def add_leaf_weight_farmer_services(request):
+    if request.method == 'GET':
+        shope_id = request.GET['shope_id']
+        f = Farmer_services.objects.filter(shope_id=shope_id, name='Leaf Weight').first()
+        status = 1
+        if f:
+            if f.status == 1:
+                f.status = 0
+                f.save()
+                status = 0
+            else:
+                f.status = 1
+                f.save()
+        else:
+            Farmer_services(
+                shope_id=shope_id,
+                name = 'Leaf Weight'
+            ).save()
+    return JsonResponse({'status': status})
+
+def pay_bill(request):
+    if request.method == 'GET':
+        bill_id = request.GET['bill_id']
+        f = Company_bill.objects.filter(id=bill_id).first()
+        status = 1
+        if f.paid_status == 1:
+            f.paid_status = 0
+            f.save()
+            status = 0
+        else:
+            f.paid_status = 1
+            f.save()
+
+    return JsonResponse({'status': status})

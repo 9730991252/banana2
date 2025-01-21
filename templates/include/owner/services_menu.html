@@ -1,0 +1,17 @@
+<style>
+    .menu{
+        display: flex;
+        width: 100%;
+        overflow: scroll;
+        gap: 10px;
+    }
+    .Services{
+        border: none;
+        background-color: #ffc107;
+        color: black;
+    }
+</style>
+<div class="menu">
+      <a  href="/owner/farmer_services/" class="my-1 {% if request.path == '/owner/farmer_services/' %}btn btn-warning{% else %}btn btn-primary{% endif %}">Farmer Services</a>
+      <a  href="/owner/company_services/" class="my-1 {% if request.path == '/owner/company_services/' %}btn btn-warning{% else %}btn btn-primary{% endif %}">Company Services</a>
+</div>
