@@ -165,6 +165,8 @@
             document.getElementById('weight').value = weight
 
         }
+        add_leaf_weight('leaf_weight', 'empty_box_weight')
+        calculate_prise()
     }
     function check_zero(input_id){
         input = document.getElementById(input_id).value
@@ -196,6 +198,9 @@
         from_input = document.getElementById('weight').value;
         input = document.getElementById(input_id).value;
         box = Number( document.getElementById('empty_box').value)
+        if (Number((from_input - box)) < Number(input)){
+            input = document.getElementById(input_id).value = 0
+        }
         if (Number(from_input) < Number(input)){
             input = document.getElementById(input_id).value = 0
         }
