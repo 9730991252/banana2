@@ -1,6 +1,10 @@
-<div class="flex" style="justify-content: center;">
-    <div>एकूण -</div>
-    <div>{{total}}</div>
+<div class="text-center">
+    {% if total_amount < 0 %}
+        <div class="text-success"><b>Rs.{{total_amount}}</b> शेतकऱ्याला ॲडव्हान्स दिला </div>
+    {% else %}
+        <div class="text-danger"><b>Rs.{{total_amount}}</b> एकूण देणे बाकी  </div>
+    {% endif %}
+    <b></b>
 </div>
 <style>
 .pendding_bill_box{
@@ -8,7 +12,8 @@
     grid-template-columns: 1fr 2fr;
     text-align: center;
     border-top: 1px solid black;
-    background-color: rgb(255, 225, 229);
+    background-color: rgb(255, 225, 226);
+
 }
 .pendding_bill{
     border-bottom: 1px solid black;
@@ -26,52 +31,62 @@ a{
 }
 </style>
 
+{% if farmer_bill %}
 <div class="pendding_bill_box">
-    <div class="pendding_bill">शेतकरी देणे बाकी बिल</div>
+    <div class="pendding_bill">शेतकरी बिले</div>
     <div class="div"><b>बिल</b></div>
     <div class="div"><b>रक्कम</b></div>
-    {% for b in farmer_pendding_bill %}
+    {% for b in farmer_bill %}
         <a href="/office/view_farmer_bill/{{b.id}}"><div class="div">{{b.bill_number}}</div></a>
-        <div class="div">{{b.pending_amount}}</div>
+        <div class="div text-danger"><b>{{b.total_amount}}</b></div>
     {% endfor %}
-    <div class="div" style="color: red;"><b>एकूण</b></div>
-    <div class="div" style="color: red;"><b>{{pending_amount_total}}</b></div>
+    <div class="div" style="background-color: white;color: rgb(255, 0, 0);"><b>एकूण</b></div>
+    <div class="div" style="background-color: white;color: red;"><b>{{total}}</b></div>
 </div>
 
 <!--?-------------------------------------------------------------->
+    {% if transaction %}
+    <style>
+    .completed_bill_box{
+        display: grid;
+        grid-template-columns: 1fr 1fr 2fr;
+        text-align: center;
+        border-top: 1px solid black;
+        background-color: rgb(225, 255, 231);
+    }
+    .completed_bill{
+        border-bottom: 1px solid black;
+        grid-column-start: 1;
+        grid-column-end: 4;
+        font-weight: 700;
+        color: rgb(0, 139, 12);
+    }
+    .div{
+        border: 1px solid rgba(146, 146, 146, 0.8);
+    }
+    a{
+        color: black;
+        text-decoration: none;
+    }
+    </style>
 
-<style>
-.completed_bill_box{
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    text-align: center;
-    border-top: 1px solid black;
-    background-color: rgb(225, 255, 231);
-}
-.completed_bill{
-    border-bottom: 1px solid black;
-    grid-column-start: 1;
-    grid-column-end: 3;
-    font-weight: 700;
-    color: rgb(0, 139, 12);
-}
-.div{
-    border: 1px solid rgba(146, 146, 146, 0.8);
-}
-a{
-    color: black;
-    text-decoration: none;
-}
-</style>
-
-<div class="completed_bill_box">
-    <div class="completed_bill">शेतकरी बिल पूर्ण झाले</div>
-    <div class="div"><b>बिल</b></div>
-    <div class="div"><b>रक्कम</b></div>
-    {% for b in farmer_completed_bill %}
-        <a href="/office/view_farmer_bill/{{b.id}}"><div class="div">{{b.bill_number}}</div></a>
-        <div class="div">{{b.amount}}</div>
-    {% endfor %}
-    <div class="div" style="color: green;"><b>एकूण</b></div>
-    <div class="div" style="color: green;"><b>{{completed_amount_total}}</b></div>
-</div>
+    <div class="completed_bill_box">
+        <div class="completed_bill">शेतकऱ्यास दिलेली रक्कम </div>
+        <div class="div"><b>Date</b></div>
+        <div class="div"><b>Type</b></div>
+        <div class="div"><b>रक्कम</b></div>
+        {% for b in transaction %}
+            <div class="div">{{b.date}}</div>
+            <div class="div">{{b.payment_type}} &nbsp;{% if b.payment_type == 'PhonePe' %}{{b.phonepe_number}}{% elif b.payment_type == 'Bank' %}{{b.bank_number}}{% endif %} </div>
+            <div class="div">{{b.amount}}</div>
+        {% endfor %}
+        <div class="div" style="background-color: white; color: green;"><b>एकूण</b></div>
+        <div class="div" style="background-color: white; color: green;"><b></b></div>
+        <div class="div" style="background-color: white; color: green;"><b>{{completed_amount_total}}</b></div>
+    </div>
+    {% else %}
+    <div class="text-center"><b>काहीच रक्कम दिलेली नाही.</b></div>
+    {% endif %}
+{% else %}
+<div class="text-center"><b>एकही बिल नाही </b></div>
+{% endif %}

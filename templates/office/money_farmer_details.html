@@ -1,0 +1,176 @@
+{% extends 'home/base.html' %}
+{% block head %}
+{% endblock head %}
+{% block content %}
+{% load office_tag %}
+{% include 'include/alert.html' %}
+<style>
+    *{
+    user-select: none;
+}
+</style>
+<div>
+    welcome - {{e.name}}
+</div>
+{% include 'include/office/office_menu.html' %}
+<div class="text-center">
+    <b>{{farmer.name}}</b><br>
+    {% if recived_amount > bill_amount %}
+        <div class="text-success"><b>Rs.{{final_amount}}</b> शेतकऱ्याला ॲडव्हान्स दिला </div>
+    {% else %}
+        <div class="text-danger"><b>Rs.{{final_amount}}</b> शेतकऱ्यास देणे बाकी  </div>
+    {% endif %}
+    <b></b>
+</div>
+<style>
+    .my_popover{
+        margin: 200px auto !important;
+        border: 1px solid black;
+        background-color: white !important;
+        width: 350px;
+        padding: 10px;
+        border-radius: 10px;
+    }
+</style>
+
+<br>
+<div class="container">
+    <div class="text-center">
+        <button popovertarget="my-popover-cash" class="btn  ms-3 btn-success">रोख</button>
+        <button popovertarget="my-popover-phone" class="btn ms-3  btn-primary">फोन पे</button>
+        <button popovertarget="my-popover-bank" class="btn  ms-3 btn-info">बँक</button>
+    </div>
+
+    <div popover class="my_popover" id="my-popover-phone">
+        <form method="POST">
+            <label class="mb-2">फोन पे मिळालेली रक्कम</label>
+            <input type="date" name="date" class="form-control" required>
+            <br>
+            <input type="number" class="form-control" name="phonepe_number" placeholder="फोन पे क्रमांक"  required>
+            <br>
+            <input type="number" class="form-control" name="phone_pe_amount" placeholder="फोन पे रक्कम" required>
+            <button class="btn btn-danger mt-3"  name="phone_pe">submit</button>
+        </form>
+    </div>
+    
+    <div popover class="my_popover" id="my-popover-bank">
+        <form method="POST">
+            <label class="mb-2">बँक मिळालेली रक्कम </label>
+            <input type="date"   name="date" class="form-control" required>
+            <br>
+            <input type="number" name="bank_number" class="form-control" placeholder="बँक खाते क्रमांक"  required>
+            <br>
+            <input type="number" name="bank_amount" class="form-control" placeholder="रक्कम"       required>
+            <button class="btn btn-danger mt-3" name="bank"  >submit</button>
+        </form>
+    </div>
+
+    <div popover class="my_popover" id="my-popover-cash">
+        <form method="POST">
+            <label class="mb-2">रोख मिळालेली रक्कम </label>
+            <input type="date" name="date" class="form-control" >
+            <br>
+            <input type="number" name="cash_amount" class="form-control" placeholder="रोख रक्कम">
+            <button name="cash" onclick="document.getElementById('text_btn').style.display = 'none';"  id="text_btn"  class="btn btn-danger mt-3" >submit</button>
+        </form>
+    </div>
+
+    <table class="table" >
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for trans in transaction %}
+            <tr>
+                <td>{{trans.date}}</td>
+                <td>{{trans.payment_type}} &nbsp;{% if trans.payment_type == 'PhonePe' %}{{trans.phonepe_number}}{% elif trans.payment_type == 'Bank' %}{{trans.bank_number}}{% endif %} </td>
+                <td><b>Rs.{{trans.amount}}</b></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <thead>
+                <th>Total</th>
+                <th></th>
+                <th><b>Rs.{{total_amount}}</b></th>
+        </thead>
+    </table>
+
+    <!--TODO--------------------------------------------------------------------->
+
+    <style>
+        a{
+            text-decoration: none;
+            color: black;
+        }
+        .company_bill_box{
+            padding: 1px;
+            background-color: black;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-gap: 1px;
+            div{
+                background-color: white;
+                text-align: center;
+                &:hover{
+                    box-shadow: 0px 0px 5px 0px black;
+                    z-index: 1;
+                }
+            }
+        }
+
+    </style>
+
+    
+
+    <div class="company_bill_box">
+        <script>var total_amount = 0
+         </script>
+        <div>बिल नंबर</div>
+        <div>तारीख</div>
+        <div>रक्कम</div>
+        {% for b in bill %}
+            <div ><b>{{b.bill_number}}</b></div>
+            <div ><b>{{b.date}}</b></div>
+            <div onclick="pay_bill('{{b.id}}')" id="bill_amount_box{{b.id}}" class=" {% if b.paid_status == 0 %} text-danger {% else %} text-success {% endif %}" ><b>{{b.total_amount}}</b></div>
+            <script>total_amount = total_amount + Number('{{b.total_amount}}')</script>
+        {% endfor %}
+            <div style="grid-column-start: 1;grid-column-end: 3;"><b>एकूण रक्कम</b></div>
+            
+            <div><b class="text-danger" id="total_amount">0</b></div>
+            <script>document.getElementById('total_amount').innerHTML = total_amount</script>
+        </div>
+</div>
+
+
+
+<script>
+    function pay_bill(id){
+        $.ajax({
+            url: "{% url 'chang_farmer_bill_paid_status' %}",
+            method: "GET",
+            data:{
+                bill_id:id,
+                },
+            success: function(res){
+                if (res.status == 1){
+                    document.getElementById('bill_amount_box'+id).classList.remove('text-danger')
+                    document.getElementById('bill_amount_box'+id).classList.add('text-success')
+                }
+                else{
+                    document.getElementById('bill_amount_box'+id).classList.remove('text-success')
+                    document.getElementById('bill_amount_box'+id).classList.add('text-danger')
+                }
+            }
+        })
+    }
+ 
+</script>
+
+
+  
+
+{% endblock content %}

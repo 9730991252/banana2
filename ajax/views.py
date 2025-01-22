@@ -147,3 +147,18 @@ def pay_bill(request):
             f.save()
 
     return JsonResponse({'status': status})
+
+def chang_farmer_bill_paid_status(request):
+    if request.method == 'GET':
+        bill_id = request.GET['bill_id']
+        f = Farmer_bill.objects.filter(id=bill_id).first()
+        status = 1
+        if f.paid_status == 1:
+            f.paid_status = 0
+            f.save()
+            status = 0
+        else:
+            f.paid_status = 1
+            f.save()
+
+    return JsonResponse({'status': status})

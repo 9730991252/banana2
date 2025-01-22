@@ -60,32 +60,6 @@ class Logo(models.Model):
         output_size = (300,300)
         image.thumbnail(output_size)
         image.save(self.image.path)
-        
-class Farmer_cash_transition(models.Model):
-    shope = models.ForeignKey(Shope,on_delete=models.PROTECT,null=True)
-    office_employee = models.ForeignKey(office_employee,on_delete=models.PROTECT,null=True)
-    farmer_bill = models.ForeignKey(Farmer_bill,on_delete=models.PROTECT,null=True)
-    amount = models.FloatField()
-    date = models.DateField(auto_now_add=True)
-    added_date = models.DateTimeField(auto_now_add=True)
-
-class Farmer_Phonepe_transition(models.Model):
-    shope = models.ForeignKey(Shope,on_delete=models.PROTECT,null=True)
-    office_employee = models.ForeignKey(office_employee,on_delete=models.PROTECT,null=True)
-    farmer_bill = models.ForeignKey(Farmer_bill,on_delete=models.PROTECT,null=True)
-    mobile = models.IntegerField(null=True)
-    amount = models.FloatField()
-    date = models.DateField(auto_now_add=True)
-    added_date = models.DateTimeField(auto_now_add=True)
-
-class Farmer_bank_transition(models.Model):
-    shope = models.ForeignKey(Shope,on_delete=models.PROTECT,null=True)
-    office_employee = models.ForeignKey(office_employee,on_delete=models.PROTECT,null=True)
-    farmer_bill = models.ForeignKey(Farmer_bill,on_delete=models.PROTECT,null=True)
-    bank_number = models.IntegerField(null=True)
-    amount = models.FloatField()
-    date = models.DateField(auto_now_add=True)
-    added_date = models.DateTimeField(auto_now_add=True)
     
 
 class Company(models.Model):
@@ -128,3 +102,14 @@ class company_recived_payment_transaction(models.Model):
     date = models.DateField()
     added_date = models.DateTimeField(auto_now_add=True)
     
+
+class Farmer_payment_transaction(models.Model):
+    farmer = models.ForeignKey(Farmer, on_delete=models.PROTECT, null=True)
+    shope = models.ForeignKey(Shope,on_delete=models.PROTECT,null=True)
+    office_employee = models.ForeignKey(office_employee,on_delete=models.PROTECT,null=True)
+    amount = models.FloatField()
+    bank_number = models.IntegerField(null=True)
+    phonepe_number = models.IntegerField(null=True)
+    payment_type = models.CharField(max_length=100)
+    date = models.DateField()
+    added_date = models.DateTimeField(auto_now_add=True)
