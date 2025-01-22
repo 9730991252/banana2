@@ -77,7 +77,7 @@
         <div class="bill_box" {% if b.paid_status == 0 %} style="border-color: red;"{% else %} style="border-color: rgb(0, 255, 34);"{% endif %}>
             <div class="flex">बिल नंबर  - <b>{{b.bill_number}}</b></div>
             <div class="flex">
-                <a style="color: black;text-decoration: none;" href="{% url 'money_farmer_details' b.farmer.id %}"><div>{{b.farmer.name}}</div></a>
+                <a style="color: black;text-decoration: none; font-weight: 700;" href="{% url 'money_farmer_details' b.farmer.id %}"><div>{{b.farmer.name}}</div></a>
             </div>
             <div class="flex">
                 <div><b>Rs.{{b.total_amount}}</b></div>

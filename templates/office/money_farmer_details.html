@@ -36,14 +36,14 @@
 <br>
 <div class="container">
     <div class="text-center">
-        <button popovertarget="my-popover-cash" class="btn  ms-3 btn-success">रोख</button>
-        <button popovertarget="my-popover-phone" class="btn ms-3  btn-primary">फोन पे</button>
-        <button popovertarget="my-popover-bank" class="btn  ms-3 btn-info">बँक</button>
+        <button popovertarget="my-popover-cash" class="btn  ms-3 btn-warning">रोख</button>
+        <button popovertarget="my-popover-phone" class="btn ms-3  btn-danger">फोन पे</button>
+        <button popovertarget="my-popover-bank" class="btn  ms-3 btn-primary">बँक</button>
     </div>
 
     <div popover class="my_popover" id="my-popover-phone">
         <form method="POST">
-            <label class="mb-2">फोन पे मिळालेली रक्कम</label>
+            <label class="mb-2">फोन पे दिलेली  रक्कम</label>
             <input type="date" name="date" class="form-control" required>
             <br>
             <input type="number" class="form-control" name="phonepe_number" placeholder="फोन पे क्रमांक"  required>
@@ -55,7 +55,7 @@
     
     <div popover class="my_popover" id="my-popover-bank">
         <form method="POST">
-            <label class="mb-2">बँक मिळालेली रक्कम </label>
+            <label class="mb-2">बँक दिलेली  रक्कम </label>
             <input type="date"   name="date" class="form-control" required>
             <br>
             <input type="number" name="bank_number" class="form-control" placeholder="बँक खाते क्रमांक"  required>
@@ -67,7 +67,7 @@
 
     <div popover class="my_popover" id="my-popover-cash">
         <form method="POST">
-            <label class="mb-2">रोख मिळालेली रक्कम </label>
+            <label class="mb-2">रोख दिलेली  रक्कम </label>
             <input type="date" name="date" class="form-control" >
             <br>
             <input type="number" name="cash_amount" class="form-control" placeholder="रोख रक्कम">
