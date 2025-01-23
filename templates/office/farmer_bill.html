@@ -90,6 +90,7 @@
                 <a href="/office/view_farmer_bill/{{b.id}}" class="btn btn-success">View</a>
                 {% if b.paid_status == 0 %}
                     <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal{{b.id}}">Edit</button>
+                    <a href="{% url 'money_farmer_details' b.farmer.id %}" class="btn btn-primary">Pay</a>
                 {% endif %}
             </div>
         </div>

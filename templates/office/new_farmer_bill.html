@@ -300,6 +300,12 @@
                 },
                     success: function(res){
                         $("#farmer_result").html(res.t)
+                        if (res.bt_status == 0){
+                            document.getElementById('add_farmer_btn').innerHTML = ` <div class='alert alert-danger'>मोबाइल नंबर वापरलेला आहे </div> `
+                        }
+                        if (res.bt_status == 1){
+                            document.getElementById('add_farmer_btn').innerHTML = `<button type="submit" class="btn btn-primary mt-2" name="add_farmer">जतन करा</button>`
+                        }
                     }
             })
         }

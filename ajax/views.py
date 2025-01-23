@@ -19,11 +19,16 @@ def farmer_check(request):
             c = Farmer.objects.filter(Q(address__icontains=address),shope_id=shope_id)
         if 1 < len(mobile) :
             c = Farmer.objects.filter(Q(mobile__icontains=mobile),shope_id=shope_id)
+        bt_status=1
+        f = Farmer.objects.filter(mobile=mobile,shope_id=shope_id).first()
+        if f:
+            if int(mobile) == int(f.mobile):
+                bt_status=0
         context={
             'c':c[0:3]
         }
         t = render_to_string('ajax/office/farmer_check.html', context)
-    return JsonResponse({'t': t})
+    return JsonResponse({'t': t, 'bt_status':bt_status})
 
 def select_bill(request):
     if request.method == 'GET':
