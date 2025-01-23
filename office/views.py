@@ -113,6 +113,8 @@ def change_company_bill_paid_status(company_id):
             remening_amount -= b.total_amount
         else:
             bill_id = b.id
+            if int(remening_amount) != 0:
+                remening_amount = int(b.total_amount) - int(remening_amount)
             break
     return {'bill_id':bill_id, 'remening_amount':remening_amount}
     
@@ -192,6 +194,8 @@ def change_farmer_bill_paid_status(farmer_id):
             remening_amount -= b.total_amount
         else:
             bill_id = b.id
+            if int(remening_amount) != 0:
+                remening_amount = int(b.total_amount) - int(remening_amount)
             break
     return {'bill_id':bill_id, 'remening_amount':remening_amount}
     
