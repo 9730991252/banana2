@@ -45,39 +45,42 @@ def money_company_details(request,id):
         mobile = request.session['office_mobile']
         e = office_employee.objects.filter(mobile=mobile).first()
         
-        bill_amount = Company_bill.objects.filter(company_id=id).aggregate(Sum('total_amount'))['total_amount__sum']
-        if bill_amount == None:
-            bill_amount = 0
-        
-        recived_amount = company_recived_payment_transaction.objects.filter(shope_id=e.shope_id, company_id=id).aggregate(Sum('amount'))['amount__sum']
-        if recived_amount == None:
-            recived_amount = 0
+        if e:
+            remening_amount = change_company_bill_paid_status(id)
             
-        final_amount = int(bill_amount) - int(recived_amount)
-        
-        if 'cash'in request.POST:
-            amount = request.POST.get('cash_amount')
-            da = request.POST.get('date')
-            if da and amount :
-                save_cash_company_amount(da, amount, e.shope_id, e.id,id)
-            else:
-                messages.warning(request,"please insert correct information")
+            bill_amount = Company_bill.objects.filter(company_id=id).aggregate(Sum('total_amount'))['total_amount__sum']
+            if bill_amount == None:
+                bill_amount = 0
             
-            return redirect('money_company_details', id=id)
-        
-        if 'phone_pe'in request.POST:
-            amount = request.POST.get('phone_pe_amount')
-            phonepe_number = request.POST.get('phonepe_number')
-            date=request.POST.get('date')
-            save_phonepe_company_amount(date, amount, e.shope_id, e.id,id, phonepe_number)
-            return redirect('money_company_details', id=id)
+            recived_amount = company_recived_payment_transaction.objects.filter(shope_id=e.shope_id, company_id=id).aggregate(Sum('amount'))['amount__sum']
+            if recived_amount == None:
+                recived_amount = 0
+                
+            final_amount = int(bill_amount) - int(recived_amount)
+            
+            if 'cash'in request.POST:
+                amount = request.POST.get('cash_amount')
+                da = request.POST.get('date')
+                if da and amount :
+                    save_cash_company_amount(da, amount, e.shope_id, e.id,id)
+                else:
+                    messages.warning(request,"please insert correct information")
+                
+                return redirect('money_company_details', id=id)
+            
+            if 'phone_pe'in request.POST:
+                amount = request.POST.get('phone_pe_amount')
+                phonepe_number = request.POST.get('phonepe_number')
+                date=request.POST.get('date')
+                save_phonepe_company_amount(date, amount, e.shope_id, e.id,id, phonepe_number)
+                return redirect('money_company_details', id=id)
 
-        if 'bank'in request.POST:
-            amount = request.POST.get('bank_amount')
-            bank_number = request.POST.get('bank_number')
-            date = request.POST.get('date')
-            save_bank_company_amount(date, amount, e.shope_id, e.id,id, bank_number)
-            return redirect('money_company_details', id=id)
+            if 'bank'in request.POST:
+                amount = request.POST.get('bank_amount')
+                bank_number = request.POST.get('bank_number')
+                date = request.POST.get('date')
+                save_bank_company_amount(date, amount, e.shope_id, e.id,id, bank_number)
+                return redirect('money_company_details', id=id)
         context={ 
             'e':e,
             'company':Company.objects.filter(id=id).first(),
@@ -85,51 +88,77 @@ def money_company_details(request,id):
             'recived_amount':recived_amount,
             'bill_amount':bill_amount,
             'transaction':company_recived_payment_transaction.objects.filter(company_id=id).order_by('payment_type','date'),
-            'bill':Company_bill.objects.filter(company_id=id).order_by('-id')
+            'bill':Company_bill.objects.filter(company_id=id).order_by('-id'),
+            'remening_amount':remening_amount
         }
         return render(request, 'office/money_company_details.html', context)
     else:
         return redirect('login')
+    
+def change_company_bill_paid_status(company_id):
+    recived_payment = company_recived_payment_transaction.objects.filter(company_id=company_id).aggregate(Sum('amount'))['amount__sum']
+    if recived_payment == None:
+        recived_payment = 0
+    paid_bill_amount = Company_bill.objects.filter(company_id=company_id, paid_status = 1).aggregate(Sum('total_amount'))['total_amount__sum']
+    if paid_bill_amount == None:
+        paid_bill_amount = 0
+    remening_amount = (int(recived_payment) - int(paid_bill_amount))
+    bill = Company_bill.objects.filter(company_id=company_id, paid_status=0)
+    
+    bill_id = 0
+    for b in bill:
+        if remening_amount >= b.total_amount:
+            b.paid_status = 1
+            b.save()
+            remening_amount -= b.total_amount
+        else:
+            bill_id = b.id
+            break
+    return {'bill_id':bill_id, 'remening_amount':remening_amount}
+    
     
 @csrf_exempt
 def money_farmer_details(request,id):
     if request.session.has_key('office_mobile'):
         mobile = request.session['office_mobile']
         e = office_employee.objects.filter(mobile=mobile).first()
-        recived_amount = 0
-        bill_amount = Farmer_bill.objects.filter(farmer_id=id).aggregate(Sum('total_amount'))['total_amount__sum']
-        if bill_amount == None:
-            bill_amount = 0
         
-        recived_amount = Farmer_payment_transaction.objects.filter(shope_id=e.shope_id, farmer_id=id).aggregate(Sum('amount'))['amount__sum']
-        if recived_amount == None:
+        if e:
+            remening_amount = change_farmer_bill_paid_status(id)
             recived_amount = 0
+            bill_amount = Farmer_bill.objects.filter(farmer_id=id).aggregate(Sum('total_amount'))['total_amount__sum']
+            if bill_amount == None:
+                bill_amount = 0
             
-        final_amount = int(bill_amount) - int(recived_amount)
-        
-        if 'cash'in request.POST:
-            amount = request.POST.get('cash_amount')
-            da = request.POST.get('date')
-            if da and amount :
-                save_cash_farmer_amount(da, amount, e.shope_id, e.id,id)
-            else:
-                messages.warning(request,"please insert correct information")
+            recived_amount = Farmer_payment_transaction.objects.filter(shope_id=e.shope_id, farmer_id=id).aggregate(Sum('amount'))['amount__sum']
+            if recived_amount == None:
+                recived_amount = 0
+                
+            final_amount = int(bill_amount) - int(recived_amount)
             
-            return redirect('money_farmer_details', id=id)
-        
-        if 'phone_pe'in request.POST:
-            amount = request.POST.get('phone_pe_amount')
-            phonepe_number = request.POST.get('phonepe_number')
-            date=request.POST.get('date')
-            save_phonepe_farmer_amount(date, amount, e.shope_id, e.id,id, phonepe_number)
-            return redirect('money_farmer_details', id=id)
+            if 'cash'in request.POST:
+                amount = request.POST.get('cash_amount')
+                da = request.POST.get('date')
+                if da and amount :
+                    save_cash_farmer_amount(da, amount, e.shope_id, e.id,id)
+                else:
+                    messages.warning(request,"please insert correct information")
+                
+                return redirect('money_farmer_details', id=id)
+            
+            if 'phone_pe'in request.POST:
+                amount = request.POST.get('phone_pe_amount')
+                phonepe_number = request.POST.get('phonepe_number')
+                date=request.POST.get('date')
+                save_phonepe_farmer_amount(date, amount, e.shope_id, e.id,id, phonepe_number)
+                return redirect('money_farmer_details', id=id)
 
-        if 'bank'in request.POST:
-            amount = request.POST.get('bank_amount')
-            bank_number = request.POST.get('bank_number')
-            date = request.POST.get('date')
-            save_bank_farmer_amount(date, amount, e.shope_id, e.id,id, bank_number)
-            return redirect('money_farmer_details', id=id)
+            if 'bank'in request.POST:
+                amount = request.POST.get('bank_amount')
+                bank_number = request.POST.get('bank_number')
+                date = request.POST.get('date')
+                save_bank_farmer_amount(date, amount, e.shope_id, e.id,id, bank_number)
+                return redirect('money_farmer_details', id=id)
         context={ 
             'e':e,
             'farmer':Farmer.objects.filter(id=id).first(),
@@ -138,11 +167,33 @@ def money_farmer_details(request,id):
             'bill_amount':bill_amount,
             'bill':Farmer_bill.objects.filter(farmer_id=id).order_by('-id'),
             'transaction':Farmer_payment_transaction.objects.filter(farmer_id=id).order_by('date'),
-            'total_amount':Farmer_payment_transaction.objects.filter(farmer_id=id).aggregate(Sum('amount'))['amount__sum']
+            'total_amount':Farmer_payment_transaction.objects.filter(farmer_id=id).aggregate(Sum('amount'))['amount__sum'],
+            'remening_amount':remening_amount
         }
         return render(request, 'office/money_farmer_details.html', context)
     else:
         return redirect('login')
+
+def change_farmer_bill_paid_status(farmer_id):
+    recived_payment = Farmer_payment_transaction.objects.filter(farmer_id=farmer_id).aggregate(Sum('amount'))['amount__sum']
+    if recived_payment == None:
+        recived_payment = 0
+    paid_bill_amount = Farmer_bill.objects.filter(farmer_id=farmer_id, paid_status = 1).aggregate(Sum('total_amount'))['total_amount__sum']
+    if paid_bill_amount == None:
+        paid_bill_amount = 0
+    remening_amount = (int(recived_payment) - int(paid_bill_amount))
+    bill = Farmer_bill.objects.filter(farmer_id=farmer_id, paid_status=0)
+    
+    bill_id = 0
+    for b in bill:
+        if remening_amount >= b.total_amount:
+            b.paid_status = 1
+            b.save()
+            remening_amount -= b.total_amount
+        else:
+            bill_id = b.id
+            break
+    return {'bill_id':bill_id, 'remening_amount':remening_amount}
     
 def save_cash_farmer_amount(date, amount, shope_id, e_id,f_id):
     Farmer_payment_transaction(
@@ -382,10 +433,20 @@ def generate_company_bill_image(request, id):
         mobile = request.session['office_mobile']
         e = office_employee.objects.filter(mobile=mobile).first()
         bill = Company_bill.objects.filter(id=id).first()
+        danda_weight_status = Company_services.objects.filter(shope_id=e.shope.id, name='Danda Weight').first()
+        if danda_weight_status:
+            danda_weight_status = danda_weight_status.status
+        else:
+            danda_weight_status = 0
+        
         empty_box_weight = (bill.weight - bill.empty_box - bill.leaf_weight)
         wasteage_weight = (empty_box_weight + bill.wasteage)
-        danda_weight = (wasteage_weight / 100) * 8
-        total_weight = (wasteage_weight + danda_weight)
+        if (int(danda_weight_status) == 1):
+            danda_weight = (wasteage_weight / 100) * 8
+            total_weight = (wasteage_weight + danda_weight)
+        else:
+            danda_weight = 0
+            total_weight = (wasteage_weight)
         amount = math.ceil(bill.prise * math.floor(total_weight))
         total_amount_words = num2words(bill.total_amount)
         signature = Signature.objects.filter(id=bill.office_employee.id).first()
@@ -444,13 +505,23 @@ def view_company_bill(request, id):
         mobile = request.session['office_mobile']
         e = office_employee.objects.filter(mobile=mobile).first()
         
+        danda_weight_status = Company_services.objects.filter(shope_id=e.shope.id, name='Danda Weight').first()
+        if danda_weight_status:
+            danda_weight_status = danda_weight_status.status
+        else:
+            danda_weight_status = 0
+        
         total_pending_amount = 0
         
         bill = Company_bill.objects.filter(id=id).first()
         empty_box_weight = (bill.weight - bill.empty_box - bill.leaf_weight)
         wasteage_weight = (empty_box_weight + bill.wasteage)
-        danda_weight = (wasteage_weight / 100) * 8
-        total_weight = (wasteage_weight + danda_weight)
+        if (int(danda_weight_status) == 1):
+            danda_weight = (wasteage_weight / 100) * 8
+            total_weight = (wasteage_weight + danda_weight)
+        else:
+            danda_weight = 0
+            total_weight = (wasteage_weight)
         amount = math.ceil(bill.prise * math.floor(total_weight))
         p = ''
         total_amount_words = num2words(bill.total_amount)
@@ -475,7 +546,8 @@ def view_company_bill(request, id):
             'signature':signature,
             'logo':Logo.objects.filter(shope_id=e.shope.id).first(),
             'total_pending_amount':total_pending_amount,
-            'total_credit':total_credit
+            'total_credit':total_credit,
+            'danda_weight_status':danda_weight_status
 
         }   
         return render(request, 'office/view_company_bill.html', context)
@@ -541,8 +613,8 @@ def edit_company_bill(request, id):
             'bill':Company_bill.objects.filter(id=id).first(),
             'empty_box_weight':empty_box_weight,
             'edit_status':edit_status,
-            'company':Company.objects.filter(shope_id=e.shope_id, status=1)
-
+            'company':Company.objects.filter(shope_id=e.shope_id, status=1),
+            'danda_weight_status':Company_services.objects.filter(shope_id=e.shope.id, name='Danda Weight').first()
         }
         return render(request, 'office/edit_company_bill.html', context)
     else:

@@ -10,5 +10,46 @@
 {% include 'include/owner/owner_menu.html' %}
 {% include 'include/owner/services_menu.html' %}
 
+<style>
+    .main_box{
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .lable{
+        text-align: center;
+        font-weight: bold;
+        border: 1px solid black;
+        border-right: none;
+    }
+    .contant{
+        border: 1px solid black;
+        text-align: center;
+        font-weight: bold;
+    }
+    </style>
+    <div class="container">
+        <br><br>
+        <div class="main_box">
+            <div class="lable">Danda weight </div>
+            <div class="form-check form-switch form-check-reverse lable"><input class="form-check-input" type="checkbox" id="flexSwitchCheckReverse" name="life_weight" onclick="add_danda_weight_company_services()" {% if danda_weight.status == 1 %} checked {% endif %} ></div>
+        </div>
+    </div>
+    
+    <script>
+        function add_danda_weight_company_services(){
+            $.ajax({
+                url: "{% url 'add_danda_weight_company_services' %}",
+                method: "GET",
+                data:{
+                    shope_id:'{{shope.id}}',
+                    },
+                success: function(res){
+                    location.reload();
+                }
+            })
+        }
+    </script>
+    
 
 {% endblock content %}

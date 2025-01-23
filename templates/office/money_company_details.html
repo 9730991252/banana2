@@ -89,8 +89,8 @@
         .company_bill_box{
             padding: 1px;
             background-color: black;
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
+            display: grid; 
+            grid-template-columns: 0.7fr 1.5fr 1fr 0.99fr;
             grid-gap: 1px;
             div{
                 background-color: white;
@@ -110,43 +110,31 @@
         <div>बिल नंबर</div>
         <div>तारीख</div>
         <div>रक्कम</div>
+        <div>STATUS</div>
         {% for b in bill %}
             <div ><b>{{b.bill_number}}</b></div>
             <div ><b>{{b.date}}</b></div>
-            <div onclick="pay_bill('{{b.id}}')" id="bill_amount_box{{b.id}}" class=" {% if b.paid_status == 0 %} text-danger {% else %} text-success {% endif %}" ><b>{{b.total_amount}}</b></div>
-            <script>total_amount = total_amount + Number('{{b.total_amount}}')</script>
+            <div  id="bill_amount_box{{b.id}}" class=" {% if b.paid_status == 0 %} text-danger {% else %} text-success {% endif %}" ><b>{{b.total_amount}}</b></div>
+            <div>
+                <div>
+                    {% if b.paid_status == 1 %}
+                    <b class="text-success">Paid</b>
+                    {% else %}
+                    <b class="{% if remening_amount.bill_id == b.id and remening_amount.remening_amount != 0 %} text-primary {% else %} text-danger {% endif %}">UnPaid {% if remening_amount.bill_id == b.id and remening_amount.remening_amount != 0 %}Rs.{{remening_amount.remening_amount}}{% endif %}</b>
+                    {% endif %}
+                </div>
+            </div>
+                        <script>total_amount = total_amount + Number('{{b.total_amount}}')</script>
         {% endfor %}
             <div style="grid-column-start: 1;grid-column-end: 3;"><b>एकूण रक्कम</b></div>
             
             <div><b class="text-danger" id="total_amount">0</b></div>
+            <div></div>
             <script>document.getElementById('total_amount').innerHTML = total_amount</script>
         </div>
 </div>
 
 
-
-<script>
-    function pay_bill(id){
-        $.ajax({
-            url: "{% url 'pay_bill' %}",
-            method: "GET",
-            data:{
-                bill_id:id,
-                },
-            success: function(res){
-                if (res.status == 1){
-                    document.getElementById('bill_amount_box'+id).classList.remove('text-danger')
-                    document.getElementById('bill_amount_box'+id).classList.add('text-success')
-                }
-                else{
-                    document.getElementById('bill_amount_box'+id).classList.remove('text-success')
-                    document.getElementById('bill_amount_box'+id).classList.add('text-danger')
-                }
-            }
-        })
-    }
- 
-</script>
 
 
   

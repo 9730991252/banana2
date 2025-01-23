@@ -106,7 +106,7 @@
 
     <div class="containt_box">
         <div><label for="leaf_weight">पाल्याचे वजन (वजा) 5 %</label></div>
-        <div><input type="number" name="leaf_weight" oninput="check_zero('leaf_weight'),add_leaf_weight('leaf_weight', 'empty_box_weight')" id="leaf_weight" class="form-control" required></div>
+        <div><input type="number" step="any" name="leaf_weight" oninput="check_zero('leaf_weight'),add_leaf_weight('leaf_weight', 'empty_box_weight')" id="leaf_weight" class="form-control" required></div>
     </div>
     
     <div class="containt_box">
@@ -190,7 +190,7 @@
     function calculate_leaf_weight(){
         weight = document.getElementById('weight').value
         if(Number('{{leaf_weight.status}}') == 1){
-            l = (weight / 100) * 5
+            l =  Math.round((weight / 100) * 5)
             document.getElementById('leaf_weight').value = l
 
 

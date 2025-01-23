@@ -79,7 +79,8 @@ def select_company(request):
         c = Company.objects.filter(id=c_id).first()
         context={
             'c':c,
-            'today_date':date.today()
+            'today_date':date.today(),
+            'danda_weight':Company_services.objects.filter(name='Danda Weight',shope_id=c.shope_id).first()
         }
         t = render_to_string('ajax/office/select_company.html', context)
     return JsonResponse({'t': t})
@@ -133,19 +134,24 @@ def add_leaf_weight_farmer_services(request):
             ).save()
     return JsonResponse({'status': status})
 
-def pay_bill(request):
+def add_danda_weight_company_services(request):
     if request.method == 'GET':
-        bill_id = request.GET['bill_id']
-        f = Company_bill.objects.filter(id=bill_id).first()
+        shope_id = request.GET['shope_id']
+        f = Company_services.objects.filter(shope_id=shope_id, name='Danda Weight').first()
         status = 1
-        if f.paid_status == 1:
-            f.paid_status = 0
-            f.save()
-            status = 0
+        if f:
+            if f.status == 1:
+                f.status = 0
+                f.save()
+                status = 0
+            else:
+                f.status = 1
+                f.save()
         else:
-            f.paid_status = 1
-            f.save()
-
+            Company_services(
+                shope_id=shope_id,
+                name = 'Danda Weight'
+            ).save()
     return JsonResponse({'status': status})
 
 def chang_farmer_bill_paid_status(request):

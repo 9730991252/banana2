@@ -44,7 +44,8 @@ def company_services(request):
         mobile = request.session['owner_mobile']
         shope = Shope.objects.filter(mobile=mobile).first()
         context={
-            'shope':shope
+            'shope':shope,
+            'danda_weight':Company_services.objects.filter(shope_id=shope.id,name='Danda Weight').first(),
         }
         return render(request, 'owner/company_services.html', context)
     else:

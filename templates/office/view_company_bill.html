@@ -185,9 +185,11 @@
             <div class="div1"  {% if bill.wasteage == 0 and bill.wasteage == 0 %}style="display: none;"{% endif %}>मालाचे वजन </div>
             <div class="div2"  {% if bill.wasteage == 0 and bill.wasteage == 0 %}style="display: none;"{% endif %}>{{wasteage_weight}}</div>
             
+            {% if danda_weight_status == 1 %}
             <div class="div1" id="danda_weight1">दांडा वजन </div>
             <div class="div2" id="danda_weight2">{{danda_weight}}</div>
-            
+            {% endif %}
+
             <div class="div1">एकुण मालाचे वजन </div>
             <div class="div2">{{total_weight}}</div>
             

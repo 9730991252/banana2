@@ -130,10 +130,12 @@
         <div><input type="number" id="wasteage_weight" class="form-control default_input" readonly></div>
     </div>
     
+    {% if danda_weight_status.status == 1  %}
     <div class="containt_box">
         <div><label for="danda_weight">दांडयाचे वजन (अधिक) 8 %</label></div>
         <div><input type="number" name="danda_weight" id="danda_weight" class="form-control default_input" readonly></div>
     </div>
+    {% endif %}
     
     <div class="containt_box" style="font-weight: 700;">
         <div><label for="total_weight">एकुण मालाचे वजन </label></div>
@@ -247,10 +249,17 @@
         input = document.getElementById(wasteage_input).value;
         a = Number(from_input) + Number(input)
         document.getElementById(add_input).value = a
-        danda_weight = (a / 100) * 8
-        document.getElementById('danda_weight').value = danda_weight
+
+        if (Number('{{danda_weight_status.status}}') == 1){
+            danda_weight = (a / 100) * 8
+            document.getElementById('danda_weight').value = danda_weight
+            total_weight = a + danda_weight
+        }
+        else{
+            total_weight = a
+        }
+
         
-        total_weight = a + danda_weight
         document.getElementById('total_weight').value = total_weight
         calculate_prise()
         calculate_service_charge_prise()

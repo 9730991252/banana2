@@ -104,11 +104,13 @@
         <div><label for="weight">मालाचे वजन </label></div>
         <div><input type="number" id="wasteage_weight" class="form-control default_input" readonly></div>
     </div>
-    
+     
+    {% if danda_weight.status == 1  %}
     <div class="containt_box">
         <div><label for="danda_weight">दांडयाचे वजन (अधिक) 8 %</label></div>
-        <div><input type="number" name="danda_weight" id="danda_weight" class="form-control default_input" readonly></div>
+        <div><input type="number" oninput="add_danda_weight()" name="danda_weight" id="danda_weight" class="form-control" ></div>
     </div>
+    {% endif %}
     
     <div class="containt_box" style="font-weight: 700;">
         <div><label for="total_weight">एकुण मालाचे वजन </label></div>
@@ -168,6 +170,7 @@
         add_leaf_weight('leaf_weight', 'empty_box_weight')
         calculate_prise()
     }
+    
     function check_zero(input_id){
         input = document.getElementById(input_id).value
         input = Number(input)
@@ -221,14 +224,36 @@
         input = document.getElementById(wasteage_input).value;
         a = Number(from_input) + Number(input)
         document.getElementById(add_input).value = a
-        danda_weight = (a / 100) * 8
-        document.getElementById('danda_weight').value = danda_weight
         
-        total_weight = a + danda_weight
+        if (Number('{{danda_weight.status}}') == 1){
+            danda_weight = Math.round((a / 100) * 8)
+            document.getElementById('danda_weight').value = danda_weight
+            total_weight = a + danda_weight
+        }
+        else{
+            total_weight = a
+        }
+
         document.getElementById('total_weight').value = total_weight
         calculate_prise()
     }
 
+    function add_danda_weight(){
+        from_input = document.getElementById('empty_box_weight').value;
+        input = document.getElementById('wasteage').value;
+        
+        if (Number('{{danda_weight.status}}') == 1){
+            danda_weight = document.getElementById('danda_weight').value;
+            a = Number(from_input) + Number(input) + Number(danda_weight)
+        }
+        else{
+            a = Number(from_input) + Number(input)
+        }
+        
+        document.getElementById('total_weight').value = a;
+
+        calculate_prise()
+    }
 
     function calculate_service_charge_prise(){   
         service_charge = document.getElementById('service_charge').value;

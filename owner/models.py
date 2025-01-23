@@ -5,7 +5,12 @@ from PIL import Image
 class Farmer_services(models.Model):
     shope = models.ForeignKey(Shope,on_delete=models.PROTECT,null=True)
     name = models.CharField(max_length=100)
-    status = models.IntegerField(default=1)    
+    status = models.IntegerField(default=1)   
+    
+class Company_services(models.Model):
+    shope = models.ForeignKey(Shope,on_delete=models.PROTECT,null=True)
+    name = models.CharField(max_length=100)
+    status = models.IntegerField(default=1) 
 class office_employee(models.Model):
     shope = models.ForeignKey(Shope,on_delete=models.PROTECT,null=True)
     name = models.CharField(max_length=100)
@@ -89,6 +94,7 @@ class Company_bill(models.Model):
     bill_number = models.IntegerField(null=True)
     added_date = models.DateTimeField(auto_now_add=True)
     leaf_weight=models.IntegerField(default=0)
+    
     
     
 class company_recived_payment_transaction(models.Model):
