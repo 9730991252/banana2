@@ -20,7 +20,9 @@ def farmer_check(request):
         if 1 < len(mobile) :
             c = Farmer.objects.filter(Q(mobile__icontains=mobile),shope_id=shope_id)
         bt_status=1
-        f = Farmer.objects.filter(mobile=mobile,shope_id=shope_id).first()
+        f = ''
+        if mobile:
+            f = Farmer.objects.filter(mobile=mobile,shope_id=shope_id).first()
         if f:
             if int(mobile) == int(f.mobile):
                 bt_status=0
