@@ -960,7 +960,7 @@ def farmer(request):
                 total = 0
             t = (int(total) - int(completed_amount_total))
             
-            if t < 0:
+            if t < 1:
                 order_by_status = 0
             
             if int(order_by_status) == 1:
