@@ -25,14 +25,13 @@ def company_details(company_id):
 def product_cost_net_weight(weight, empty_box):
     a = (weight - empty_box)
     return a
-
+ 
 @register.simple_tag()
 def user_pending_bill_amount(office_employee_id):
     amount = Farmer_bill.objects.filter(office_employee_id=office_employee_id).aggregate(Sum('total_amount'))['total_amount__sum']
     if amount == None:
         amount = 0
-    recived_amount = 0
-    # recived_amount = office_employee_recived_payment_transaction.objects.filter(office_employee_id=office_employee_id).aggregate(Sum('amount'))['amount__sum']
+    recived_amount = Farmer_payment_transaction.objects.filter(office_employee_id=office_employee_id).aggregate(Sum('amount'))['amount__sum']
     if recived_amount == None:
         recived_amount = 0
     amount -= int(recived_amount)
