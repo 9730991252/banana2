@@ -8,6 +8,7 @@ from django.db.models import Avg, Sum, Min, Max
 from django.contrib import messages 
 import time
 import datetime
+from .templatetags.office_tag import *
 # Create your views here.
 
 def office_home(request):
@@ -947,9 +948,37 @@ def farmer(request):
     if request.session.has_key('office_mobile'):
         mobile = request.session['office_mobile']
         e = office_employee.objects.filter(mobile=mobile).first()
+        remaining_farmer = []
+        compleated_farmer = []
+        for f in Farmer.objects.filter(shope_id=e.shope.id).order_by('name'):
+            order_by_status = 1
+            completed_amount_total = Farmer_payment_transaction.objects.filter(farmer_id=f.id).aggregate(Sum('amount'))['amount__sum']
+            if completed_amount_total == None:
+                completed_amount_total = 0
+            total = Farmer_bill.objects.filter(farmer_id=f.id).aggregate(Sum('total_amount'))['total_amount__sum']
+            if total == None:
+                total = 0
+            t = (int(total) - int(completed_amount_total))
+            
+            if t < 0:
+                order_by_status = 0
+            
+            if int(order_by_status) == 1:
+                remaining_farmer.append({
+                    'id':f.id,
+                    'name':f.name,
+                    'mobile':f.mobile,
+                })
+            else:
+                compleated_farmer.append({
+                    'id':f.id,
+                    'name':f.name,
+                    'mobile':f.mobile,
+                })
         context={
             'e':e,
-            'farmer':Farmer.objects.filter(shope_id=e.shope.id).order_by('name'),
+            'remaining_farmer':remaining_farmer,
+            'compleated_farmer':compleated_farmer
         }
         return render(request, 'office/farmer.html', context)
     else:

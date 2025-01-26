@@ -28,7 +28,19 @@
 </style>
 
 <div class="container">
-    {% for f  in farmer %}
+    {% for f  in remaining_farmer %}
+    <div class="farmer_box">
+        <a href="{% url 'money_farmer_details' f.id %}">
+        <div class="flex">
+            <div><b>{{f.name}}  <b class="btn btn-sm btn-danger">Pay</b></b></div>
+            <div>{{f.mobile}}</div>
+        </div>
+        </a>
+        {% farmer_bill_detail f.id %}
+    </div>
+    <br><br>
+    {% endfor %}
+    {% for f  in compleated_farmer %}
     <div class="farmer_box">
         <a href="{% url 'money_farmer_details' f.id %}">
         <div class="flex">

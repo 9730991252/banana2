@@ -102,3 +102,4 @@ def farmer_bill_detail(farmer_id):
         'completed_amount_total':completed_amount_total,
         'total_amount':(int(total) - int(completed_amount_total))
     }
+ 
