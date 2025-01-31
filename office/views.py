@@ -41,11 +41,10 @@ def money(request):
     
 
 @csrf_exempt
-def money_company_details(request,id):
+def money_company_details(request,id): 
     if request.session.has_key('office_mobile'):
         mobile = request.session['office_mobile']
         e = office_employee.objects.filter(mobile=mobile).first()
-        
         if e:
             remening_amount = change_company_bill_paid_status(id)
             
@@ -89,7 +88,7 @@ def money_company_details(request,id):
             'recived_amount':recived_amount,
             'bill_amount':bill_amount,
             'transaction':company_recived_payment_transaction.objects.filter(company_id=id).order_by('payment_type','date'),
-            'bill':Company_bill.objects.filter(company_id=id).order_by('-id'),
+            'bill':Company_bill.objects.filter(company_id=id).order_by('-date'),
             'remening_amount':remening_amount
         }
         return render(request, 'office/money_company_details.html', context)
@@ -104,7 +103,7 @@ def change_company_bill_paid_status(company_id):
     if paid_bill_amount == None:
         paid_bill_amount = 0
     remening_amount = (int(recived_payment) - int(paid_bill_amount))
-    bill = Company_bill.objects.filter(company_id=company_id, paid_status=0)
+    bill = Company_bill.objects.filter(company_id=company_id, paid_status=0).order_by('-date')
     
     bill_id = 0
     for b in bill:
