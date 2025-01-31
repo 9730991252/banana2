@@ -7,17 +7,22 @@
 {% include 'include/alert.html' %}
 
 <div id="canvas">
+
+    <div class="text-center">1 April {{last_year}} ते {{today_date|date:'d M Y'}} तपशील </div>
+    {% company_pendding_all_amount e.shope_id %}
+
 <div class="container">
-<div class="text-center">1 April {{last_year}} ते {{today_date|date:'d M Y'}} तपशील </div>
-{% company_pendding_all_amount e.shope_id %}
+
 
 {% for c in company %}
 <div class="company_box border" style="border: 1px solid black;">
-{% company_details c.id %}
-
+    {% company_details c.id %}
 </div>
 <br>
 {% endfor %}
+
+
+
 </div>
 
 </div>
@@ -31,14 +36,13 @@
         html2canvas: { scale: 2 },
         jsPDF: { unit: 'in', format: 'a4', orientaion: 'portrait' }
     };
-    html2pdf().from(pdf).set(opt).toPdf().get('pdf').then(function(pdf) {
-    }).toPdf().get('pdf').then(function (pdf) {
+    html2pdf().from(pdf).set(opt).toPdf().get('pdf').then(function (pdf) {
         var totalPages = pdf.internal.getNumberOfPages();
         for (i = 1; i <= totalPages; i++) {
             pdf.setPage(i);
             pdf.setFontSize(10);
             pdf.setTextColor(150);
-            
+ 
             pdf.text('Page ' + i + ' of ' + totalPages, (pdf.internal.pageSize.getWidth()/2.25,(pdf.internal.pageSize.getHeight()-25)))
         }
     }).save().then(pdfResult => {
