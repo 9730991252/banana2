@@ -7,12 +7,19 @@
 {% include 'include/alert.html' %}
 
 <div id="canvas">
+<div class="container">
+<div class="text-center">1 April {{last_year}} ते {{today_date|date:'d M Y'}} तपशील </div>
+{% company_pendding_all_amount e.shope_id %}
+
 {% for c in company %}
-<div class="company_box border">
+<div class="company_box border" style="border: 1px solid black;">
 {% company_details c.id %}
+
 </div>
 <br>
 {% endfor %}
+</div>
+
 </div>
 
 <script>
@@ -34,7 +41,9 @@
             
             pdf.text('Page ' + i + ' of ' + totalPages, (pdf.internal.pageSize.getWidth()/2.25,(pdf.internal.pageSize.getHeight()-25)))
         }
-    }).save().then(pdfResult => {});
+    }).save().then(pdfResult => {
+        window.location.href = '/office/report/';
+    });
 </script>
 
 {% endblock content %}

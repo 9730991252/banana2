@@ -14,9 +14,19 @@ def company_details(company_id):
     if company_id:
         company = Company.objects.get(id=company_id)
         bills = Company_bill.objects.filter(company_id=company_id)
+        bill_amount = bills.aggregate(Sum('total_amount'))['total_amount__sum']
+        if bill_amount == None:
+            bill_amount = 0
+        transactions_t =  company_recived_payment_transaction.objects.filter(company_id=company_id).aggregate(Sum('amount'))['amount__sum']
+        if transactions_t == None:
+            transactions_t = 0
         return {
             'company': company,
-            'bill':bills
+            'bill':bills,
+            'transactions': company_recived_payment_transaction.objects.filter(company_id=company_id),
+            'transactions_t':transactions_t,
+            'bill_amount':bill_amount,
+            'final_amount':(int(bill_amount) - int(transactions_t))
         }
     return {}
         
