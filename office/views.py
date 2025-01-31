@@ -167,7 +167,7 @@ def money_farmer_details(request,id):
             'final_amount':final_amount,
             'recived_amount':recived_amount,
             'bill_amount':bill_amount,
-            'bill':Farmer_bill.objects.filter(farmer_id=id).order_by('-id'),
+            'bill':Farmer_bill.objects.filter(farmer_id=id).order_by('-date'),
             'transaction':Farmer_payment_transaction.objects.filter(farmer_id=id).order_by('date'),
             'total_amount':Farmer_payment_transaction.objects.filter(farmer_id=id).aggregate(Sum('amount'))['amount__sum'],
             'remening_amount':remening_amount
@@ -184,7 +184,7 @@ def change_farmer_bill_paid_status(farmer_id):
     if paid_bill_amount == None:
         paid_bill_amount = 0
     remening_amount = (int(recived_payment) - int(paid_bill_amount))
-    bill = Farmer_bill.objects.filter(farmer_id=farmer_id, paid_status=0)
+    bill = Farmer_bill.objects.filter(farmer_id=farmer_id, paid_status=0).order_by('date')
     
     bill_id = 0
     for b in bill:
