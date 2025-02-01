@@ -103,7 +103,8 @@ def change_company_bill_paid_status(company_id):
     if paid_bill_amount == None:
         paid_bill_amount = 0
     remening_amount = (int(recived_payment) - int(paid_bill_amount))
-    bill = Company_bill.objects.filter(company_id=company_id, paid_status=0).order_by('-date')
+    
+    bill = Company_bill.objects.filter(company_id=company_id, paid_status=0).order_by('date')
     
     bill_id = 0
     for b in bill:
