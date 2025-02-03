@@ -93,6 +93,8 @@ def money_company_details(request,id):
                 date = request.POST.get('date')
                 amount = request.POST.get('amount')
                 
+                print(phonepe_number)
+                
                 trans = company_recived_payment_transaction.objects.filter(id=t_id).first()
                 o_m = trans.amount
                 trans.payment_type = payment_type
