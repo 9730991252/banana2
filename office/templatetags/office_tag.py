@@ -74,7 +74,8 @@ def stalk_net_weight(wasteage, weight, empty_box):
 def company_transaction(company_id):
     return {
         'transaction':company_recived_payment_transaction.objects.filter(company_id=company_id).order_by('-date'),
-        'total_amount':company_recived_payment_transaction.objects.filter(company_id=company_id).aggregate(Sum('amount'))['amount__sum']
+        'total_amount':company_recived_payment_transaction.objects.filter(company_id=company_id).aggregate(Sum('amount'))['amount__sum'],
+        'today_date':date.today(),
     }
         
 @register.inclusion_tag('inclusion_tag/office/pendding_completed_farmer_bill.html')

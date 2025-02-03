@@ -81,6 +81,45 @@ def money_company_details(request,id):
                 date = request.POST.get('date')
                 save_bank_company_amount(date, amount, e.shope_id, e.id,id, bank_number)
                 return redirect('money_company_details', id=id)
+            if 'edit_transition'in request.POST:
+                t_id = request.POST.get('id')
+                payment_type = request.POST.get('payment_type')
+                bank_number = ''
+                phonepe_number = ''
+                if payment_type == 'Bank':
+                    bank_number = request.POST.get('bank_number')
+                elif payment_type == 'PhonePe':
+                    phonepe_number = request.POST.get('phonepe_number')
+                date = request.POST.get('date')
+                amount = request.POST.get('amount')
+                
+                trans = company_recived_payment_transaction.objects.filter(id=t_id).first()
+                o_m = trans.amount
+                trans.payment_type = payment_type
+                if payment_type == 'Bank':
+                    trans.bank_number = bank_number
+                    trans.phonepe_number = None
+                elif payment_type == 'PhonePe':
+                    trans.bank_number = None
+                    trans.phonepe_number = phonepe_number
+                else:
+                    trans.bank_number = None
+                    trans.phonepe_number = None
+                trans.date = date
+                trans.amount = amount
+                trans.save()
+                
+                
+                t = (int(o_m) - int(math.floor(float(amount))))
+                bill = Company_bill.objects.filter(company_id=id, paid_status=1).order_by('-date')
+                for b in bill:
+                    if t > 0:
+                        b.paid_status = 0
+                        b.save()
+                        t -= b.total_amount
+                    else:
+                        break
+                return redirect('money_company_details', id=id)
         context={ 
             'e':e,
             'company':Company.objects.filter(id=id).first(),
@@ -89,7 +128,8 @@ def money_company_details(request,id):
             'bill_amount':bill_amount,
             'transaction':company_recived_payment_transaction.objects.filter(company_id=id).order_by('payment_type','date'),
             'bill':Company_bill.objects.filter(company_id=id).order_by('-date'),
-            'remening_amount':remening_amount
+            'remening_amount':remening_amount,
+            'today_date':datetime.date.today()
         }
         return render(request, 'office/money_company_details.html', context)
     else:
