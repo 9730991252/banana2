@@ -87,7 +87,7 @@ def select_company(request):
         context={
             'c':c,
             'today_date':date.today(),
-            'danda_weight':Company_services.objects.filter(name='Danda Weight',shope_id=c.shope_id).first()
+            'danda_weight':Company_services.objects.filter(name='Danda Weight',shope_id=c.shope_id).first(),
         }
         t = render_to_string('ajax/office/select_company.html', context)
     return JsonResponse({'t': t})

@@ -445,7 +445,7 @@ def new_company_bill(request):
             bill_number = Company_bill.objects.filter(shope_id=shope_id).count()
             bill_number += 1 
             Company_bill(
-                leaf_weight=leaf_weight,
+                leaf_weight=int(math.floor(float(leaf_weight))),
                 total_vehicale_weight=total_vehicale_weight,
                 empty_vehicale_weight=empty_vehicale_weight,
                 company_id=company_id,
@@ -468,7 +468,7 @@ def new_company_bill(request):
             
         context={
             'e':e,
-            'company':Company.objects.filter(shope_id=e.shope.id)
+            'company':Company.objects.filter(shope_id=e.shope.id),
         }
         return render(request, 'office/new_company_bill.html', context)
     else:
@@ -598,8 +598,8 @@ def view_company_bill(request, id):
             'logo':Logo.objects.filter(shope_id=e.shope.id).first(),
             'total_pending_amount':total_pending_amount,
             'total_credit':total_credit,
-            'danda_weight_status':danda_weight_status
-
+            'danda_weight_status':danda_weight_status,
+            'today_date':date.today(),
         }   
         return render(request, 'office/view_company_bill.html', context)
 
@@ -781,6 +781,7 @@ def new_farmer_bill(request):
             weight = request.POST.get('weight')
             wasteage = request.POST.get('wasteage')
             leaf_weight = request.POST.get('leaf_weight')
+            print('life_weight' , leaf_weight )
             empty_box = request.POST.get('empty_box')
             prise = request.POST.get('prise')
             labor_amount = request.POST.get('labor')
@@ -801,7 +802,7 @@ def new_farmer_bill(request):
                 total_amount= math.ceil(eval(total_amount)),
                 bill_number=bill_number,
                 labor_amount=labor_amount,
-                leaf_weight=leaf_weight,
+                leaf_weight=int(math.floor(float(leaf_weight))),
                 date=date
             ).save()
             f = Farmer_bill.objects.filter(shope_id=shope_id).last()
@@ -810,7 +811,8 @@ def new_farmer_bill(request):
             'e':e,
             'selected_farmer_status':selected_farmer_status,
             'farmer':farmer,
-            'leaf_weight':Farmer_services.objects.filter(shope_id=e.shope.id,name='Leaf Weight').first()
+            'leaf_weight':Farmer_services.objects.filter(shope_id=e.shope.id,name='Leaf Weight').first(),
+            'date_today':datetime.date.today(),
         }
         return render(request, 'office/new_farmer_bill.html', context)
     else:
@@ -874,7 +876,8 @@ def view_farmer_bill(request, id):
             'signature':signature,
             'total_credit':total_credit,
             'total_pending_amount':total_pending_amount,
-            'logo':Logo.objects.filter(shope_id=e.shope.id).first()
+            'logo':Logo.objects.filter(shope_id=e.shope.id).first(),
+            'date_today':datetime.date.today(),
         }
         return render(request, 'office/view_farmer_bill.html', context)
     else:

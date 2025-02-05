@@ -57,7 +57,7 @@
 <div class="containt_bill_box">
     <div class="containt_box">
         <div><label for="date">तारीख</label></div>
-        <div><input type="date" name="date" id="date"  class="form-control" required></div>
+        <div><input type="date" max="{{today_date|date:'Y-m-d'}}" name="date" id="date"  class="form-control" required></div>
     </div>
 
     <div class="containt_box">
@@ -87,7 +87,7 @@
 
     <div class="containt_box">
         <div><label for="leaf_weight">पाल्याचे वजन (वजा)</label></div>
-        <div><input type="number" name="leaf_weight" oninput="check_zero('leaf_weight'),add_leaf_weight('leaf_weight', 'empty_box_weight')" id="leaf_weight" class="form-control" required></div>
+        <div><input type="number" step="any" name="leaf_weight" oninput="check_zero('leaf_weight'),add_leaf_weight('leaf_weight', 'empty_box_weight')" id="leaf_weight" class="form-control" required></div>
     </div>
     
     <div class="containt_box">
