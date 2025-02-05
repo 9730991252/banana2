@@ -478,6 +478,7 @@ def new_company_bill(request):
 def generate_company_bill_image(request, id):
     if request.session.has_key('office_mobile'):
         mobile = request.session['office_mobile']
+        
         e = office_employee.objects.filter(mobile=mobile).first()
         bill = Company_bill.objects.filter(id=id).first()
         danda_weight_status = Company_services.objects.filter(shope_id=e.shope.id, name='Danda Weight').first()
@@ -550,7 +551,10 @@ def generate_farmer_bill_image(request, id):
 def view_company_bill(request, id):
     if request.session.has_key('office_mobile'):
         mobile = request.session['office_mobile']
+        del request.session['office_mobile']
         e = office_employee.objects.filter(mobile=mobile).first()
+        request.session['office_mobile'] = e.mobile
+        
         
         danda_weight_status = Company_services.objects.filter(shope_id=e.shope.id, name='Danda Weight').first()
         if danda_weight_status:
@@ -839,7 +843,13 @@ def farmer_bill(request):
 def view_farmer_bill(request, id):
     if request.session.has_key('office_mobile'):
         mobile = request.session['office_mobile']
+        
+        del request.session['office_mobile']
+        
         e = office_employee.objects.filter(mobile=mobile).first()
+        
+        request.session['office_mobile'] = e.mobile
+        
         bill = Farmer_bill.objects.filter(id=id).first()
         empty_box_weight = (bill.weight - bill.empty_box - bill.leaf_weight)
         wasteage_weight = (empty_box_weight + bill.wasteage)

@@ -282,7 +282,7 @@
             link.download = '{{bill.company.name}} '+ new Date().toLocaleString() +' .jpeg';
             link.href = data;
             link.click();
-            window.location.href = "{% url 'view_company_bill' bill.id %}";
+            window.location.href = "{% url 'company_bill' %}";
         });
 
 

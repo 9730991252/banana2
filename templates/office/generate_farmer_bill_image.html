@@ -214,7 +214,7 @@ domtoimage.toJpeg(canvas).then((data)=>{
             link.download = '{{bill.farmer.name}} '+ new Date().toLocaleString() +' .jpeg';
             link.href = data;
             link.click();
-            window.location.href = "{% url 'view_farmer_bill' bill.id %}";
+            window.location.href = "{% url 'farmer_bill' %}";
         });
 
 
