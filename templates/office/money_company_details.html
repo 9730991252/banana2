@@ -13,7 +13,8 @@
     welcome - {{e.name}}
 </div>
 {% include 'include/office/office_menu.html' %}
-<div class="text-center">
+<div class="text-center"style="position: relative;">
+    <a href="/report/download_single_company_report/{{company.id}}" style="position: absolute;top: 0;right: 0;" class="btn btn-danger"><i class="fa fa-download" aria-hidden="true"></i></a>
     <b>{{company.name}}</b><br>
     {% if recived_amount > bill_amount %}
         <div class="text-success"><b>Rs.{{final_amount}}</b> कंपनी कडून ॲडव्हान्स जमा </div>
@@ -113,7 +114,7 @@
         <div>रक्कम</div>
         <div>STATUS</div>
         {% for b in bill %}
-            <div ><b>{{b.bill_number}}</b></div>
+        <a href="/office/view_company_bill/{{b.id}}"><div >{{b.bill_number}}</div></a>
             <div ><b>{{b.date}}</b></div>
             <div  id="bill_amount_box{{b.id}}" class=" {% if b.paid_status == 0 %} text-danger {% else %} text-success {% endif %}" ><b>{{b.total_amount}}</b></div>
             <div>

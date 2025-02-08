@@ -93,7 +93,6 @@ def money_company_details(request,id):
                 date = request.POST.get('date')
                 amount = request.POST.get('amount')
                 
-                print(phonepe_number)
                 
                 trans = company_recived_payment_transaction.objects.filter(id=t_id).first()
                 o_m = trans.amount
@@ -499,6 +498,16 @@ def generate_company_bill_image(request, id):
         total_amount_words = num2words(bill.total_amount)
         signature = Signature.objects.filter(id=bill.office_employee.id).first()
         logo = Logo.objects.filter(shope_id=e.shope.id).first()
+        
+        recived_amount = company_recived_payment_transaction.objects.filter(shope_id=e.shope_id, company_id=bill.company.id).aggregate(Sum('amount'))['amount__sum']
+        if recived_amount == None:
+            recived_amount = 0
+            
+        bill_amount = Company_bill.objects.filter(company_id=bill.company.id).aggregate(Sum('total_amount'))['total_amount__sum']
+        if bill_amount == None:
+            bill_amount = 0
+            
+        final_amount = int(bill_amount) - int(recived_amount)
         context = {
             'e': e,
             'bill': bill,
@@ -510,6 +519,10 @@ def generate_company_bill_image(request, id):
             'total_amount_words': total_amount_words,
             'signature': signature,
             'logo': logo,
+            'final_amount':final_amount,
+            'recived_amount':recived_amount,
+            'bill_amount':bill_amount,
+            'today_date':date.today(),
         }
         return render(request, 'office/generate_company_bill_image.html', context)
     else:
@@ -585,6 +598,17 @@ def view_company_bill(request, id):
                 bill.paid_status = 1
                 bill.save()
                 return redirect(f'/office/view_company_bill/{bill.id}')
+            
+        recived_amount = company_recived_payment_transaction.objects.filter(shope_id=e.shope_id, company_id=bill.company.id).aggregate(Sum('amount'))['amount__sum']
+        if recived_amount == None:
+            recived_amount = 0
+            
+        bill_amount = Company_bill.objects.filter(company_id=bill.company.id).aggregate(Sum('total_amount'))['total_amount__sum']
+        if bill_amount == None:
+            bill_amount = 0
+            
+        final_amount = int(bill_amount) - int(recived_amount)
+
         context={
             'e':e,
             'bill':bill,
@@ -593,6 +617,9 @@ def view_company_bill(request, id):
             'danda_weight':danda_weight,
             'total_weight':total_weight,
             'amount':amount,
+            'final_amount':final_amount,
+            'recived_amount':recived_amount,
+            'bill_amount':bill_amount,
             'total_amount_words':total_amount_words,
             'signature':signature,
             'logo':Logo.objects.filter(shope_id=e.shope.id).first(),

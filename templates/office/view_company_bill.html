@@ -153,7 +153,7 @@
             <div class="vehicale_number">गाडी नंबर  {{bill.vehicale_number}}</div>
         </div>
         <div class="flex p-2" style="font-size: 20px; line-height: 0px; justify-content: space-between;">
-            <div>कंपनी नाव &nbsp; <b> {{bill.company.name}}</b></div>
+            <div>कंपनी नाव &nbsp;<a style="color: black;text-decoration: none;" href="/office/money_company_details/{{bill.company.id}}">  <b> {{bill.company.name}}</b> </a></div>
         </div>
         <div class="mb-3">{{bill.farmer.address}}</div>
         
@@ -219,9 +219,15 @@
                 <div>{{e.shope.shope_name}}</div>
             </div>
         </div>
-
+        <div class="text-center">
+            {% if recived_amount > bill_amount %}
+            <div class="text-success">{{today_date}} <b>Rs.{{final_amount}}</b> कंपनी कडून ॲडव्हान्स जमा </div>
+            {% else %}
+                <div class="text-danger">{{today_date}} <b>Rs.{{final_amount}}</b> कंपनी कडून येणे बाकी  </div>
+            {% endif %}
+        </div>
         <div class="text-center mt-3">
-            <h6><a href="https://bookkaryalay.com/contact_us/" style="text-decoration: none;color: black;">सर्व प्रकारचे बारकोड व बिलिंग सॉफ्टवेअर तयार करून मिळतील &nbsp; PRASANNA DIGITAL - 9730991252</a></h6>
+            <h6><a  style="text-decoration: none;color: black;">सर्व प्रकारचे बारकोड व बिलिंग सॉफ्टवेअर तयार करून मिळतील &nbsp; PRASANNA DIGITAL - 9730991252</a></h6>
         </div>
         </div>
 
