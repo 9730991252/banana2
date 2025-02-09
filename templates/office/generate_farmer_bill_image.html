@@ -202,21 +202,22 @@
     
 
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js" integrity="sha512-01CJ9/g7e8cUmY0DFTMcUw/ikS799FHiOA0eyHsUWfOetgbx/t6oV4otQ5zXKQyIrQGTHSmRVPIgrgLcZi/WMA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 
 <script>
-var canvas = document.getElementById("canvas");
+var pdf = document.getElementById("canvas");
 
 
-domtoimage.toJpeg(canvas).then((data)=>{
-            var link =  document.createElement("a");
-            link.download = '{{bill.farmer.name}} '+ new Date().toLocaleString() +' .jpeg';
-            link.href = data;
-            link.click();
-            window.location.href = "{% url 'farmer_bill' %}";
-        });
 
+html2canvas(pdf).then((canvas) => {
+    const base64image = canvas.toDataURL("image/jpeg");
+    var anchor  = document.createElement("a");
+    anchor.setAttribute("href", base64image);
+    anchor.setAttribute("download", '{{bill.farmer.name}} '+ new Date().toLocaleString() +' .jpeg');
+    anchor.click();
+    window.location.href = "{% url 'view_farmer_bill' bill.id %}";
 
+})
 </script>
 {% endblock content %}
