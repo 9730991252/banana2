@@ -31,7 +31,7 @@ def company_details(company_id):
             'final_amount':(int(bill_amount) - int(transactions_t))
         }
     return {}
-
+         
 @register.inclusion_tag('inclusion_tag/office/company_details.html')
 def company_details_unpaid_bills(company_id):
     if company_id:
