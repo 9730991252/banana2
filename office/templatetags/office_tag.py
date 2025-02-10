@@ -44,7 +44,27 @@ def company_details_unpaid_bills(company_id):
         if transactions_t == None:
             transactions_t = 0
             
-        remening_amount = change_company_bill_paid_status(company_id)
+        ###################
+        paid_bill_amount = Company_bill.objects.filter(company_id=company_id, paid_status = 1).aggregate(Sum('total_amount'))['total_amount__sum']
+        if paid_bill_amount == None:
+            paid_bill_amount = 0
+            
+        remening_amount = (int(transactions_t) - int(paid_bill_amount))
+        
+        bill = Company_bill.objects.filter(company_id=company_id, paid_status=0).order_by('date')
+        
+        bill_id = 0
+        for b in bill:
+            if remening_amount >= b.total_amount:
+                remening_amount -= b.total_amount
+            else:
+                bill_id = b.id
+                if int(remening_amount) != 0:
+                    remening_amount = int(b.total_amount) - int(remening_amount)
+                break 
+        r = {'bill_id':bill_id, 'remening_amount':remening_amount}
+        #################
+
 
         return {
             'company': company,
@@ -54,7 +74,7 @@ def company_details_unpaid_bills(company_id):
             'bill_amount':Company_bill.objects.filter(company_id=company_id).aggregate(Sum('total_amount'))['total_amount__sum'],
             'bill_amount_total':Company_bill.objects.filter(company_id=company_id, paid_status=0).aggregate(Sum('total_amount'))['total_amount__sum'],
             'final_amount':(int(bill_amount) - int(transactions_t)),
-            'remening_amount':remening_amount
+            'remening_amount':r
         }
     return {}
         
