@@ -8,6 +8,7 @@ from django.db.models import Avg, Sum, Min, Max
 from django.contrib import messages 
 import time
 import datetime
+from datetime import date
 from .templatetags.office_tag import *
 # Create your views here.
 

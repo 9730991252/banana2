@@ -5,6 +5,7 @@ from math import *
 import math
 from datetime import date
 from django.utils.safestring import mark_safe
+from office.views import *
 register = template.Library()
 
 
@@ -26,7 +27,34 @@ def company_details(company_id):
             'transactions': company_recived_payment_transaction.objects.filter(company_id=company_id),
             'transactions_t':transactions_t,
             'bill_amount':bill_amount,
+            'bill_amount_total':bill_amount,
             'final_amount':(int(bill_amount) - int(transactions_t))
+        }
+    return {}
+
+@register.inclusion_tag('inclusion_tag/office/company_details.html')
+def company_details_unpaid_bills(company_id):
+    if company_id:
+        company = Company.objects.get(id=company_id)
+        bills = Company_bill.objects.filter(company_id=company_id, paid_status=0).order_by('-date')
+        bill_amount = Company_bill.objects.filter(company_id=company_id).aggregate(Sum('total_amount'))['total_amount__sum']
+        if bill_amount == None:
+            bill_amount = 0
+        transactions_t =  company_recived_payment_transaction.objects.filter(company_id=company_id).aggregate(Sum('amount'))['amount__sum']
+        if transactions_t == None:
+            transactions_t = 0
+            
+        remening_amount = change_company_bill_paid_status(company_id)
+
+        return {
+            'company': company,
+            'bill':bills,
+            'transactions': company_recived_payment_transaction.objects.filter(company_id=company_id),
+            'transactions_t':transactions_t,
+            'bill_amount':Company_bill.objects.filter(company_id=company_id).aggregate(Sum('total_amount'))['total_amount__sum'],
+            'bill_amount_total':Company_bill.objects.filter(company_id=company_id, paid_status=0).aggregate(Sum('total_amount'))['total_amount__sum'],
+            'final_amount':(int(bill_amount) - int(transactions_t)),
+            'remening_amount':remening_amount
         }
     return {}
         

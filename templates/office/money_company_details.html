@@ -14,7 +14,11 @@
 </div>
 {% include 'include/office/office_menu.html' %}
 <div class="text-center"style="position: relative;">
-    <a href="/report/download_single_company_report/{{company.id}}" style="position: absolute;top: 0;right: 0;" class="btn btn-danger"><i class="fa fa-download" aria-hidden="true"></i></a>
+    <div style="position: absolute;top: 0;right: 0;">
+        <a href="/report/download_single_company_report/{{company.id}}" class="btn btn-success"><i class="fa fa-download" aria-hidden="true"></i></a>
+        
+        <a href="/report/download_single_company_report_unpaid/{{company.id}}" class="btn btn-danger"><i class="fa fa-download" aria-hidden="true"></i></a>
+    </div>
     <b>{{company.name}}</b><br>
     {% if recived_amount > bill_amount %}
         <div class="text-success"><b>Rs.{{final_amount}}</b> कंपनी कडून ॲडव्हान्स जमा </div>
