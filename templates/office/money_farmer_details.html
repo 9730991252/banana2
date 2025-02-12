@@ -13,7 +13,11 @@
     welcome - {{e.name}}
 </div>
 {% include 'include/office/office_menu.html' %}
-<div class="text-center">
+<div class="text-center" style="position: relative;">
+    <div style="position: absolute;top: 0;right: 0;">
+        <a href="/report/download_single_farmer_report/{{farmer.id}}" class="btn btn-success"><i class="fa fa-download" aria-hidden="true"></i></a>
+        <br>
+    </div>
     <b>{{farmer.name}}</b><br>
     {% if recived_amount > bill_amount %}
         <div class="text-success"><b>Rs.{{final_amount}}</b> शेतकऱ्याला ॲडव्हान्स दिला </div>

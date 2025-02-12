@@ -40,6 +40,22 @@ def download_single_company_report(request, id):
     else:
         return redirect('login')
     
+def download_single_farmer_report(request, id):
+    if request.session.has_key('office_mobile'):
+        mobile = request.session['office_mobile']
+        e = office_employee.objects.filter(mobile=mobile).first()
+        last_year = int(date.today().year) -1
+        context={
+            'e':e,
+            'farmer':Farmer.objects.filter(shope_id=e.shope_id, id=id).first(),
+            'last_year':last_year,
+            'today_date':date.today()
+
+        }
+        return render(request, 'report/download_single_farmer_report.html', context)
+    else:
+        return redirect('login')
+    
 def download_single_company_report_unpaid(request, id):
     if request.session.has_key('office_mobile'):
         mobile = request.session['office_mobile']
@@ -55,3 +71,4 @@ def download_single_company_report_unpaid(request, id):
         return render(request, 'report/download_single_company_report_unpaid.html', context)
     else:
         return redirect('login')
+    

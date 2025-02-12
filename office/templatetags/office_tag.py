@@ -31,8 +31,30 @@ def company_details(company_id):
             'final_amount':(int(bill_amount) - int(transactions_t))
         }
     return {}
+
+@register.inclusion_tag('inclusion_tag/office/farmer_details.html')
+def farmer_details(farmer_id):
+    if farmer_id:
+        farmer = Farmer.objects.get(id=farmer_id)
+        bills = Farmer_bill.objects.filter(farmer_id=farmer_id)
+        bill_amount = bills.aggregate(Sum('total_amount'))['total_amount__sum']
+        if bill_amount == None:
+            bill_amount = 0
+        transactions_t =  Farmer_payment_transaction.objects.filter(farmer_id=farmer_id).aggregate(Sum('amount'))['amount__sum']
+        if transactions_t == None:
+            transactions_t = 0
+        return {
+            'farmer': farmer,
+            'bill':bills,
+            'transactions': Farmer_payment_transaction.objects.filter(farmer=farmer),
+            'transactions_t':transactions_t,
+            'bill_amount':bill_amount,
+            'bill_amount_total':bill_amount,
+            'final_amount':(int(bill_amount) - int(transactions_t))
+        }
+    return {}
          
-@register.inclusion_tag('inclusion_tag/office/company_details.html')
+@register.inclusion_tag('inclusion_tag/office/company_details_unpaid_bills.html')
 def company_details_unpaid_bills(company_id):
     if company_id:
         company = Company.objects.get(id=company_id)

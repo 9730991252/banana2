@@ -1,0 +1,104 @@
+{% load office_tag %}
+
+
+    <div class="text-center pt-1">
+        <h6 style="display: flex;justify-content: space-evenly;">
+            <b>{{farmer.name}}</b>
+            <p>{{farmer.address}}</p>
+            
+            {% if transactions_t > bill_amount %}
+            <div class="text-success"><b>Rs.{{final_amount}}</b> कंपनी कडून ॲडव्हान्स जमा </div>
+            {% else %}
+            <div class="text-danger"><b>Rs.{{final_amount}}</b> कंपनी कडून येणे बाकी  </div>
+            {% endif %}
+        </h6>
+        <!--TODO--------------------------------------------------------------------->
+
+    <style>
+        .containt_box{
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        a{
+            text-decoration: none;
+            color: black;
+        }
+        .company_bill_box{
+            padding: 1px;
+            height: fit-content;
+            background-color: black;
+            display: grid; 
+            grid-template-columns: 0.7fr 1.5fr 1fr 0.99fr;
+            grid-gap: 1px;
+            div{
+                background-color: white;
+                text-align: center;
+            }
+        }
+        .money_detail_box{
+            padding: 1px;
+            background-color: black;
+            display: grid;
+            grid-template-columns: 1fr 1.1fr 1fr;
+            gap: 1px;
+            height: fit-content;
+            div{
+                background-color: white;
+                text-align: center;
+            }
+        }
+    </style>
+
+    <div class="containt_box">
+
+    <div class="company_bill_box">
+        <div style="grid-column-start: 1;grid-column-end: 5;">बिलाचा तपशील </div>
+        <script>var total_amount = 0
+         </script>
+        <div>बिल</div>
+        <div>तारीख</div>
+        <div>रक्कम</div>
+        <div>STATUS</div>
+        {% for b in bill %}
+            <div ><b>{{b.bill_number}}</b></div>
+            <div ><b>{{b.date}}</b></div>
+            <div  id="bill_amount_box{{b.id}}" class=" {% if b.paid_status == 0 %} text-danger {% else %} text-success {% endif %}" ><b>{{b.total_amount}}</b></div>
+            <div>
+                <div>
+                    {% if b.paid_status == 1 %}
+                    <b class="text-success">Paid</b>
+                    {% else %}
+                    <b class="{% if remening_amount.bill_id == b.id and remening_amount.remening_amount != 0 %} text-primary {% else %} text-danger {% endif %}">UnPaid {% if remening_amount.bill_id == b.id and remening_amount.remening_amount != 0 %}Rs.{{remening_amount.remening_amount}}{% endif %}</b>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+            <div style="grid-column-start: 1;grid-column-end: 3;"><b>एकूण रक्कम</b></div>
+            
+            <div><b class="text-danger" >{{bill_amount_total}}</b></div>
+            <div></div>
+            <script>document.getElementById('total_amount').innerHTML = total_amount</script>
+        </div>
+        
+        <div class="money_detail_box">
+            <div style="grid-column-start: 1;grid-column-end: 4;">मिळालेल्या रक्कमेचा तपशील</div>
+            <div>तारीख</div>
+            <div>प्रकार</div>
+            <div>रक्कम</div>
+
+            {% for t in transactions %}
+            <div>{{t.date}}</div>
+            <div>{{t.payment_type}} &nbsp;{% if t.payment_type == 'PhonePe' %}{{t.phonepe_number}}{% elif t.payment_type == 'Bank' %}{{t.bank_number}}{% endif %} </div>
+            <div>{{t.amount}}</div>
+            {% endfor %}
+
+            <div style="grid-column-start: 1;grid-column-end: 3;"><b>एकूण रक्कम</b></div>
+            
+            <div><b class="text-danger" >{{transactions_t}}</b></div>
+            
+        </div>
+    </div>
+
+    </div>
+
