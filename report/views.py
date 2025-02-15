@@ -29,10 +29,13 @@ def download_single_company_report(request, id):
         mobile = request.session['office_mobile']
         e = office_employee.objects.filter(mobile=mobile).first()
         last_year = int(date.today().year) -1
+        logo = Logo.objects.filter(shope_id=e.shope.id).first()
+
         context={
             'e':e,
             'company':Company.objects.filter(shope_id=e.shope_id, id=id).first(),
             'last_year':last_year,
+            'logo': logo,
             'today_date':date.today()
 
         }
@@ -61,10 +64,14 @@ def download_single_company_report_unpaid(request, id):
         mobile = request.session['office_mobile']
         e = office_employee.objects.filter(mobile=mobile).first()
         last_year = int(date.today().year) -1
+        logo = Logo.objects.filter(shope_id=e.shope.id).first()
+
+
         context={
             'e':e,
             'company':Company.objects.filter(shope_id=e.shope_id, id=id).first(),
             'last_year':last_year,
+            'logo': logo,
             'today_date':date.today()
 
         }
