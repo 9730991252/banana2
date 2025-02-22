@@ -1,0 +1,79 @@
+{% extends 'home/base.html' %}
+{% block head %}
+{% endblock head %}
+{% block content %}
+{% include 'include/alert.html' %}
+<div class="container">
+    <a href="/sunil/sunil_home/">< Back</a>
+    <div class="text-center"><b>{{shope.shope_name}}</b></div>
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        Add Payment
+    </button>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Payment</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            <form method="POST"> {% csrf_token %}
+                <div class="mb-3">
+                    <label for="">From Date</label>
+                    <input type="date" class="form-control" name="from_date" required>
+                </div>
+                <div class="mb-3">
+                    <label for="">To Date</label>
+                    <input type="date" class="form-control" name="to_date" required>
+                </div>
+                <div class="mb-3">
+                    <label for="">Amount</label>
+                    <input type="number" class="form-control" name="amount" required>
+                </div>
+                <div class="mb-3">
+                    <select class="custom-select form-control" name="payment_type" id="">
+                        <option value="PhonePe">PhonePe</option>
+                        <option value="Cash">Cash</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary" name="Add_payment">Submit</button>
+            </form>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+        </div>
+    </div>
+
+
+    <div>
+        <table class="table">
+            <thead>
+              <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">From Date</th>
+                    <th scope="col">To Date</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for p in payment %}
+                    <tr>
+                        <th scope="row">{{forloop.counter}}</th>
+                        <td>{{p.from_date}}</td>
+                        <td>{{p.to_date}}</td>
+                        <td>{{p.added_date}}</td>
+                        <td>Rs.{{p.amount}}, {{p.payment_type}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+          </table>
+    </div>
+
+
+</div>
+{% endblock content %}

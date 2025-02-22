@@ -1,0 +1,12 @@
+<style>
+    .menu{
+        display: flex;
+        width: 100%;
+        overflow: scroll;
+        gap: 10px;
+    }
+</style>
+<div class="menu">
+    <a  href="/sunil/sunil_home/" class="my-1 {% if request.path == '/sunil/sunil_home/' %}btn btn-warning{% else %}btn btn-primary{% endif %}">Home</a>
+    <a  href="/sunil/payment_detail/" class="my-1 {% if request.path == '/sunil/payment_detail/' %}btn btn-warning{% else %}btn btn-primary{% endif %}">Payment</a>
+</div>

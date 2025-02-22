@@ -3,6 +3,8 @@
 {% endblock head %}
 {% block content %}
 {% include 'include/alert.html' %}
+{% include 'include/sunil/sunil_menu.html' %}
+
 <div class="container">
 <br>
 <!-- Button trigger modal -->
@@ -71,13 +73,13 @@
       {% for s in shope %}
       <tr>
         <th scope="row">{{forloop.counter}}</th>
-        <td>{{s.shope_name}}</td>
+        <td><form method="POST">{% csrf_token %} <input type="hidden" name="id" value="{{s.id}}" name="id"> <button type="submit" class="btn" name="profile">{{s.shope_name}}</button></form></td>
         <td>{{s.owner_name}}</td>
         <td>{{s.mobile}}</td>
         <td>{{s.pin}}</td>
         <td>{{s.edit_pin}}</td>
         <td><form class="" method="POST">{% csrf_token %}{% if s.status == 1 %}<button class="btn btn-success" type="submit" name="active">Active<input type="hidden" name="id" value="{{s.id}}"></button>{% else %}<button class="btn btn-danger" type="submit" name="deactive">Deactive<input type="hidden" name="id" value="{{s.id}}"></button>{% endif %}</form></td>
-        <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#Add_shope{{s.id}}">Edit</button></td>
+        <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#Add_shope{{s.id}}">Edit</button> <a href="/sunil/shope_detail/{{s.id}}" class="btn btn-info">View</a></td>
       </tr>
       <div class="modal fade" id="Add_shope{{s.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">

@@ -26,6 +26,19 @@ def office_home(request):
     else:
         return redirect('login')
     
+def softwar_charges(request):
+    if request.session.has_key('office_mobile'):
+        mobile = request.session['office_mobile']
+        e = office_employee.objects.filter(mobile=mobile).first()
+        context={
+            'e':e,
+            'payment':Shope_payment.objects.filter(shope_id=e.shope.id).order_by('-id') 
+        }
+        return render(request, 'office/softwar_charges.html', context)
+    else:
+        return redirect('login')
+    
+    
 def money(request):
     if request.session.has_key('office_mobile'):
         mobile = request.session['office_mobile']

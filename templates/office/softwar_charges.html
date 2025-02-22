@@ -1,0 +1,38 @@
+{% extends 'home/base.html' %}
+{% block head %}
+{% endblock head %}
+{% block content %}
+{% load office_tag %}
+{% include 'include/alert.html' %}
+<div>
+    welcome - {{e.name}}
+</div>
+{% include 'include/office/office_menu.html' %}
+<style>
+    .payment_box {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 1px;
+        padding: 1px;
+        background-color: black;
+        margin: 0 20px;
+        div{
+            text-align: center;
+            background-color: white;
+        }
+    }
+</style>
+<div class="payment_box">
+    <div><b>From</b></div>
+    <div><b>To</b></div>
+    <div><b>Amount</b></div>
+
+    {% for p in payment %}
+    <div>{{p.from_date}}</div>
+    <div>{{p.to_date}}</div>
+    <div><b>Rs.{{p.amount}}</b></div>
+    {% endfor %}
+</div>
+
+
+{% endblock content %}
