@@ -93,12 +93,17 @@
             <div>{{t.amount}}</div>
             {% endfor %}
 
-            <div style="grid-column-start: 1;grid-column-end: 3;"><b>एकूण बाकी रक्कम</b></div>
+            <div style="grid-column-start: 1;grid-column-end: 3;"><b>एकूण रक्कम</b></div>
             
             <div><b class="text-danger" >{{transactions_t}}</b></div>
             
         </div>
     </div>
-
+    <br>
+    {% if transactions_t > bill_amount %}
+    <div class="text-success"><b>Rs.{{final_amount}}</b> कंपनी कडून ॲडव्हान्स जमा </div>
+    {% else %}
+    <div class="text-danger"><b>Rs.{{final_amount}}</b> कंपनी कडून येणे बाकी  </div>
+    {% endif %}
     </div>
 

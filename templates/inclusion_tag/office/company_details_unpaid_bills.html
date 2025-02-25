@@ -76,6 +76,11 @@
             <script>document.getElementById('total_amount').innerHTML = total_amount</script>
         </div>
     </div>
-
+<br>            
+{% if transactions_t > bill_amount %}
+<div class="text-success"><b>Rs.{{final_amount}}</b> कंपनी कडून ॲडव्हान्स जमा </div>
+{% else %}
+<div class="text-danger"><b>Rs.{{final_amount}}</b> कंपनी कडून येणे बाकी  </div>
+{% endif %}
     </div>
 

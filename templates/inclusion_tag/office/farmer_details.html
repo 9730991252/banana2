@@ -7,13 +7,13 @@
             <p>{{farmer.address}}</p>
             
             {% if transactions_t > bill_amount %}
-            <div class="text-success"><b>Rs.{{final_amount}}</b> कंपनी कडून ॲडव्हान्स जमा </div>
+            <div class="text-success"><b>Rs.{{final_amount}}</b> शेतकऱ्याला ॲडव्हान्स दिला </div>
             {% else %}
-            <div class="text-danger"><b>Rs.{{final_amount}}</b> कंपनी कडून येणे बाकी  </div>
+            <div class="text-danger"><b>Rs.{{final_amount}}</b> एकूण देणे बाकी  </div>
             {% endif %}
         </h6>
         <!--TODO--------------------------------------------------------------------->
-
+ 
     <style>
         .containt_box{
             display: grid;
@@ -82,7 +82,7 @@
         </div>
         
         <div class="money_detail_box">
-            <div style="grid-column-start: 1;grid-column-end: 4;">मिळालेल्या रक्कमेचा तपशील</div>
+            <div style="grid-column-start: 1;grid-column-end: 4;">दिलेल्या रक्कमेचा तपशील</div>
             <div>तारीख</div>
             <div>प्रकार</div>
             <div>रक्कम</div>
