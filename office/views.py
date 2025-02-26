@@ -440,6 +440,7 @@ def new_company_bill(request):
         mobile = request.session['office_mobile']
         e = office_employee.objects.filter(mobile=mobile).first()
         if 'complete_bill'in request.POST:
+            
             company_id = request.POST.get('company_id')
             shope_id = e.shope.id
             vehicale_number = request.POST.get('vehicale_number')
@@ -457,25 +458,44 @@ def new_company_bill(request):
             total_amount = request.POST.get('total_amount')
             bill_number = Company_bill.objects.filter(shope_id=shope_id).count()
             bill_number += 1 
-            Company_bill(
-                leaf_weight=int(math.floor(float(leaf_weight))),
-                total_vehicale_weight=total_vehicale_weight,
-                empty_vehicale_weight=empty_vehicale_weight,
-                company_id=company_id,
-                shope_id=shope_id,
-                office_employee_id=e.id,
-                vehicale_number=vehicale_number,
-                weight=weight,
-                empty_box=empty_box,
-                wasteage=wasteage,
-                prise=prise,
-                total_amount= math.ceil(eval(total_amount)),
-                bill_number=bill_number,
-                labor_amount=labor_amount,
-                service_charge=service_charge,
-                eater=eater,
-                date=date
-            ).save()
+            # print('leaf_weight', int(math.floor(float(leaf_weight))))
+            # print('total_vehicale_weight', total_vehicale_weight)
+            # print('empty_vehicale_weight', empty_vehicale_weight)
+            # print('company_id', company_id)
+            # print('shope_id', shope_id)
+            # print('e.id', e.id)
+            # print('vehicale_number', vehicale_number)
+            # print('weight', weight)
+            # print('empty_box', empty_box)
+            # print('wasteage', wasteage)
+            # print('prise', prise)
+            # print('total_amount', math.ceil(eval(total_amount)))
+            # print('bill_number', bill_number)
+            # print('labor_amount', labor_amount)
+            # print('service_charge', service_charge)
+            # print('eater', eater)
+            # print('date', date)
+            # print('------------------------------------------------')
+            
+            save_new_company_bill(
+                int(math.floor(float(leaf_weight))),
+                total_vehicale_weight,
+                empty_vehicale_weight,
+                company_id,
+                shope_id,
+                e.id,
+                vehicale_number,
+                weight,
+                empty_box,
+                wasteage,
+                prise,
+                math.ceil(eval(total_amount)),
+                bill_number,
+                labor_amount,
+                service_charge,
+                eater,
+                date
+            )
             f = Company_bill.objects.filter(shope_id=shope_id).last()
             return redirect(f'/office/view_company_bill/{f.id}')
             
@@ -486,6 +506,45 @@ def new_company_bill(request):
         return render(request, 'office/new_company_bill.html', context)
     else:
         return redirect('login')
+    
+    
+def save_new_company_bill(leaf_weight, total_vehicale_weight, empty_vehicale_weight, company_id, shope_id, employee_id, vehicale_number, weight, empty_box, wasteage, prise, total_amount, bill_number, labor_amount, service_charge, eater, date):
+    # print('leaf_weight', leaf_weight)
+    # print('total_vehicale_weight', total_vehicale_weight)
+    # print('empty_vehicale_weight', empty_vehicale_weight)
+    # print('company_id', company_id)
+    # print('shope_id', shope_id)
+    # print('employee_id', employee_id)
+    # print('vehicale_number', vehicale_number)
+    # print('weight', weight)
+    # print('empty_box', empty_box)
+    # print('wasteage', wasteage)
+    # print('prise', prise)
+    # print('total_amount', total_amount)
+    # print('bill_number', bill_number)
+    # print('labor_amount', labor_amount)
+    # print('service_charge', service_charge)
+    # print('eater', eater)
+    # print('date', date)
+    Company_bill(
+        leaf_weight=leaf_weight,
+        total_vehicale_weight=total_vehicale_weight,
+        empty_vehicale_weight=empty_vehicale_weight,
+        company_id=company_id,
+        shope_id=shope_id,
+        office_employee_id=employee_id,
+        vehicale_number=vehicale_number,
+        weight=weight,
+        empty_box=empty_box,
+        wasteage=wasteage,
+        prise=prise,
+        total_amount= total_amount,
+        bill_number=bill_number,
+        labor_amount=labor_amount,
+        service_charge=service_charge,
+        eater=eater,
+        date=date
+    ).save()
     
 @csrf_exempt
 def generate_company_bill_image(request, id):
