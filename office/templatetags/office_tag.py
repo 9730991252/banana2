@@ -21,6 +21,26 @@ def company_details(company_id):
         transactions_t =  company_recived_payment_transaction.objects.filter(company_id=company_id).aggregate(Sum('amount'))['amount__sum']
         if transactions_t == None:
             transactions_t = 0
+            
+            
+        paid_bill_amount = Company_bill.objects.filter(company_id=company_id, paid_status = 1).aggregate(Sum('total_amount'))['total_amount__sum']
+        if paid_bill_amount == None:
+            paid_bill_amount = 0
+            
+        remening_amount = (int(transactions_t) - int(paid_bill_amount))
+        
+        bill = Company_bill.objects.filter(company_id=company_id, paid_status=0).order_by('date')
+        
+        bill_id = 0
+        for b in bill:
+            if remening_amount >= b.total_amount:
+                remening_amount -= b.total_amount
+            else:
+                bill_id = b.id
+                if int(remening_amount) != 0:
+                    remening_amount = int(b.total_amount) - int(remening_amount)
+                break 
+        r = {'bill_id':bill_id, 'remening_amount':remening_amount}
         return {
             'company': company,
             'bill':bills,
@@ -28,7 +48,8 @@ def company_details(company_id):
             'transactions_t':transactions_t,
             'bill_amount':bill_amount,
             'bill_amount_total':bill_amount,
-            'final_amount':(int(bill_amount) - int(transactions_t))
+            'final_amount':(int(bill_amount) - int(transactions_t)),
+            'remening_amount':r
         }
     return {}
 
