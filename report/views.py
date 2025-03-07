@@ -24,6 +24,22 @@ def download_all_company_report(request):
         return render(request, 'report/download_all_company_report.html', context)
     else:
         return redirect('login')
+    
+def download_all_farmer_report(request):
+    if request.session.has_key('office_mobile'):
+        mobile = request.session['office_mobile']
+        e = office_employee.objects.filter(mobile=mobile).first()
+        last_year = int(date.today().year) -1
+        context={
+            'e':e,
+            'farmer':Farmer.objects.filter(shope_id=e.shope_id),
+            'last_year':last_year,
+            'today_date':date.today()
+
+        }
+        return render(request, 'report/download_all_farmer_report.html', context)
+    else:
+        return redirect('login')
 def download_single_company_report(request, id):
     if request.session.has_key('office_mobile'):
         mobile = request.session['office_mobile']

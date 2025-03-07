@@ -1,0 +1,52 @@
+{% extends 'home/base.html' %}
+{% block head %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js" integrity="sha512-pdCVFUWsxl1A4g0uV6fyJ3nrnTGeWnZN2Tl/56j45UvZ1OMdm9CIbctuIHj+yBIRTUUyv6I9+OivXj4i0LPEYA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+{% endblock head %}
+{% block content %}
+{% load office_tag %}
+{% include 'include/alert.html' %}
+
+<div id="canvas">
+
+    <div class="text-center">1 April {{last_year}} ते {{today_date|date:'d M Y'}} तपशील </div>
+<div class="container">
+
+
+{% for c in farmer %}
+<div class="company_box border" style="border: 1px solid black;">
+    {% farmer_details c.id %}
+</div>
+<br>
+{% endfor %}
+
+
+
+</div>
+
+</div>
+
+<script>
+    var pdf = document.getElementById("canvas");
+    var opt = {
+        margin: 0.5,
+        filename: ''+ new Date().toLocaleString() +' .pdf',
+        image: { type: 'jpeg', quality: 50 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'in', format: 'a4', orientaion: 'portrait' }
+    };
+    html2pdf().from(pdf).set(opt).toPdf().get('pdf').then(function (pdf) {
+        var totalPages = pdf.internal.getNumberOfPages();
+        for (i = 1; i <= totalPages; i++) {
+            pdf.setPage(i);
+            pdf.setFontSize(10);
+            pdf.setTextColor(150);
+ 
+            pdf.text('Page ' + i + ' of ' + totalPages, (pdf.internal.pageSize.getWidth()/2.25,(pdf.internal.pageSize.getHeight()-25)))
+        }
+    }).save().then(pdfResult => {
+        window.location.href = '/office/report/';
+    });
+</script>
+
+{% endblock content %}
+
