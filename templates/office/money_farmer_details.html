@@ -48,7 +48,7 @@
     <div popover class="my_popover" id="my-popover-phone">
         <form method="POST">
             <label class="mb-2">फोन पे दिलेली  रक्कम</label>
-            <input type="date" name="date" class="form-control" required>
+            <input type="date" max="{{today_date|date:'Y-m-d'}}" name="date" class="form-control" required>
             <br>
             <input type="number" class="form-control" name="phonepe_number" placeholder="फोन पे क्रमांक"  required>
             <br>
@@ -60,7 +60,7 @@
     <div popover class="my_popover" id="my-popover-bank">
         <form method="POST">
             <label class="mb-2">बँक दिलेली  रक्कम </label>
-            <input type="date"   name="date" class="form-control" required>
+            <input type="date"  max="{{today_date|date:'Y-m-d'}}" name="date" class="form-control" required>
             <br>
             <input type="number" name="bank_number" class="form-control" placeholder="बँक खाते क्रमांक"  required>
             <br>
@@ -68,13 +68,13 @@
             <button class="btn btn-danger mt-3" name="bank"  >submit</button>
         </form>
     </div>
-
+ 
     <div popover class="my_popover" id="my-popover-cash">
         <form method="POST">
             <label class="mb-2">रोख दिलेली  रक्कम </label>
-            <input type="date" name="date" class="form-control" >
+            <input type="date" name="date" max="{{today_date|date:'Y-m-d'}}"   class="form-control" >
             <br>
-            <input type="number" name="cash_amount" class="form-control" placeholder="रोख रक्कम">
+            <input type="number"  name="cash_amount" class="form-control" placeholder="रोख रक्कम">
             <button name="cash" onclick="document.getElementById('text_btn').style.display = 'none';"  id="text_btn"  class="btn btn-danger mt-3" >submit</button>
         </form>
     </div>

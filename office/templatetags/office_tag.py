@@ -64,6 +64,8 @@ def farmer_details(farmer_id):
         transactions_t =  Farmer_payment_transaction.objects.filter(farmer_id=farmer_id).aggregate(Sum('amount'))['amount__sum']
         if transactions_t == None:
             transactions_t = 0
+            
+        remening_amount = change_farmer_bill_paid_status(farmer_id)
         return {
             'farmer': farmer,
             'bill':bills,
@@ -71,7 +73,8 @@ def farmer_details(farmer_id):
             'transactions_t':transactions_t,
             'bill_amount':bill_amount,
             'bill_amount_total':bill_amount,
-            'final_amount':(int(bill_amount) - int(transactions_t))
+            'final_amount':(int(bill_amount) - int(transactions_t)),
+            'remening_amount':remening_amount
         }
     return {}
          

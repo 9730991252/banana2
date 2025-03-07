@@ -226,7 +226,8 @@ def money_farmer_details(request,id):
             'bill':Farmer_bill.objects.filter(farmer_id=id).order_by('-date'),
             'transaction':Farmer_payment_transaction.objects.filter(farmer_id=id).order_by('date'),
             'total_amount':Farmer_payment_transaction.objects.filter(farmer_id=id).aggregate(Sum('amount'))['amount__sum'],
-            'remening_amount':remening_amount
+            'remening_amount':remening_amount,
+            'today_date':datetime.date.today()
         }
         return render(request, 'office/money_farmer_details.html', context)
     else:
