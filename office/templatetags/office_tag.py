@@ -5,7 +5,7 @@ from math import *
 import math
 from datetime import date
 from django.utils.safestring import mark_safe
-from office.views import *
+from office.views import change_farmer_bill_paid_status
 register = template.Library()
 
 
