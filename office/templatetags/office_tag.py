@@ -65,7 +65,32 @@ def farmer_details(farmer_id):
         if transactions_t == None:
             transactions_t = 0
             
-        remening_amount = change_farmer_bill_paid_status(farmer_id)
+        # remening_amount = change_farmer_bill_paid_status(farmer_id)
+        
+
+        recived_payment = Farmer_payment_transaction.objects.filter(farmer_id=farmer_id).aggregate(Sum('amount'))['amount__sum']
+        if recived_payment == None:
+            recived_payment = 0
+        paid_bill_amount = Farmer_bill.objects.filter(farmer_id=farmer_id, paid_status = 1).aggregate(Sum('total_amount'))['total_amount__sum']
+        if paid_bill_amount == None:
+            paid_bill_amount = 0
+        remening_amount = (int(recived_payment) - int(paid_bill_amount))
+        bill = Farmer_bill.objects.filter(farmer_id=farmer_id, paid_status=0).order_by('date')
+        
+        bill_id = 0
+        for b in bill:
+            if remening_amount >= b.total_amount:
+                b.paid_status = 1
+                b.save()
+                remening_amount -= b.total_amount
+            else:
+                bill_id = b.id
+                if int(remening_amount) != 0:
+                    remening_amount = int(b.total_amount) - int(remening_amount)
+                break
+        remening_amount = {'bill_id':bill_id, 'remening_amount':remening_amount}
+
+        ########################        
         return {
             'farmer': farmer,
             'bill':bills,
