@@ -70,7 +70,62 @@ def money_company_details(request,id):
             if recived_amount == None:
                 recived_amount = 0
                 
+            b_opn = Company_opning_balance.objects.filter(company_id=id).first()
+            
             final_amount = int(bill_amount) - int(recived_amount)
+            if b_opn:
+                if b_opn.type == 0:
+                    final_amount += int(b_opn.balance)
+                else:
+                    final_amount -= int(b_opn.balance)
+            
+            if 'edit_opning_balance'in request.POST:
+                t = request.POST.get('type')
+                amount = request.POST.get('amount')
+                
+                if Company_opning_balance.objects.filter(company_id=id).exists():
+                    of = Company_opning_balance.objects.filter(company_id=id).first()
+                    nf = Company_opning_balance.objects.filter(company_id=id).first()
+                    nf.balance = amount
+                    nf.type = t
+                    nf.save() 
+                    
+                if int(t) == 1:
+                    ba = int(math.floor(float(of.balance))) - int(math.floor(float(nf.balance)))
+                    bill = Company_bill.objects.filter(company_id=id, paid_status=1).order_by('id')
+                    for b in bill:
+                        if ba <= b.total_amount:
+                            b.paid_status = 0
+                            b.save()
+                            ba -= b.total_amount
+                        else:
+                            break
+                else:
+                    ba = int(math.floor(float(of.balance))) - int(math.floor(float(nf.balance)))
+                    bill = Company_bill.objects.filter(company_id=id, paid_status=1).order_by('id')
+                    for b in bill:
+                        if ba <= b.total_amount:
+                            b.paid_status = 0
+                            b.save()
+                            ba -= b.total_amount
+                        else:
+                            break
+                return redirect('money_company_details', id=id)
+            
+            if 'add_opning_amount'in request.POST:
+                t = request.POST.get('type')
+                amount = request.POST.get('amount')
+                print(amount)
+                if Company_opning_balance.objects.filter(company_id=id).exists():
+                    pass
+                else:
+                    Company_opning_balance(
+                        company_id = id,
+                        shope_id = e.shope_id,
+                        balance = amount,
+                        type = t,
+                    ).save()
+                return redirect('money_company_details', id=id)
             
             if 'cash'in request.POST:
                 amount = request.POST.get('cash_amount')
@@ -135,6 +190,7 @@ def money_company_details(request,id):
                     else:
                         break
                 return redirect('money_company_details', id=id)
+                        
         context={ 
             'e':e,
             'company':Company.objects.filter(id=id).first(),
@@ -144,19 +200,30 @@ def money_company_details(request,id):
             'transaction':company_recived_payment_transaction.objects.filter(company_id=id).order_by('payment_type','date'),
             'bill':Company_bill.objects.filter(company_id=id).order_by('-date'),
             'remening_amount':remening_amount,
-            'today_date':datetime.date.today()
+            'today_date':datetime.date.today(),
+            'opning_balance':Company_opning_balance.objects.filter(company_id=id).first()
         }
         return render(request, 'office/money_company_details.html', context)
     else:
         return redirect('login')
     
 def change_company_bill_paid_status(company_id):
+    b_opn = Company_opning_balance.objects.filter(company_id=company_id).first()
+    print(b_opn)
     recived_payment = company_recived_payment_transaction.objects.filter(company_id=company_id).aggregate(Sum('amount'))['amount__sum']
+    if b_opn:
+        if b_opn.type == 0:
+            recived_payment -= int(b_opn.balance)
+        else:
+            recived_payment += int(b_opn.balance)
+   
     if recived_payment == None:
         recived_payment = 0
+        
     paid_bill_amount = Company_bill.objects.filter(company_id=company_id, paid_status = 1).aggregate(Sum('total_amount'))['total_amount__sum']
     if paid_bill_amount == None:
         paid_bill_amount = 0
+        
     remening_amount = (int(recived_payment) - int(paid_bill_amount))
     
     bill = Company_bill.objects.filter(company_id=company_id, paid_status=0).order_by('date')

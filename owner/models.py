@@ -73,6 +73,13 @@ class Company(models.Model):
     address = models.CharField(max_length=200 , null=True)
     status = models.IntegerField(default=1)
     
+class Company_opning_balance(models.Model):
+    company = models.ForeignKey(Company, on_delete=models.PROTECT, null=True)
+    shope = models.ForeignKey(Shope,on_delete=models.PROTECT,null=True)
+    balance = models.FloatField()
+    type = models.IntegerField()
+    added_date = models.DateTimeField(auto_now_add=True)
+    
     
 class Company_bill(models.Model):
     company = models.ForeignKey(Company,on_delete=models.PROTECT,null=True)
