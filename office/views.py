@@ -442,6 +442,23 @@ def edit_farmer_bill(request, id):
                     bill.labor_amount = labor_amount
                     bill.total_amount = total_amount
                     bill.save()
+                    
+                    recived_payment = Farmer_payment_transaction.objects.filter(farmer_id=bill.farmer_id).aggregate(Sum('amount'))['amount__sum']
+                    if recived_payment == None:
+                        recived_payment = 0
+                    paid_bill_amount = Farmer_bill.objects.filter(farmer_id=bill.farmer_id, paid_status = 1).aggregate(Sum('total_amount'))['total_amount__sum']
+                    if paid_bill_amount == None:
+                        paid_bill_amount = 0
+                    remening_amount = (int(recived_payment) - int(paid_bill_amount))
+                    bill = Farmer_bill.objects.filter(farmer_id=bill.farmer_id, paid_status=1).order_by('date')
+                    
+                    bill_id = 0
+                    for b in bill:
+                        if remening_amount <= b.total_amount:
+                            b.paid_status = 0
+                            b.save()
+                            remening_amount -= b.total_amount
+                    
                     del request.session['edit_pin']
                     return redirect(f'/office/view_farmer_bill/{id}')
             else:
@@ -787,9 +804,7 @@ def edit_company_bill(request, id):
                     company_id = request.POST.get('company_id')
                     bill.company_id=company_id
                     bill.save()
-                    
                 if 'edit_bill'in request.POST:
-                    
                     vehicale_number = request.POST.get('vehicale_number')
                     total_vehicale_weight = request.POST.get('total_vehicale_weight')
                     empty_vehicale_weight = request.POST.get('empty_vehicale_weight')
@@ -818,7 +833,36 @@ def edit_company_bill(request, id):
                     bill.eater=eater
                     bill.date=date
                     bill.save()
+                    
+                    b_opn = Company_opning_balance.objects.filter(company_id=bill.company_id).first()
+                    print(b_opn)
+                    recived_payment = company_recived_payment_transaction.objects.filter(company_id=bill.company_id).aggregate(Sum('amount'))['amount__sum']
+                    if b_opn:
+                        if b_opn.type == 0:
+                            recived_payment -= int(b_opn.balance)
+                        else:
+                            recived_payment += int(b_opn.balance)
+                
+                    if recived_payment == None:
+                        recived_payment = 0
+                        
+                    paid_bill_amount = Company_bill.objects.filter(company_id=bill.company_id, paid_status = 1).aggregate(Sum('total_amount'))['total_amount__sum']
+                    if paid_bill_amount == None:
+                        paid_bill_amount = 0
+                        
+                    remening_amount = (int(recived_payment) - int(paid_bill_amount))
+                    
+                    bill = Company_bill.objects.filter(company_id=bill.company_id, paid_status=1).order_by('date')
+                    
+                    bill_id = 0
+                    for b in bill:
+                        if remening_amount <= b.total_amount:
+                            b.paid_status = 0
+                            b.save()
+                            remening_amount -= b.total_amount
+                        
                     del request.session['edit_pin']
+                    
                     return redirect(f'/office/view_company_bill/{id}')
             else:
                 del request.session['office_mobile']
