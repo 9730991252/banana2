@@ -1066,7 +1066,8 @@ def view_farmer_bill(request, id):
         p = ''
         total_amount_words = num2words(bill.total_amount)
         
-        signature = Signature.objects.filter(id=bill.office_employee.id).first()
+        signature = Signature.objects.filter(office_employee_id=bill.office_employee.id).first()
+
         total_credit = 0
         total_pending_amount = bill.total_amount
         context={
