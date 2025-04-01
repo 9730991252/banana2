@@ -8,6 +8,13 @@
     welcome - {{e.name}}
 </div>
 {% include 'include/office/office_menu.html' %}
+<div class="text-center">
+    
+    <br>
+    <a href="https://newbanana.tejorder.com/login/" class="btn btn-primary">New Login</a>
+    <br>
+    <br>
+</div>
 <div class="container">
 
 {% user_pendding_all_amount e.shope_id %}
@@ -15,7 +22,6 @@
 {% company_pendding_all_amount e.shope_id %}
 
 </div>
-
 
 
 {% endblock content %}
