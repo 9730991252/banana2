@@ -102,12 +102,12 @@ def farmer_details(farmer_id):
             'remening_amount':remening_amount
         }
     return {}
-         
+          
 @register.inclusion_tag('inclusion_tag/office/company_details_unpaid_bills.html')
 def company_details_unpaid_bills(company_id):
     if company_id:
         company = Company.objects.get(id=company_id)
-        bills = Company_bill.objects.filter(company_id=company_id, paid_status=0).order_by('-date')
+        bills = Company_bill.objects.filter(company_id=company_id, paid_status=0).exclude(total_amount=0).order_by('-date')
         bill_amount = Company_bill.objects.filter(company_id=company_id).aggregate(Sum('total_amount'))['total_amount__sum']
         if bill_amount == None:
             bill_amount = 0
@@ -122,8 +122,7 @@ def company_details_unpaid_bills(company_id):
             
         remening_amount = (int(transactions_t) - int(paid_bill_amount))
         
-        bill = Company_bill.objects.filter(company_id=company_id, paid_status=0).order_by('date')
-        
+        bill = Company_bill.objects.filter(company_id=company_id, paid_status=0).order_by('date')        
         bill_id = 0
         for b in bill:
             if remening_amount >= b.total_amount:
